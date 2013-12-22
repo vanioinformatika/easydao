@@ -34,7 +34,7 @@
 
     <name>EasyDao</name>
     <url>https://github.com/vanioinformatika/easydao</url>
-    <description>EasyDao is a lightweight, fast and flexible modell and Dao code generator.</description>
+    <description>EasyDao is a lightweight, fast and flexible model and Dao code generator.</description>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
