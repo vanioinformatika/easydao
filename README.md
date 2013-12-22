@@ -3,7 +3,7 @@ EasyDao
 
 EasyDao is a lightweight, fast and flexible modell and Dao code generator.
 
-*Project status*: development phase, do not use for production!
+*Project status*: development phase, do not use in production!
 
 History
 =======
