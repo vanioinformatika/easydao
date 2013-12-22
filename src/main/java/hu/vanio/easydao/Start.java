@@ -23,9 +23,6 @@
  */
 package hu.vanio.easydao;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 /**
  * Application start
  * @author Istvan Pato <istvan.pato@vanio.hu>
@@ -33,7 +30,5 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Start {
 
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(Engine.class);
-        System.out.println("Application name: " + context.getBean(Engine.class).getName());
     }
 }

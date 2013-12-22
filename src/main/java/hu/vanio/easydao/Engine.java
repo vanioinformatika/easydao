@@ -23,8 +23,6 @@
  */
 package hu.vanio.easydao;
 
-import org.springframework.stereotype.Component;
-
 /**
  * Generate model and Dao from database based on configuration.
  *
