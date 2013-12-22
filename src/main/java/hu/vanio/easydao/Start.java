@@ -23,12 +23,46 @@
  */
 package hu.vanio.easydao;
 
+import hu.vanio.easydao.generator.Generator;
+import hu.vanio.easydao.generator.GeneratorUtil;
+import hu.vanio.easydao.generator.PostgreSqlGeneratorImpl;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 /**
  * Application start
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class Start {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        DriverManager.registerDriver(new org.postgresql.Driver());
+
+        String url = "jdbc:postgresql://localhost/callistof";
+        String username = "callisto";
+        String password = "callisto";
+        
+
+        try(Connection con = DriverManager.getConnection(url, username, password);) {
+//            BeanGenerator bg = new BeanGenerator(
+//                    simpleJdbcTemplate,
+//                    "/tmp/callistogen/", // a generált Java kód package gyökere a filerendszerben
+//                    "", // az osztálynevek előtagja (pl. a kezelt db. sémára utalhat)
+//                    "hu.jura.callisto.model", // a modell osztályok package-e
+//                    null, // a modell osztályok nevének utótagja
+//                    "hu.jura.callisto.dao", // a dao/service osztályok package-e
+//                    "Dao", // a dao/service osztályok nevének utótagja
+//                    "cal_", // a feldolgozni kívánt táblák nevének eleje (szűrő)
+//                    "utf-8", // a generált Java kód kódolása
+//                    SequenceNameStrategy.PREFIXED_TABLE_NAME_WITH_FIELD_NAME
+//            );
+//            bg.generate();
+            Generator g = new PostgreSqlGeneratorImpl(new GeneratorUtil());
+            // FIXME: hasPostfix and hasPrefix comes from configuration 
+            g.getTableList(con, true, true);
+        } finally {
+            //dataSource.close();
+        }
     }
 }

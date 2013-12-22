@@ -28,6 +28,6 @@ package hu.vanio.easydao.generator;
  * Implements Oracle generator
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class OracleGeneratorImpl implements Generator {
+public class OracleGeneratorImpl {
     
 }

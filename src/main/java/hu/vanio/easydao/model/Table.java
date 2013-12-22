@@ -21,13 +21,88 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package hu.vanio.easydao.model;
+
+import java.util.List;
 
 /**
  * Database's table meta data
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class Table {
-    
+
+    /* Table name in database */
+    private String dbName;
+    /* Table comment */
+    private String comment;
+    /* Table's java name */
+    private String javaName;
+    /* Table's fields */
+    private List<Field> fieldList;
+
+    public Table(String dbName, String comment, String javaName, List<Field> fieldList) {
+        this.dbName = dbName;
+        this.comment = comment;
+        this.javaName = javaName;
+        this.fieldList = fieldList;
+    }
+
+//<editor-fold defaultstate="collapsed" desc="gettersetter">
+    /**
+     * @return the fieldList
+     */
+    public List<Field> getFieldList() {
+        return fieldList;
+    }
+
+    /**
+     * @param fieldList the fieldList to set
+     */
+    public void setFieldList(List<Field> fieldList) {
+        this.fieldList = fieldList;
+    }
+
+    /**
+     * @return the dbName
+     */
+    public String getDbName() {
+        return dbName;
+    }
+
+    /**
+     * @param dbName the dbName to set
+     */
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    /**
+     * @return the comment
+     */
+    public String getComment() {
+        return comment;
+    }
+
+    /**
+     * @param comment the comment to set
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    /**
+     * @return the javaName
+     */
+    public String getJavaName() {
+        return javaName;
+    }
+
+    /**
+     * @param javaName the javaName to set
+     */
+    public void setJavaName(String javaName) {
+        this.javaName = javaName;
+    }
+
+    //</editor-fold>
 }

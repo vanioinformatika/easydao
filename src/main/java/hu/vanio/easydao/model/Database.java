@@ -24,10 +24,31 @@
 
 package hu.vanio.easydao.model;
 
+import java.util.List;
+
 /**
  * Database meta data
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class Database {
+    
+    /** Database's tables */
+    private List<Table> tableList;
+
+//<editor-fold defaultstate="collapsed" desc="gettersetter">
+    /**
+     * @return the tableList
+     */
+    public List<Table> getTableList() {
+        return tableList;
+    }
+    
+    /**
+     * @param tableList the tableList to set
+     */
+    public void setTableList(List<Table> tableList) {
+        this.tableList = tableList;
+    }
+//</editor-fold>
     
 }

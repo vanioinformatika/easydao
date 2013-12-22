@@ -21,13 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package hu.vanio.easydao.generator;
+
+import hu.vanio.easydao.model.Table;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Implements generator methods
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public interface Generator {
-    
+
+    /**
+     * Load all tables from database.
+     * @param con database JDBC connection
+     * @param hasPrefix true, if table has prefix
+     * @param hasPostfix true, if table has postfix
+     * @return table list
+     * @throws SQLException
+     */
+    public List<Table> getTableList(Connection con, boolean hasPrefix, boolean hasPostfix) throws SQLException;
+
 }
