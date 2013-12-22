@@ -36,6 +36,11 @@
     <url>https://github.com/vanioinformatika/easydao</url>
     <description>EasyDao is a lightweight, fast and flexible model and Dao code generator.</description>
     
+    <organization>
+        <name>Vanio Informatika Kft.</name>
+        <url>http://www.vanio.hu</url>
+    </organization>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.5</slf4j.version>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                           http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-4.0.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+
+    <!-- Using bean annotations -->
+    <context:annotation-config/>
+    <!-- Bean registration -->
+    <context:component-scan base-package="hu.vanio.easydao"/>
+    <!-- Properties classpath -->
+    <context:property-placeholder location="classpath:config.properties" />
+    
+    <!-- Engine bean initialization -->
+    <bean id="engine" class="hu.vanio.easydao.Engine">
+        <property name="name">${project.name}</property>
+        <property name="version">${project.version}</property>
+    </bean>
+    
+    <!-- Database connection -->
+    <bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="initialSize" value="${jdbc.pool.initialSize}" />
+        <property name="maxActive" value="${jdbc.pool.maxActive}" />
+        <property name="defaultAutoCommit" value="${jdbc.autoCommit}" />
+    </bean>
+    
+    <!-- Velocity engine -->
+    <!--bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">class</prop>
+                <prop key="class.resource.loader.class">org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader</prop>
+                <prop key="output.encoding">UTF-8</prop>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="default.contentType">UTF-8</prop>
+            </props>
+        </property>
+    </bean-->
+    
+</beans>

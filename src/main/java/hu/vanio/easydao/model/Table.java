@@ -22,16 +22,12 @@
  * THE SOFTWARE.
  */
 
-package hu.vanio.easydao;
+package hu.vanio.easydao.model;
 
 /**
- * Hello world!
- *
+ * Database's table meta data
+ * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
+public class Table {
+    
 }
