@@ -54,25 +54,84 @@ public class PostgreSqlModelBuilderImpl extends ModelBuilder {
                 while (rs.next()) {
                     String tableName = rs.getString("TABLE_NAME");
                     String tableComment = rs.getString("COMMENT");
+
                     System.out.println("table name: " + tableName + " = " + tableComment);
+
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
                     String javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
-
-                    // @FIXME: processing field for table!
-                    List<Field> fieldList = new ArrayList<>();
-//                    for (Table tableData : tableList) {
-//                        Set<String> pkFields = getPrimaryKeyFieldNames(tableData.getDbName());
-//                        List<FieldData> fields = getFields(tableData.getDbName(), pkFields);
-//                        tableData.setFields(fields);
-//                    }
-                    Table table = new Table(tableName, tableComment, javaName, fieldList);
+                    Table table = new Table(tableName, tableComment, javaName, null);
                     tableList.add(table);
                 }
             }
         }
         return tableList;
+    }
+
+    @Override
+    protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException {
+        String query = "select a.attname as COLUMN_NAME "
+                + "from pg_catalog.pg_constraint cn, pg_catalog.pg_attribute a, pg_catalog.pg_class c "
+                + "where c.relname = ?  "
+                + "  and c.relkind = 'r' "
+                + "  and a.attrelid = c.oid "
+                + "  and a.attnum > 0  "
+                + "  and a.attisdropped is false "
+                + "  and cn.conrelid = c.oid and cn.contype = 'p' "
+                + "  and a.attnum = any(cn.conkey)";
+
+        List<String> fieldNameList = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(query);) {
+            ps.setString(1, tableName);
+            try (ResultSet rs = ps.executeQuery();) {
+                while (rs.next()) {
+                    String fieldName = rs.getString("COLUMN_NAME");
+                    fieldNameList.add(fieldName);
+                }
+            }
+        }
+        return fieldNameList;
+    }
+
+    @Override
+    protected List<Field> getFieldList(String tableName) throws SQLException {
+        System.out.println("\ngetFieldList of " + tableName.toUpperCase());
+        String query = "select a.attname as COLUMN_NAME,"
+                + " pg_catalog.format_type(a.atttypid, a.atttypmod) as DATA_TYPE,"
+                + " a.attnotnull as NOT_NULL,"
+                + " a.attndims as ARRAY_DIM_SIZE,"
+                + " a.atthasdef as HAS_DEFAULT_VALUE,"
+                + " col_description(c.oid, a.attnum) as COMMENT"
+                + " from pg_catalog.pg_class c, pg_catalog.pg_attribute a"
+                + " where c.relname = ?"
+                + " and c.relkind = 'r'"
+                + " and a.attrelid = c.oid"
+                + " and a.attnum > 0"
+                + " and a.attisdropped is false"
+                + " order by a.attnum";
+        List<Field> fieldList = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(query);) {
+            ps.setString(1, tableName);
+            try (ResultSet rs = ps.executeQuery();) {
+                while (rs.next()) {
+                    boolean nullable = !rs.getBoolean("NOT_NULL");
+                    boolean array = rs.getInt("ARRAY_DIM_SIZE") > 0;
+                    String dbName = rs.getString("COLUMN_NAME");
+                    boolean primaryKey = getPrimaryKeyFieldNameList(tableName).indexOf(dbName) >= 0;
+                    String dbType = rs.getString("DATA_TYPE");
+                    String comment = rs.getString("COMMENT");
+                    String javaName = createJavaName(dbName, false, hasFieldPrefix, hasFieldPostfix);
+                    Class javaType = createJavaType(dbType);
+                    Field field = new Field(primaryKey, nullable, array, dbName, dbType, comment, javaName, javaType);
+
+                    System.out.println(field.toString());
+
+                    fieldList.add(field);
+                }
+            }
+        }
+        return fieldList;
     }
 
 }

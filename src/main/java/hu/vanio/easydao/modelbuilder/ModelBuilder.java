@@ -24,6 +24,7 @@
 package hu.vanio.easydao.modelbuilder;
 
 import hu.vanio.easydao.model.Database;
+import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -69,7 +70,10 @@ abstract class ModelBuilder implements IModelBuilder {
     @Override
     public Database build() throws SQLException {
         Database database = null;
-        this.getTableList();
+        List<Table> tableList = this.getTableList();
+        for (Table table : tableList) {
+            table.setFieldList(this.getFieldList(table.getDbName()));
+        }
         return database;
     }
 
@@ -82,6 +86,22 @@ abstract class ModelBuilder implements IModelBuilder {
      * @throws SQLException
      */
     abstract protected List<Table> getTableList() throws SQLException;
+
+    /**
+     * Load primary key field names for a table.
+     * @param tableName table name
+     * @return List of name of primary keys.
+     */
+    abstract protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException;
+
+    /**
+     * Load field data for a table, and set its data.
+     * @param tableName table name
+     * @param primaryKeyFieldNameList list of primary keys
+     * @return list of fields of table
+     * @throws SQLException
+     */
+    abstract protected List<Field> getFieldList(String tableName) throws SQLException;
 
     /**
      * Create Java name from database's name
@@ -125,5 +145,11 @@ abstract class ModelBuilder implements IModelBuilder {
             result = firstChar + result.substring(1, result.length());
         }
         return result;
+    }
+    
+    protected Class createJavaType(String dbType) {
+        Class clazz = Object.class;
+        
+        return clazz;
     }
 }

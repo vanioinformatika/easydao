@@ -23,6 +23,7 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
+import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -183,6 +184,16 @@ public class ModelBuilderTest {
 
         @Override
         protected List<Table> getTableList() throws SQLException {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected List<Field> getFieldList(String tableName) throws SQLException {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
