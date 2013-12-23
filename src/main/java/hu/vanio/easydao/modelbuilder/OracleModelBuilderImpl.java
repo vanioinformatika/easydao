@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydao.generator;
+package hu.vanio.easydao.modelbuilder;
 
 /**
- * Helper function for generator
+ * Implements model builder for Oracle database.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class GeneratorUtil {
+public class OracleModelBuilderImpl {
 
 }

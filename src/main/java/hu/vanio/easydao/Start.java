@@ -23,9 +23,9 @@
  */
 package hu.vanio.easydao;
 
-import hu.vanio.easydao.generator.Generator;
-import hu.vanio.easydao.generator.GeneratorUtil;
-import hu.vanio.easydao.generator.PostgreSqlGeneratorImpl;
+import hu.vanio.easydao.modelbuilder.ModelBuilder;
+import hu.vanio.easydao.modelbuilder.ModelBuilderUtil;
+import hu.vanio.easydao.modelbuilder.PostgreSqlModelBuilderImpl;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -42,9 +42,8 @@ public class Start {
         String url = "jdbc:postgresql://localhost/callistof";
         String username = "callisto";
         String password = "callisto";
-        
 
-        try(Connection con = DriverManager.getConnection(url, username, password);) {
+        try (Connection con = DriverManager.getConnection(url, username, password);) {
 //            BeanGenerator bg = new BeanGenerator(
 //                    simpleJdbcTemplate,
 //                    "/tmp/callistogen/", // a generált Java kód package gyökere a filerendszerben
@@ -58,7 +57,9 @@ public class Start {
 //                    SequenceNameStrategy.PREFIXED_TABLE_NAME_WITH_FIELD_NAME
 //            );
 //            bg.generate();
-            Generator g = new PostgreSqlGeneratorImpl(new GeneratorUtil());
+            
+            // Building java model from database metadata
+            ModelBuilder g = new PostgreSqlModelBuilderImpl(new ModelBuilderUtil());
             // FIXME: hasPostfix and hasPrefix comes from configuration 
             g.getTableList(con, true, true);
         } finally {

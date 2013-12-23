@@ -21,42 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package hu.vanio.easydao.modelbuilder;
 
-package hu.vanio.easydao;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import hu.vanio.easydao.model.Table;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
- * Unit test for simple App.
+ * Interface for model builder methods.
+ * These methods build java model of database: tables, fields and so on.
+ * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class EngineTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public EngineTest( String testName )
-    {
-        super( testName );
-    }
+public interface ModelBuilder {
 
     /**
-     * @return the suite of tests being tested
+     * Load all tables from database.
+     * @param con database JDBC connection
+     * @param hasPrefix true, if table has prefix
+     * @param hasPostfix true, if table has postfix
+     * @return table list
+     * @throws SQLException
      */
-    public static Test suite()
-    {
-        return new TestSuite( EngineTest.class );
-    }
+    public List<Table> getTableList(Connection con, boolean hasPrefix, boolean hasPostfix) throws SQLException;
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
 }

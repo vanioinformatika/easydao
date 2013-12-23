@@ -23,15 +23,6 @@
  */
 package hu.vanio.easydao.generator;
 
-import hu.vanio.easydao.model.Field;
-import hu.vanio.easydao.model.Table;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Implements PostgreSQL generator
  * @author Istvan Pato <istvan.pato@vanio.hu>
@@ -43,43 +34,6 @@ public class PostgreSqlGeneratorImpl implements Generator {
 
     public PostgreSqlGeneratorImpl(GeneratorUtil gu) {
         this.gu = gu;
-    }
-
-    @Override
-    public List<Table> getTableList(Connection con, boolean hasPrefix, boolean hasPostfix) throws SQLException {
-        System.out.println("getTableList");
-        String query = "select"
-                + " c.relname as TABLE_NAME,"
-                + " obj_description(c.oid) as COMMENTS"
-                + " from pg_catalog.pg_class c "
-                + " where c.relname like ? and c.relkind = 'r'"
-                + " order by TABLE_NAME";
-
-        List<Table> tableList = new ArrayList<>();
-        try (PreparedStatement ps = con.prepareStatement(query);) {
-            try (ResultSet rs = ps.executeQuery();) {
-                while (rs.next()) {
-                    String tableName = rs.getString("TABLE_NAME");
-                    String tableComment = rs.getString("COMMENTS");
-                    System.out.println("table name: " + tableName);
-                    if (tableComment == null) {
-                        tableComment = gu.EMPTY_COMMENT;
-                    }
-                    String javaName = gu.createJavaName(tableName, true, hasPrefix, hasPostfix);
-
-                    // @FIXME: processing field for table!
-                    List<Field> fieldList = new ArrayList<>();
-//                    for (Table tableData : tableList) {
-//                        Set<String> pkFields = getPrimaryKeyFieldNames(tableData.getDbName());
-//                        List<FieldData> fields = getFields(tableData.getDbName(), pkFields);
-//                        tableData.setFields(fields);
-//                    }
-                    Table table = new Table(tableName, tableComment, javaName, fieldList);
-                    tableList.add(table);
-                }
-            }
-        }
-        return tableList;
     }
 
 }
