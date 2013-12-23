@@ -27,9 +27,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>hu.vanio</groupId>
-    <artifactId>EasyDao</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>hu.vanio.easydao</groupId>
+    <artifactId>easydao-core</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>EasyDao</name>
@@ -43,6 +43,7 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -52,7 +53,12 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-        
+	<dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.19</version>
+        </dependency>
+
         <!-- oracle -->
         <!--dependency>
             <groupId>com.oracle</groupId>
@@ -63,20 +69,9 @@
             <groupId>com.oracle</groupId>
             <artifactId>orai18n</artifactId>
             <version>11.1.0.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>sqlj-runtime</artifactId>
-            <version>11.1.0.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>sqlj-translator</artifactId>
-            <version>10.2.0.0.0</version>
-            <scope>compile</scope>
-        </dependency-->
+        </dependency> -->
         
-        <!-- postgresql -->
+        <!--postgresql -->
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
