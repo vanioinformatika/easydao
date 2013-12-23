@@ -23,19 +23,36 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import hu.vanio.easydao.model.Database;
-import java.sql.SQLException;
+import java.util.HashMap;
 
 /**
- * Model builder interface.
+ * database configuration for model builder
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public interface IModelBuilder {
+public interface Config {
 
     /**
-     * Build java model from database
-     * @return database java model
-     * @throws SQLException
+     * Sql query for table list, result: TABLE_NAME, COMMENT fields
+     * @return SQL query, TABLE_NAME, COMMENT
      */
-    public Database build() throws SQLException;
+    public String getSelectForTableList();
+
+    /**
+     * Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
+     * @return SQL query, COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
+     */
+    public String getSelectForFieldList();
+
+    /**
+     * Sql query for primary key field name list, result: COLUMN_NAME
+     * @return SQL query, COLUMN_NAME
+     */
+    public String getSelectForPrimaryKeyFieldNameList();
+    
+    /**
+     * Return java type mapping hash map.
+     * @return java type mapping hash map.
+     */
+    public HashMap<String, Class> getJdbcTypeMapping();
+
 }

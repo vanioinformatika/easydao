@@ -81,7 +81,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPrefix() {
         System.out.println("testCreateJavaName_SimpleString");
         String dbName = "CUS_CUSTOMER";
-        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, false);
         System.out.println("testCreateJavaName_SimpleString = " + dbName + " -> " + result);
@@ -95,7 +95,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPostfix() {
         System.out.println("testCreateJavaName_StringWithPostfix");
         String dbName = "CUSTOMER_CUS";
-        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, true);
         System.out.println("testCreateJavaName_StringWithPostfix = " + dbName + " -> " + result);
@@ -109,7 +109,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_XXX";
-        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -123,7 +123,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER";
-        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -137,7 +137,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_MoreStringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER_ORDERS";
-        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -151,7 +151,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_MoreStringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_ORDERS_ORD";
-        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -166,38 +166,13 @@ public class ModelBuilderTest {
     public void testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar() {
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar");
         String dbName = "CUS_CUSTOMER_ORDERS_LIST_ORD";
-        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
         String expResult = "customerOrdersList";
         String result = instance.createJavaName(dbName, false, true, true);
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar = " + dbName + " -> " + result);
         assertEquals(expResult, result);
     }
-
-    /**
-     * Mock class for testing implemented methods in abstract class
-     */
-    class MockModelBuilder extends ModelBuilder {
-
-        public MockModelBuilder(Connection con, boolean hasTablePrefix, boolean hasTablePostfix, boolean hasFieldPrefix, boolean hasFieldPostfix) {
-            super(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix);
-        }
-
-        @Override
-        protected List<Table> getTableList() throws SQLException {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        protected List<Field> getFieldList(String tableName) throws SQLException {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-
+    
     /**
      * FIXME: Test of getPrimaryKeyFieldNameList method, of class ModelBuilder.
      */
@@ -233,7 +208,7 @@ public class ModelBuilderTest {
     public void testGetJavaType_numeric142() {
         System.out.println("testGetJavaType_numeric142");
         String dbType = "numeric(14,2)";
-        ModelBuilder instance = new MockModelBuilder(null, true, false, true, false);
+        ModelBuilder instance = new ModelBuilder(null, true, false, true, false, new PostgreSql9Config());
         Class expResult = Double.class;
         Class result = instance.getJavaType(dbType);
         assertEquals(expResult, result);

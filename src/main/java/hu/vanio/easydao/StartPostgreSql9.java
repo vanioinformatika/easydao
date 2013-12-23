@@ -24,8 +24,8 @@
 package hu.vanio.easydao;
 
 import hu.vanio.easydao.model.Database;
-import hu.vanio.easydao.modelbuilder.IModelBuilder;
-import hu.vanio.easydao.modelbuilder.PostgreSqlModelBuilderImpl;
+import hu.vanio.easydao.modelbuilder.ModelBuilder;
+import hu.vanio.easydao.modelbuilder.PostgreSql9Config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,7 +34,9 @@ import java.sql.SQLException;
  * Application start
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class Start {
+public class StartPostgreSql9 {
+    
+    
 
     public static void main(String[] args) throws SQLException {
         DriverManager.registerDriver(new org.postgresql.Driver());
@@ -50,7 +52,7 @@ public class Start {
 
         try (Connection con = DriverManager.getConnection(url, username, password);) {
             // Building java model from database metadata
-            IModelBuilder modelBuilder = new PostgreSqlModelBuilderImpl(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix);
+            ModelBuilder modelBuilder = new ModelBuilder(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix, new PostgreSql9Config());
             // FIXME: hasPostfix and hasPrefix comes from configuration 
             Database database = modelBuilder.build();
         } finally {

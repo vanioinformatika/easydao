@@ -28,7 +28,10 @@ import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -37,7 +40,7 @@ import java.util.Map.Entry;
  * These methods build java model of database: tables, fields and so on.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-abstract class ModelBuilder implements IModelBuilder {
+public class ModelBuilder {
 
     /** There is no comment in database */
     final public String EMPTY_COMMENT = "FIXME: Warning: There is no comment in database!";
@@ -52,25 +55,33 @@ abstract class ModelBuilder implements IModelBuilder {
     protected boolean hasFieldPrefix;
     /* true, if table has postfix */
     protected boolean hasFieldPostfix;
+    /* database configuration for model builder */
+    protected Config config;
 
     /**
-     * Model builder contrucor.
+     * Model builder constructor.
      * @param con database connection
      * @param hasTablePrefix true, if table has prefix
      * @param hasTablePostfix true, if table has postfix
      * @param hasFieldPrefix true, if field has prefix
      * @param hasFieldPostfix true, if table has postfix
+     * @param config database configuration for model builder
      */
-    public ModelBuilder(Connection con, boolean hasTablePrefix, boolean hasTablePostfix, boolean hasFieldPrefix, boolean hasFieldPostfix) {
+    public ModelBuilder(Connection con,
+            boolean hasTablePrefix,
+            boolean hasTablePostfix,
+            boolean hasFieldPrefix,
+            boolean hasFieldPostfix,
+            Config config) {
         this.con = con;
         this.hasTablePrefix = hasTablePrefix;
         this.hasTablePostfix = hasTablePostfix;
         this.hasFieldPrefix = hasFieldPrefix;
         this.hasFieldPostfix = hasFieldPostfix;
+        this.config = config;
     }
 
-    @Override
-    public Database build() throws SQLException {
+    final public Database build() throws SQLException {
         Database database = null;
         List<Table> tableList = this.getTableList();
         for (Table table : tableList) {
@@ -81,29 +92,83 @@ abstract class ModelBuilder implements IModelBuilder {
 
     /**
      * Load all tables from database.
-     * @param con database JDBC connection
-     * @param hasTablePrefix true, if table has prefix
-     * @param hasTablePostfix true, if table has postfix
      * @return table list
      * @throws SQLException
      */
-    abstract protected List<Table> getTableList() throws SQLException;
+    public List<Table> getTableList() throws SQLException {
+        System.out.println("getTableList");
+
+        List<Table> tableList = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(config.getSelectForTableList())) {
+            try (ResultSet rs = ps.executeQuery();) {
+                while (rs.next()) {
+                    String tableName = rs.getString("TABLE_NAME");
+                    String tableComment = rs.getString("COMMENTS");
+
+                    System.out.println("table name: " + tableName + " = " + tableComment);
+
+                    if (tableComment == null) {
+                        tableComment = EMPTY_COMMENT;
+                    }
+                    String javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
+                    Table table = new Table(tableName, tableComment, javaName, null);
+                    tableList.add(table);
+                }
+            }
+        }
+        return tableList;
+    }
 
     /**
      * Load primary key field names for a table.
      * @param tableName table name
      * @return List of name of primary keys.
      */
-    abstract protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException;
+    protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException {
+        List<String> fieldNameList = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(config.getSelectForPrimaryKeyFieldNameList())) {
+            ps.setString(1, tableName);
+            try (ResultSet rs = ps.executeQuery();) {
+                while (rs.next()) {
+                    String fieldName = rs.getString("COLUMN_NAME");
+                    fieldNameList.add(fieldName);
+                }
+            }
+        }
+        return fieldNameList;
+    }
 
     /**
      * Load field data for a table, and set its data.
      * @param tableName table name
-     * @param primaryKeyFieldNameList list of primary keys
      * @return list of fields of table
      * @throws SQLException
      */
-    abstract protected List<Field> getFieldList(String tableName) throws SQLException;
+    protected List<Field> getFieldList(String tableName) throws SQLException {
+        System.out.println("\ngetFieldList of " + tableName.toUpperCase());
+        List<Field> fieldList = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(config.getSelectForFieldList())) {
+            ps.setString(1, tableName);
+            try (ResultSet rs = ps.executeQuery();) {
+                while (rs.next()) {
+                    boolean nullable = !rs.getBoolean("NOT_NULL");
+                    boolean array = rs.getInt("ARRAY_DIM_SIZE") > 0;
+                    String dbName = rs.getString("COLUMN_NAME");
+                    boolean primaryKey = getPrimaryKeyFieldNameList(tableName).indexOf(dbName) >= 0;
+                    String dbType = rs.getString("DATA_TYPE");
+                    String comment = rs.getString("COMMENTS");
+                    String javaName = createJavaName(dbName, false, hasFieldPrefix, hasFieldPostfix);
+                    Class javaType = getJavaType(dbType);
+                    Field field = new Field(primaryKey, nullable, array, dbName, dbType, comment, javaName, javaType);
+
+                    System.out.println(field.toString());
+
+                    fieldList.add(field);
+                }
+            }
+        }
+        return fieldList;
+    }
 
     /**
      * Create Java name from database's name
@@ -113,7 +178,7 @@ abstract class ModelBuilder implements IModelBuilder {
      * @param hasPostFix dbName has postfix
      * @return Java name based on java convention
      */
-    protected String createJavaName(String dbName,
+    final protected String createJavaName(String dbName,
             boolean firstCharToUpperCase,
             boolean hasPrefix,
             boolean hasPostFix) {
@@ -154,10 +219,10 @@ abstract class ModelBuilder implements IModelBuilder {
      * @param dbType database type string
      * @return java class type
      */
-    protected Class getJavaType(String dbType) throws IllegalArgumentException {
+    final protected Class getJavaType(String dbType) throws IllegalArgumentException {
         Class clazz = null;
         boolean found = false;
-        for (Entry<String, Class> e : PostgreSqlJdbcType.MAP.entrySet()) {
+        for (Entry<String, Class> e : config.getJdbcTypeMapping().entrySet()) {
             if (dbType.matches(e.getKey())) {
                 // found type
                 clazz = e.getValue();
