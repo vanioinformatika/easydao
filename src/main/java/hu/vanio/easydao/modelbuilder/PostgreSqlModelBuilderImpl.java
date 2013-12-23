@@ -122,7 +122,7 @@ public class PostgreSqlModelBuilderImpl extends ModelBuilder {
                     String dbType = rs.getString("DATA_TYPE");
                     String comment = rs.getString("COMMENT");
                     String javaName = createJavaName(dbName, false, hasFieldPrefix, hasFieldPostfix);
-                    Class javaType = createJavaType(dbType);
+                    Class javaType = getJavaType(dbType);
                     Field field = new Field(primaryKey, nullable, array, dbName, dbType, comment, javaName, javaType);
 
                     System.out.println(field.toString());
