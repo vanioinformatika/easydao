@@ -23,6 +23,8 @@
  */
 package hu.vanio.easydao;
 
+import freemarker.template.Configuration;
+
 /**
  * Generate model and Dao from database based on configuration.
  *
@@ -35,6 +37,17 @@ public class Engine {
     /* Application version */
     private String version;
 
+    /** Freemarker configuration */
+    private Configuration freemarkerConfig;
+    
+    private String jdbcDriverClassname;
+    /** Database JDBC URL */
+    private String databaseUrl;
+    /** Database user */
+    private String databaseUser;
+    /** Password of the database user */
+    private String databasePassword;
+    
     /**
      * @return the name
      */
@@ -61,5 +74,11 @@ public class Engine {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+    
+    private Configuration createFreemarkerConfiguration() {
+        Configuration retVal = new Configuration();
+        retVal.setClassForTemplateLoading(Engine.class, "/hu/vanio/easydao/templates");
+        return retVal;
     }
 }
