@@ -54,7 +54,7 @@ public class PostgreSqlModelBuilderImpl extends ModelBuilder {
                 while (rs.next()) {
                     String tableName = rs.getString("TABLE_NAME");
                     String tableComment = rs.getString("COMMENT");
-                    System.out.println("table name: " + tableName);
+                    System.out.println("table name: " + tableName + " = " + tableComment);
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
