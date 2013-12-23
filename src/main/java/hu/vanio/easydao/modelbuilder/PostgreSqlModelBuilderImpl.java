@@ -45,12 +45,8 @@ public class PostgreSqlModelBuilderImpl extends ModelBuilder {
     @Override
     public List<Table> getTableList() throws SQLException {
         System.out.println("getTableList");
-        String query = "select"
-                + " c.relname as TABLE_NAME,"
-                + " obj_description(c.oid) as COMMENT"
-                + " from pg_catalog.pg_class c "
-                + " where c.relname like ? and c.relkind = 'r'"
-                + " order by TABLE_NAME";
+        String query = "select c.relname as TABLE_NAME, obj_description(c.oid) as COMMENT from pg_catalog.pg_class c"
+                + " where c.relname like '%' and c.relname not like 'sql_%' and c.relname not like 'pg_%' and c.relkind = 'r' order by TABLE_NAME;";
 
         List<Table> tableList = new ArrayList<>();
         try (PreparedStatement ps = con.prepareStatement(query);) {
@@ -58,7 +54,7 @@ public class PostgreSqlModelBuilderImpl extends ModelBuilder {
                 while (rs.next()) {
                     String tableName = rs.getString("TABLE_NAME");
                     String tableComment = rs.getString("COMMENT");
-                    System.out.println("table name: " + tableName);
+                    System.out.println("table name: " + tableName + " = " + tableComment);
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
@@ -78,6 +74,5 @@ public class PostgreSqlModelBuilderImpl extends ModelBuilder {
         }
         return tableList;
     }
-
 
 }
