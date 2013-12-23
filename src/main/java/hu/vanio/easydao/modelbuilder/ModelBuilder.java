@@ -23,12 +23,14 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
+import hu.vanio.easydao.generator.PostgresJdbcType;
 import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * Abstract class for model builders.
@@ -146,10 +148,26 @@ abstract class ModelBuilder implements IModelBuilder {
         }
         return result;
     }
-    
-    protected Class createJavaType(String dbType) {
-        Class clazz = Object.class;
-        
+
+    /**
+     * Return java type from a hashmap by dbtype string.
+     * @param dbType database type string
+     * @return java class type
+     */
+    protected Class getJavaType(String dbType) throws IllegalArgumentException {
+        Class clazz = null;
+        boolean found = false;
+        for (Entry<String, Class> e : PostgresJdbcType.MAP.entrySet()) {
+            if (dbType.matches(e.getKey())) {
+                // found type
+                clazz = e.getValue();
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw new IllegalArgumentException("There is no Java type definiton for " + dbType + " database type!");
+        }
         return clazz;
     }
 }
