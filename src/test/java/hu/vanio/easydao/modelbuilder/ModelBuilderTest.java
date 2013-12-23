@@ -197,4 +197,45 @@ public class ModelBuilderTest {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
+
+    /**
+     * FIXME: Test of getPrimaryKeyFieldNameList method, of class ModelBuilder.
+     */
+    public void testGetPrimaryKeyFieldNameList() throws Exception {
+        System.out.println("getPrimaryKeyFieldNameList");
+        String tableName = "";
+        ModelBuilder instance = null;
+        List<String> expResult = null;
+        List<String> result = instance.getPrimaryKeyFieldNameList(tableName);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * FIXME: Test of getFieldList method, of class ModelBuilder.
+     */
+    public void testGetFieldList() throws Exception {
+        System.out.println("getFieldList");
+        String tableName = "";
+        ModelBuilder instance = null;
+        List<Field> expResult = null;
+        List<Field> result = instance.getFieldList(tableName);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getJavaType method, of class ModelBuilder.
+     */
+    @Test
+    public void testGetJavaType_numeric142() {
+        System.out.println("testGetJavaType_numeric142");
+        String dbType = "numeric(14,2)";
+        ModelBuilder instance = new MockModelBuilder(null, true, false, true, false);
+        Class expResult = Double.class;
+        Class result = instance.getJavaType(dbType);
+        assertEquals(expResult, result);
+    }
 }
