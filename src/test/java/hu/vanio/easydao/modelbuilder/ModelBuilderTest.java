@@ -23,6 +23,10 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
+import hu.vanio.easydao.model.Table;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,12 +35,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * ModelBuilder abstract class implemented methods' unit test.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class ModelBuilderUtilTest {
+public class ModelBuilderTest {
 
-    public ModelBuilderUtilTest() {
+    public ModelBuilderTest() {
     }
 
     @BeforeClass
@@ -56,13 +60,27 @@ public class ModelBuilderUtilTest {
     }
 
     /**
-     * Test of createJavaName method with prefix, of class ModelBuilderUtil.
+     * We don't test here. We test implementation!
+     * @throws java.lang.Exception
+     */
+    public void testBuild() throws Exception {
+    }
+
+    /**
+     * We don't test here. We test implementation!
+     * @throws java.lang.Exception
+     */
+    public void testGetTableList() throws Exception {
+    }
+
+    /**
+     * Test of createJavaName method with prefix, of class ModelBuilder.
      */
     @Test
     public void testCreateJavaName_StringWithPrefix() {
         System.out.println("testCreateJavaName_SimpleString");
         String dbName = "CUS_CUSTOMER";
-        ModelBuilderUtil instance = new ModelBuilderUtil();
+        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, false);
         System.out.println("testCreateJavaName_SimpleString = " + dbName + " -> " + result);
@@ -70,13 +88,13 @@ public class ModelBuilderUtilTest {
     }
 
     /**
-     * Test of createJavaName method with postfix, of class ModelBuilderUtil.
+     * Test of createJavaName method with postfix, of class ModelBuilder.
      */
     @Test
     public void testCreateJavaName_StringWithPostfix() {
         System.out.println("testCreateJavaName_StringWithPostfix");
         String dbName = "CUSTOMER_CUS";
-        ModelBuilderUtil instance = new ModelBuilderUtil();
+        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, true);
         System.out.println("testCreateJavaName_StringWithPostfix = " + dbName + " -> " + result);
@@ -84,13 +102,13 @@ public class ModelBuilderUtilTest {
     }
 
     /**
-     * Test of createJavaName method with prefix and postfix, of class ModelBuilderUtil.
+     * Test of createJavaName method with prefix and postfix, of class ModelBuilder.
      */
     @Test
     public void testCreateJavaName_StringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_XXX";
-        ModelBuilderUtil instance = new ModelBuilderUtil();
+        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -98,13 +116,13 @@ public class ModelBuilderUtilTest {
     }
 
     /**
-     * Test of createJavaName method without prefix and postfix, of class ModelBuilderUtil.
+     * Test of createJavaName method without prefix and postfix, of class ModelBuilder.
      */
     @Test
     public void testCreateJavaName_StringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER";
-        ModelBuilderUtil instance = new ModelBuilderUtil();
+        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -112,13 +130,13 @@ public class ModelBuilderUtilTest {
     }
 
     /**
-     * Test of createJavaName method without prefix and postfix with 2 string, of class ModelBuilderUtil.
+     * Test of createJavaName method without prefix and postfix with 2 string, of class ModelBuilder.
      */
     @Test
     public void testCreateJavaName_MoreStringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER_ORDERS";
-        ModelBuilderUtil instance = new ModelBuilderUtil();
+        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -126,13 +144,13 @@ public class ModelBuilderUtilTest {
     }
 
     /**
-     * Test of createJavaName method with prefix and postfix, of class ModelBuilderUtil.
+     * Test of createJavaName method with prefix and postfix, of class ModelBuilder.
      */
     @Test
     public void testCreateJavaName_MoreStringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_ORDERS_ORD";
-        ModelBuilderUtil instance = new ModelBuilderUtil();
+        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -140,18 +158,32 @@ public class ModelBuilderUtilTest {
     }
 
     /**
-     * Test of createJavaName method with prefix and postfix, of class ModelBuilderUtil.
+     * Test of createJavaName method with prefix and postfix, of class ModelBuilder.
      * This test for table's field name.
      */
     @Test
     public void testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar() {
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar");
         String dbName = "CUS_CUSTOMER_ORDERS_LIST_ORD";
-        ModelBuilderUtil instance = new ModelBuilderUtil();
+        ModelBuilder instance = new MockModelBuilder(null, true, true, true, true);
         String expResult = "customerOrdersList";
         String result = instance.createJavaName(dbName, false, true, true);
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar = " + dbName + " -> " + result);
         assertEquals(expResult, result);
     }
 
+    /**
+     * Mock class for testing implemented methods in abstract class
+     */
+    class MockModelBuilder extends ModelBuilder {
+
+        public MockModelBuilder(Connection con, boolean hasTablePrefix, boolean hasTablePostfix, boolean hasFieldPrefix, boolean hasFieldPostfix) {
+            super(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix);
+        }
+
+        @Override
+        protected List<Table> getTableList() throws SQLException {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
 }

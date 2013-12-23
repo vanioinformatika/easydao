@@ -36,17 +36,14 @@ import java.util.List;
  * Implements model builder for PostgreSQL database.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class PostgreSqlModelBuilderImpl implements ModelBuilder {
+public class PostgreSqlModelBuilderImpl extends ModelBuilder {
 
-    /* ModelBuilder util inject */
-    private ModelBuilderUtil gu;
-
-    public PostgreSqlModelBuilderImpl(ModelBuilderUtil gu) {
-        this.gu = gu;
+    public PostgreSqlModelBuilderImpl(Connection con, boolean hasTablePrefix, boolean hasTablePostfix, boolean hasFieldPrefix, boolean hasFieldPostfix) {
+        super(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix);
     }
 
     @Override
-    public List<Table> getTableList(Connection con, boolean hasPrefix, boolean hasPostfix) throws SQLException {
+    public List<Table> getTableList() throws SQLException {
         System.out.println("getTableList");
         String query = "select"
                 + " c.relname as TABLE_NAME,"
@@ -63,9 +60,9 @@ public class PostgreSqlModelBuilderImpl implements ModelBuilder {
                     String tableComment = rs.getString("COMMENT");
                     System.out.println("table name: " + tableName);
                     if (tableComment == null) {
-                        tableComment = gu.EMPTY_COMMENT;
+                        tableComment = EMPTY_COMMENT;
                     }
-                    String javaName = gu.createJavaName(tableName, true, hasPrefix, hasPostfix);
+                    String javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
 
                     // @FIXME: processing field for table!
                     List<Field> fieldList = new ArrayList<>();
@@ -81,5 +78,6 @@ public class PostgreSqlModelBuilderImpl implements ModelBuilder {
         }
         return tableList;
     }
+
 
 }

@@ -23,26 +23,107 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
+import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Table;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Interface for model builder methods.
+ * Abstract class for model builders.
  * These methods build java model of database: tables, fields and so on.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public interface ModelBuilder {
+abstract class ModelBuilder implements IModelBuilder {
+
+    /** There is no comment in database */
+    final public String EMPTY_COMMENT = "FIXME: Warning: There is no comment in database!";
+
+    /* Database connection */
+    protected Connection con;
+    /* true, if table has prefix */
+    protected boolean hasTablePrefix;
+    /* true, if table has postfix */
+    protected boolean hasTablePostfix;
+    /* true, if field has prefix */
+    protected boolean hasFieldPrefix;
+    /* true, if table has postfix */
+    protected boolean hasFieldPostfix;
+
+    /**
+     * Model builder contrucor.
+     * @param con database connection
+     * @param hasTablePrefix true, if table has prefix
+     * @param hasTablePostfix true, if table has postfix
+     * @param hasFieldPrefix true, if field has prefix
+     * @param hasFieldPostfix true, if table has postfix
+     */
+    public ModelBuilder(Connection con, boolean hasTablePrefix, boolean hasTablePostfix, boolean hasFieldPrefix, boolean hasFieldPostfix) {
+        this.con = con;
+        this.hasTablePrefix = hasTablePrefix;
+        this.hasTablePostfix = hasTablePostfix;
+        this.hasFieldPrefix = hasFieldPrefix;
+        this.hasFieldPostfix = hasFieldPostfix;
+    }
+
+    @Override
+    public Database build() throws SQLException {
+        Database database = null;
+        this.getTableList();
+        return database;
+    }
 
     /**
      * Load all tables from database.
      * @param con database JDBC connection
-     * @param hasPrefix true, if table has prefix
-     * @param hasPostfix true, if table has postfix
+     * @param hasTablePrefix true, if table has prefix
+     * @param hasTablePostfix true, if table has postfix
      * @return table list
      * @throws SQLException
      */
-    public List<Table> getTableList(Connection con, boolean hasPrefix, boolean hasPostfix) throws SQLException;
+    abstract protected List<Table> getTableList() throws SQLException;
 
+    /**
+     * Create Java name from database's name
+     * @param dbName database's name
+     * @param firstCharToUpperCase set first result char to uppercase, i.e: class name
+     * @param hasPrefix dbName has prefix
+     * @param hasPostFix dbName has postfix
+     * @return Java name based on java convention
+     */
+    protected String createJavaName(String dbName,
+            boolean firstCharToUpperCase,
+            boolean hasPrefix,
+            boolean hasPostFix) {
+        String[] sArray = dbName.toLowerCase().split("_");
+        String result = "";
+        for (int i = 0; i < sArray.length; i++) {
+            String s = sArray[i];
+            if (hasPrefix && i == 0) {
+                // skip first chunk
+                continue;
+            }
+            if (hasPostFix && i == sArray.length - 1) {
+                // skip last chunk
+                continue;
+            }
+            if (i > 0) {
+                // upper case chunks' first character
+                String firstChar = s.substring(0, 1).toUpperCase();
+                s = firstChar + s.substring(1, s.length());
+            }
+            result += s;
+        }
+        // handling first character
+        if (firstCharToUpperCase) {
+            // upper case
+            String firstChar = result.substring(0, 1).toUpperCase();
+            result = firstChar + result.substring(1, result.length());
+        } else {
+            // lower case
+            String firstChar = result.substring(0, 1).toLowerCase();
+            result = firstChar + result.substring(1, result.length());
+        }
+        return result;
+    }
 }
