@@ -23,7 +23,6 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import hu.vanio.easydao.generator.PostgresJdbcType;
 import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydao.generator;
+package hu.vanio.easydao.modelbuilder;
 
 import java.util.HashMap;
 
