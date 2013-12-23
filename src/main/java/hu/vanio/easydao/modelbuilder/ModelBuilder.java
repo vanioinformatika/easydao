@@ -156,7 +156,7 @@ abstract class ModelBuilder implements IModelBuilder {
     protected Class getJavaType(String dbType) throws IllegalArgumentException {
         Class clazz = null;
         boolean found = false;
-        for (Entry<String, Class> e : PostgresJdbcType.MAP.entrySet()) {
+        for (Entry<String, Class> e : PostgreSqlJdbcType.MAP.entrySet()) {
             if (dbType.matches(e.getKey())) {
                 // found type
                 clazz = e.getValue();

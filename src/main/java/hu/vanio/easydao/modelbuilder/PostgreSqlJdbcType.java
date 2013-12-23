@@ -30,7 +30,7 @@ import java.util.HashMap;
  * @see http://www.postgresql.org/docs/current/static/datatype.html
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-final public class PostgresJdbcType {
+final public class PostgreSqlJdbcType {
 
     public static final HashMap<String, Class> MAP = new HashMap<>();
 
