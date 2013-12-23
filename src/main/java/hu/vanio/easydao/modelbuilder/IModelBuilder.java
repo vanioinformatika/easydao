@@ -24,7 +24,6 @@
 package hu.vanio.easydao.modelbuilder;
 
 import hu.vanio.easydao.model.Database;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -35,9 +34,6 @@ public interface IModelBuilder {
 
     /**
      * Build java model from database
-     * @param con database connection
-     * @param hasPrefix true, if table and field has contains prefixes
-     * @param hasPostfix true, if table and field has contains postfixes
      * @return database java model
      * @throws SQLException
      */
