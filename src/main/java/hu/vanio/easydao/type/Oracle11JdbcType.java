@@ -33,43 +33,5 @@ import java.util.HashMap;
  */
 final public class Oracle11JdbcType {
 
-    public static final HashMap<String, Class> MAP = new HashMap<>();
-
-    static {
-        MAP.put("bigint|int8", Long.class);
-        MAP.put("boolean", Boolean.class);
-        MAP.put("boolean\\[\\]", Boolean[].class);
-        MAP.put("bytea", Byte[].class);
-        MAP.put("char", String.class);
-        MAP.put("character", String.class);
-        MAP.put("character\\([\\d]*\\)", String.class);
-        MAP.put("character\\([\\d]*\\)\\[\\]", String[].class);
-        MAP.put("character\\[\\]", String[].class);
-        MAP.put("character varying", String.class);
-        MAP.put("character varying\\([\\d]*\\)", String.class);
-        MAP.put("character varying\\([\\d]*\\)\\[\\]", String[].class);
-        MAP.put("date", java.sql.Timestamp.class);
-        MAP.put("double precision|float8", Double.class);
-        MAP.put("integer|int|int4", Integer.class);
-        MAP.put("json", String.class);
-        MAP.put("number", Integer.class);
-        MAP.put("number\\([1-9]\\)", Integer.class);
-        MAP.put("number\\([1-9],[0]*\\)", Integer.class);
-        MAP.put("number\\([1][0-9]\\)", Long.class);
-        MAP.put("number\\([1][0-9]*,[0]\\)", Long.class);
-        MAP.put("number\\([\\d]*,[1-9]*\\)", Double.class);
-
-        MAP.put("number\\[\\]", Integer[].class);
-        MAP.put("number\\([1][0-9]\\)\\[\\]", Long[].class);
-        MAP.put("number\\([1-9]\\)\\[\\]", Integer[].class);
-        MAP.put("number\\([\\d]*,[\\d]*\\)\\[\\]", Double[].class);
-
-        MAP.put("timestamp without time zone", java.sql.Timestamp.class);
-        MAP.put("timestamp with time zone", java.sql.Timestamp.class);
-        MAP.put("timestamp", java.sql.Timestamp.class);
-        MAP.put("varchar2", String.class);
-        MAP.put("varchar2\\([\\d]*\\)", String.class);
-        MAP.put("uuid", String.class);
-        MAP.put("xml", String.class);
-    }
+    
 }

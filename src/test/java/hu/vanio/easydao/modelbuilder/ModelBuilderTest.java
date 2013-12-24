@@ -24,9 +24,6 @@
 package hu.vanio.easydao.modelbuilder;
 
 import hu.vanio.easydao.model.Field;
-import hu.vanio.easydao.model.Table;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -172,7 +169,7 @@ public class ModelBuilderTest {
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar = " + dbName + " -> " + result);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * FIXME: Test of getPrimaryKeyFieldNameList method, of class ModelBuilder.
      */
@@ -199,18 +196,5 @@ public class ModelBuilderTest {
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getJavaType method, of class ModelBuilder.
-     */
-    @Test
-    public void testGetJavaType_numeric142() {
-        System.out.println("testGetJavaType_numeric142");
-        String dbType = "numeric(14,2)";
-        ModelBuilder instance = new ModelBuilder(null, true, false, true, false, new PostgreSql9Config());
-        Class expResult = Double.class;
-        Class result = instance.getJavaType(dbType);
-        assertEquals(expResult, result);
     }
 }

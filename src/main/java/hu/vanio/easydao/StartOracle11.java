@@ -26,7 +26,6 @@ package hu.vanio.easydao;
 import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
 import hu.vanio.easydao.modelbuilder.Oracle11Config;
-import hu.vanio.easydao.modelbuilder.PostgreSql9Config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -43,9 +42,9 @@ public class StartOracle11 {
         DriverManager.registerDriver(new org.postgresql.Driver());
 
         // FIXME: read from configuration and move to Engine class
-        String url = "";
-        String username = "";
-        String password = "";
+        String url = "jdbc:oracle:thin:@10.128.2.82:1521:HOTDEV";
+        String username = "idtvt1";
+        String password = "idtvt1";
         boolean hasTablePrefix = false;
         boolean hasTablePostfix = false;
         boolean hasFieldPrefix = false;

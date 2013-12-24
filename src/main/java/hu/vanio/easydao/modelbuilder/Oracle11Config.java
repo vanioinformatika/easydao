@@ -23,14 +23,13 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import hu.vanio.easydao.type.Oracle11JdbcType;
 import java.util.HashMap;
 
 /**
  * PostgreSQL database selects.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class Oracle11Config implements Config {
+public class Oracle11Config extends Config {
 
     /* Sql query for table list, result: TABLE_NAME, COMMENTS fields */
     final String selectForTableList = "select ut.table_name as TABLE_NAME, tc.comments as COMMENTS"
@@ -59,6 +58,48 @@ public class Oracle11Config implements Config {
             + " t.CONSTRAINT_NAME = c.CONSTRAINT_NAME"
             + " order by c.position";
 
+    /* Data type mapping: database -> java */
+    public static final HashMap<String, Class> JAVA_TYPE_MAP = new HashMap<>();
+
+    // FIXME: creating oracle datatypes mappings
+    static {
+        JAVA_TYPE_MAP.put("bigint|int8", Long.class);
+        JAVA_TYPE_MAP.put("boolean", Boolean.class);
+        JAVA_TYPE_MAP.put("boolean\\[\\]", Boolean[].class);
+        JAVA_TYPE_MAP.put("bytea", Byte[].class);
+        JAVA_TYPE_MAP.put("char", String.class);
+        JAVA_TYPE_MAP.put("character", String.class);
+        JAVA_TYPE_MAP.put("character\\([\\d]*\\)", String.class);
+        JAVA_TYPE_MAP.put("character\\([\\d]*\\)\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("character\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("character varying", String.class);
+        JAVA_TYPE_MAP.put("character varying\\([\\d]*\\)", String.class);
+        JAVA_TYPE_MAP.put("character varying\\([\\d]*\\)\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("double precision|float8", Double.class);
+        JAVA_TYPE_MAP.put("integer|int|int4", Integer.class);
+        JAVA_TYPE_MAP.put("json", String.class);
+        JAVA_TYPE_MAP.put("number", Integer.class);
+        JAVA_TYPE_MAP.put("number\\([1-9]\\)", Integer.class);
+        JAVA_TYPE_MAP.put("number\\([1-9],[0]*\\)", Integer.class);
+        JAVA_TYPE_MAP.put("number\\([1][0-9]\\)", Long.class);
+        JAVA_TYPE_MAP.put("number\\([1][0-9]*,[0]\\)", Long.class);
+        JAVA_TYPE_MAP.put("number\\([\\d]*,[1-9]*\\)", Double.class);
+
+        JAVA_TYPE_MAP.put("number\\[\\]", Integer[].class);
+        JAVA_TYPE_MAP.put("number\\([1][0-9]\\)\\[\\]", Long[].class);
+        JAVA_TYPE_MAP.put("number\\([1-9]\\)\\[\\]", Integer[].class);
+        JAVA_TYPE_MAP.put("number\\([\\d]*,[\\d]*\\)\\[\\]", Double[].class);
+
+        JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("timestamp with time zone", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("varchar2", String.class);
+        JAVA_TYPE_MAP.put("varchar2\\([\\d]*\\)", String.class);
+        JAVA_TYPE_MAP.put("uuid", String.class);
+        JAVA_TYPE_MAP.put("xml", String.class);
+    }
+
     public Oracle11Config() {
     }
 
@@ -78,8 +119,8 @@ public class Oracle11Config implements Config {
     }
 
     @Override
-    public HashMap<String, Class> getJdbcTypeMapping() {
-        return Oracle11JdbcType.MAP;
+    public Class getJavaType(String dbType) throws IllegalArgumentException {
+        return convertToJavaType(JAVA_TYPE_MAP, dbType);
     }
 
 }

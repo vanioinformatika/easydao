@@ -24,35 +24,62 @@
 package hu.vanio.easydao.modelbuilder;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * database configuration for model builder
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public interface Config {
+abstract class Config {
+
+    /**
+     * Return java type of field.
+     * If you need, then override in descendants.
+     * @param typeMap database specific type map database type string (regular expression) -> java type.
+     * @param dbType database type string, i.e: numeric(10,2), date, timestamp
+     * @return Class java class of db field type
+     */
+    final protected Class convertToJavaType(HashMap<String, Class> typeMap, String dbType) throws IllegalArgumentException {
+        Class clazz = null;
+        boolean found = false;
+        for (Map.Entry<String, Class> e : typeMap.entrySet()) {
+            if (dbType.matches(e.getKey())) {
+                // found type
+                clazz = e.getValue();
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw new IllegalArgumentException("There is no Java type definiton for " + dbType + " database type!");
+        }
+        return clazz;
+    }
+
+    /**
+     * Return java type.
+     * @param dbType field type string from database
+     * @return java class
+     * @throws IllegalArgumentException java class not found for dbType
+     */
+    abstract public Class getJavaType(String dbType) throws IllegalArgumentException;
 
     /**
      * Sql query for table list, result: TABLE_NAME, COMMENT fields
      * @return SQL query, TABLE_NAME, COMMENT
      */
-    public String getSelectForTableList();
+    abstract public String getSelectForTableList();
 
     /**
      * Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
      * @return SQL query, COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
      */
-    public String getSelectForFieldList();
+    abstract public String getSelectForFieldList();
 
     /**
      * Sql query for primary key field name list, result: COLUMN_NAME
      * @return SQL query, COLUMN_NAME
      */
-    public String getSelectForPrimaryKeyFieldNameList();
-    
-    /**
-     * Return java type mapping hash map.
-     * @return java type mapping hash map.
-     */
-    public HashMap<String, Class> getJdbcTypeMapping();
+    abstract public String getSelectForPrimaryKeyFieldNameList();
 
 }

@@ -9,7 +9,7 @@ select a.attname as COLUMN_NAME,
     a.atthasdef as HAS_DEFAULT_VALUE,
     col_description(c.oid, a.attnum) as COMMENTS
 from pg_catalog.pg_class c, pg_catalog.pg_attribute a   
-where c.relname = 'cal_email_queue_item'   
+where c.relname = ?   
   and c.relkind = 'r'  
   and a.attrelid = c.oid  
   and a.attnum > 0   
@@ -22,7 +22,7 @@ SELECT
   format_type(pg_attribute.atttypid, pg_attribute.atttypmod) 
 FROM pg_index, pg_class, pg_attribute 
 WHERE 
-  pg_class.oid = 'cal_email_queue_item'::regclass AND
+  pg_class.oid = ?::regclass AND
   indrelid = pg_class.oid AND
   pg_attribute.attrelid = pg_class.oid AND 
   pg_attribute.attnum = any(pg_index.indkey)

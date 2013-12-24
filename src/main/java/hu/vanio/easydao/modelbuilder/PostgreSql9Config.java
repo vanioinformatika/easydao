@@ -23,16 +23,14 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import hu.vanio.easydao.type.PostgreSqlJdbcType;
 import java.util.HashMap;
 
 /**
  * PostgreSQL database selects.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class PostgreSql9Config implements Config {
-    
-        
+public class PostgreSql9Config extends Config {
+
     /* Sql query for table list, result: TABLE_NAME, COMMENTS fields */
     final String selectForTableList = "select c.relname as TABLE_NAME, obj_description(c.oid) as COMMENTS from pg_catalog.pg_class c"
             + " where c.relname like '%' and c.relname not like 'sql_%' and c.relname not like 'pg_%' and c.relkind = 'r' order by TABLE_NAME;";
@@ -61,6 +59,43 @@ public class PostgreSql9Config implements Config {
             + "  and cn.conrelid = c.oid and cn.contype = 'p' "
             + "  and a.attnum = any(cn.conkey)";
 
+    /* Data type mapping: database -> java */
+    public static final HashMap<String, Class> JAVA_TYPE_MAP = new HashMap<>();
+
+    static {
+        JAVA_TYPE_MAP.put("boolean", Boolean.class);
+        JAVA_TYPE_MAP.put("boolean\\[\\]", Boolean[].class);
+        JAVA_TYPE_MAP.put("bytea", Byte[].class);
+        JAVA_TYPE_MAP.put("character", String.class);
+        JAVA_TYPE_MAP.put("character\\([\\d]+\\)", String.class);
+        JAVA_TYPE_MAP.put("character\\([\\d]+\\)\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("character\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("character varying", String.class);
+        JAVA_TYPE_MAP.put("character varying\\([\\d]+\\)", String.class);
+        JAVA_TYPE_MAP.put("character varying\\([\\d]+\\)\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("double precision|float8", Double.class);
+        JAVA_TYPE_MAP.put("integer|int|int4|smallint|smallserial|serial", Integer.class);
+        JAVA_TYPE_MAP.put("bigint|int8|bigserial|money", Long.class);
+        JAVA_TYPE_MAP.put("json", String.class);
+        JAVA_TYPE_MAP.put("numeric", Integer.class);
+        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)", Integer.class);
+        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)", Integer.class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-9]\\)", Long.class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-9]+,[0]\\)", Long.class);
+        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)", Double.class);
+        JAVA_TYPE_MAP.put("numeric\\[\\]", Integer[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-9]\\)\\[\\]", Long[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", Integer[].class);
+        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[\\d]+\\)\\[\\]", Double[].class);
+        JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("timestamp with time zone", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("text", String.class);
+        JAVA_TYPE_MAP.put("uuid", String.class);
+        JAVA_TYPE_MAP.put("xml", String.class);
+    }
+
     public PostgreSql9Config() {
     }
 
@@ -80,8 +115,7 @@ public class PostgreSql9Config implements Config {
     }
 
     @Override
-    public HashMap<String, Class> getJdbcTypeMapping() {
-        return PostgreSqlJdbcType.MAP;
+    public Class getJavaType(String dbType) throws IllegalArgumentException {
+        return convertToJavaType(JAVA_TYPE_MAP, dbType);
     }
-
 }

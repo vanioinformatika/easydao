@@ -23,7 +23,6 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import hu.vanio.easydao.type.PostgreSqlJdbcType;
 import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
@@ -158,7 +157,7 @@ public class ModelBuilder {
                     String dbType = rs.getString("DATA_TYPE");
                     String comment = rs.getString("COMMENTS");
                     String javaName = createJavaName(dbName, false, hasFieldPrefix, hasFieldPostfix);
-                    Class javaType = getJavaType(dbType);
+                    Class javaType = config.getJavaType(dbType);
                     Field field = new Field(primaryKey, nullable, array, dbName, dbType, comment, javaName, javaType);
 
                     System.out.println(field.toString());
@@ -214,25 +213,4 @@ public class ModelBuilder {
         return result;
     }
 
-    /**
-     * Return java type from a hashmap by dbtype string.
-     * @param dbType database type string
-     * @return java class type
-     */
-    final protected Class getJavaType(String dbType) throws IllegalArgumentException {
-        Class clazz = null;
-        boolean found = false;
-        for (Entry<String, Class> e : config.getJdbcTypeMapping().entrySet()) {
-            if (dbType.matches(e.getKey())) {
-                // found type
-                clazz = e.getValue();
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            throw new IllegalArgumentException("There is no Java type definiton for " + dbType + " database type!");
-        }
-        return clazz;
-    }
 }
