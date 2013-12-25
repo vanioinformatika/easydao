@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Database meta data
+ * Database java representation.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class Database {
