@@ -34,8 +34,8 @@ public class Oracle11Config extends Config {
 
     /* Sql query for table list, result: TABLE_NAME, COMMENTS fields */
     final String selectForTableList = "select ut.table_name as TABLE_NAME, tc.comments as COMMENTS"
-            + " from USER_TABLES ut, USER_TAB_COMMENTS tc"
-            + " where tc.TABLE_NAME = ut.TABLE_NAME";
+            + " from user_tables ut, user_tab_comments tc"
+            + " where tc.table_name = ut.table_name and ut.table_name not like '%$%'";
     /* Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENTS */
     final String selectForFieldList = "select utc.column_name as COLUMN_NAME,"
             + " decode(utc.char_used, 'C', utc.char_length, utc.data_length) as DATA_LENGTH,"
@@ -53,10 +53,10 @@ public class Oracle11Config extends Config {
             + " where utc.table_name = ? and ucc.table_name = utc.table_name and ucc.column_name = utc.column_name";
     /* Sql query for primary key field name list, result: COLUMN_NAME */
     final String selectForPrimaryKeyFieldNameList = "select COLUMN_NAME"
-            + " from USER_CONS_COLUMNS c, USER_CONSTRAINTS t"
-            + " where c.TABLE_NAME=upper(?) and"
-            + " t.CONSTRAINT_TYPE = 'P' and"
-            + " t.CONSTRAINT_NAME = c.CONSTRAINT_NAME"
+            + " from user_cons_columns c, user_constraints t"
+            + " where c.table_name=upper(?) and"
+            + " t.constraint_type = 'P' and"
+            + " t.constraint_name = c.constraint_name"
             + " order by c.position";
 
     /* Data type mapping: database -> java */
@@ -78,7 +78,7 @@ public class Oracle11Config extends Config {
         JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("double precision|float8", Double.class);
 
-        JAVA_TYPE_MAP.put("number|numeric", Integer.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\(,\\)", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9]\\)", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9],[0]\\)", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8]\\)", Long.class);
