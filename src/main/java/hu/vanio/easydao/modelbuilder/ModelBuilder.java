@@ -83,7 +83,7 @@ public class ModelBuilder {
         Database database = null;
         List<Table> tableList = this.getTableList();
         for (Table table : tableList) {
-            table.setFieldList(this.getFieldList(table.getDbName()));
+            table.setFieldList(this.getFieldList(table));
         }
         return database;
     }
@@ -138,12 +138,13 @@ public class ModelBuilder {
 
     /**
      * Load field data for a table, and set its data.
-     * @param tableName table name
+     * @param table table
      * @return list of fields of table
      * @throws SQLException
      */
-    protected List<Field> getFieldList(String tableName) throws SQLException {
-        System.out.println("\ngetFieldList of " + tableName.toUpperCase());
+    protected List<Field> getFieldList(Table table) throws SQLException {
+        String tableName = table.getDbName();
+        System.out.println("\ngetFieldList of " + table.getJavaName());
         List<Field> fieldList = new ArrayList<>();
         try (PreparedStatement ps = con.prepareStatement(config.getSelectForFieldList())) {
             ps.setString(1, tableName);

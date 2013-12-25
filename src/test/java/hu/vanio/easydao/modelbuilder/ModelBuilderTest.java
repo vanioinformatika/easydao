@@ -24,6 +24,7 @@
 package hu.vanio.easydao.modelbuilder;
 
 import hu.vanio.easydao.model.Field;
+import hu.vanio.easydao.model.Table;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -192,7 +193,9 @@ public class ModelBuilderTest {
         String tableName = "";
         ModelBuilder instance = null;
         List<Field> expResult = null;
-        List<Field> result = instance.getFieldList(tableName);
+        Table table = new Table("TE_TEST", "Test table data.", "Test", null);
+        
+        List<Field> result = instance.getFieldList(table);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
