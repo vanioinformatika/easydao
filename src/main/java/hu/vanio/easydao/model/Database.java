@@ -80,4 +80,11 @@ public class Database {
         this.modelCreationDate = modelCreationDate;
     }
 
+    /**
+     * @return the tableList
+     */
+    public List<Table> getTableList() {
+        return tableList;
+    }
+
 }

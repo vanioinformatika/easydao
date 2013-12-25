@@ -25,6 +25,7 @@ package hu.vanio.easydao.modelbuilder;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Oracle 11 configuration.
@@ -60,7 +61,7 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             + " order by c.position";
 
     /* Data type mapping: database -> java */
-    public static final HashMap<String, Class> JAVA_TYPE_MAP = new HashMap<>();
+    public static final Map<String, Class> JAVA_TYPE_MAP = new HashMap<>();
 
     /* see: http://docs.oracle.com/cd/B19306_01/java.102/b14188/datamap.htm */
     static {
@@ -97,14 +98,14 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
     }
 
     /* Replacement map for tables. Empty string value means it has been skipped from the model. */
-    public static final HashMap<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
+    public static final Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
 
     static {
         REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME");
     }
 
     /* Replacement map for fields. Empty string value means it has been skipped from the model. */
-    public static final HashMap<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
+    public static final Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
 
     static {
         REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME");
@@ -134,12 +135,12 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
     }
 
     @Override
-    public HashMap<String, String> getReplacementNameOfTables() {
+    public Map<String, String> getReplacementNameOfTables() {
         return REPLACEMENT_TABLE_MAP;
     }
 
     @Override
-    public HashMap<String, String> getReplacementNameOfFields() {
+    public Map<String, String> getReplacementNameOfFields() {
         return REPLACEMENT_FIELD_MAP;
     }
 

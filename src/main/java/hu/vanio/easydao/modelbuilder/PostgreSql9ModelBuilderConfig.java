@@ -24,6 +24,7 @@
 package hu.vanio.easydao.modelbuilder;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * PostgreSQL 9 configuration.
@@ -60,7 +61,7 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
             + "  and a.attnum = any(cn.conkey)";
 
     /* Data type mapping: database -> java */
-    public static final HashMap<String, Class> JAVA_TYPE_MAP = new HashMap<>();
+    public static final Map<String, Class> JAVA_TYPE_MAP = new HashMap<>();
 
     /* see: http://www.postgresql.org/docs/current/static/datatype.html */
     static {
@@ -107,14 +108,14 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
     }
 
     /* Replacement map for tables. Empty string value means it has been skipped from the model. */
-    public static final HashMap<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
+    public static final Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
 
     static {
         REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME");
     }
 
     /* Replacement map for fields. Empty string value means it has been skipped from the model. */
-    public static final HashMap<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
+    public static final Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
 
     static {
         REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME");
@@ -144,12 +145,12 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
     }
 
     @Override
-    public HashMap<String, String> getReplacementNameOfTables() {
+    public Map<String, String> getReplacementNameOfTables() {
         return REPLACEMENT_TABLE_MAP;
     }
 
     @Override
-    public HashMap<String, String> getReplacementNameOfFields() {
+    public Map<String, String> getReplacementNameOfFields() {
         return REPLACEMENT_FIELD_MAP;
     }
 }

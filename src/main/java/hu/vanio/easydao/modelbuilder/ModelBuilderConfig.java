@@ -23,7 +23,6 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +38,7 @@ class ModelBuilderConfig {
      * @param dbType database type string, i.e: numeric(10,2), date, timestamp
      * @return Class java class of db field type
      */
-    final protected Class convertToJavaType(HashMap<String, Class> typeMap, String dbType) throws IllegalArgumentException {
+    final protected Class convertToJavaType(Map<String, Class> typeMap, String dbType) throws IllegalArgumentException {
         Class clazz = null;
         boolean found = false;
         for (Map.Entry<String, Class> e : typeMap.entrySet()) {
@@ -63,7 +62,7 @@ class ModelBuilderConfig {
      * @param dbName database table or field name
      * @return replacementMap name map for the table or field
      */
-    final protected String getReplacementName(HashMap<String, String> replacementMap, String dbName) {
+    final protected String getReplacementName(Map<String, String> replacementMap, String dbName) {
         String rn = replacementMap.get(dbName);
         if (rn == null) {
             rn = replacementMap.get(dbName.toLowerCase());

@@ -30,6 +30,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
 import hu.vanio.easydao.model.EngineConfiguration;
+import hu.vanio.easydao.model.Table;
 import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
 import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
@@ -40,6 +41,9 @@ import java.io.Writer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Generate model and Dao from database based on configuration.
@@ -48,10 +52,10 @@ import java.sql.SQLException;
 public class Engine {
 
     /* Application name */
-    private String name;
+    private String name = "EasyDao";
 
     /* Application version */
-    private String version;
+    private String version = "0.0.0-SNAPSHOT";
 
     private EngineConfiguration engineConf;
 
@@ -60,6 +64,10 @@ public class Engine {
     /** Freemarker configuration */
     private Configuration cfg;
 
+    /**
+     * Init engine configuration.
+     * @throws SQLException
+     */
     public Engine() throws SQLException {
         this.initFreemarkerConfiguration();
         // FIXME: read from configuration
@@ -74,6 +82,7 @@ public class Engine {
      */
     public void execute() throws IOException, SQLException, TemplateException {
 
+        // build java model of database
         try (Connection con = DriverManager.getConnection(
                 engineConf.getUrl(),
                 engineConf.getUsername(),
@@ -87,9 +96,27 @@ public class Engine {
                     mdc);
             engineConf.setDatabase(modelBuilder.build());
         }
+
+        // create java source codes: model and dao
+        generateModelClasses();
         Template temp = cfg.getTemplate("test.ftl");
         Writer out = new OutputStreamWriter(System.out);
         temp.process(engineConf, out);
+    }
+
+    private void generateModelClasses() throws IOException, TemplateException {
+        // TODO: generateLicence();
+        List<Table> tableList = engineConf.getDatabase().getTableList();
+        for (Table table : tableList) {
+            Template temp = cfg.getTemplate("model.ftl");
+            Writer out = new OutputStreamWriter(System.out);
+            Map<String, Object> m = new HashMap<>();
+            m.put("t", table);
+            m.put("e", engineConf);
+            m.put("appname", name);
+            m.put("appversion", version);
+            temp.process(m, out);
+        }
     }
 
     /**

@@ -23,7 +23,7 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Interface for model builder configuration.
@@ -35,13 +35,13 @@ public interface IModelBuilderConfig {
      * Return replacement map of table names.
      * @return map
      */
-    public HashMap<String, String> getReplacementNameOfTables();
+    public Map<String, String> getReplacementNameOfTables();
 
     /**
      * Return replacement map of field names.
      * @return map
      */
-    public HashMap<String, String> getReplacementNameOfFields();
+    public Map<String, String> getReplacementNameOfFields();
 
     /**
      * Return java type.
