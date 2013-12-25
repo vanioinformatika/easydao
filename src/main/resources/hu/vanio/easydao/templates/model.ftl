@@ -38,7 +38,7 @@ public class ${t.javaName} implements java.io.Serializable {
     /**
      * ${field.comment}
      * <br>${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if>
-     * @return ${field.javaName} value
+     * @return ${field.comment}
      */
     public ${field.javaTypeAsString} get${field.javaName?cap_first}() {
         return this.${field.javaName};
@@ -47,7 +47,7 @@ public class ${t.javaName} implements java.io.Serializable {
     /**
      * ${field.comment}
      * <br>${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if>
-     * @param ${field.javaName} new value
+     * @param ${field.comment}
      */
     public void set${field.javaName?cap_first}(${field.javaTypeAsString} ${field.javaName}) {
         return this.${field.javaName} = ${field.javaName};
