@@ -79,16 +79,25 @@ public class PostgreSql9Config extends Config {
         JAVA_TYPE_MAP.put("integer|int|int4|smallint|smallserial|serial", Integer.class);
         JAVA_TYPE_MAP.put("bigint|int8|bigserial|money", Long.class);
         JAVA_TYPE_MAP.put("json", String.class);
+        
         JAVA_TYPE_MAP.put("numeric", Integer.class);
         JAVA_TYPE_MAP.put("numeric\\([1-9]\\)", Integer.class);
         JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)", Integer.class);
         JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)", Long.class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8]+,[0]\\)", Long.class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)", Long.class);
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)", String.class);
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class);
         JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)", Double.class);
+        
         JAVA_TYPE_MAP.put("numeric\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)\\[\\]", Long[].class);
         JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[\\d]+\\)\\[\\]", Double[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)\\[\\]", Integer[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)\\[\\]", Long[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)\\[\\]", Long[].class);
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)\\[\\]", String[].class);
+        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)\\[\\]", Double[].class);
+
         JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("timestamp with time zone", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class);
