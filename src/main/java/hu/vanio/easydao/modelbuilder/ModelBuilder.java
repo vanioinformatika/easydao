@@ -40,8 +40,10 @@ import java.util.List;
  */
 public class ModelBuilder {
 
-    /** There is no comment in database */
+    /* There is no comment in database */
     final public String EMPTY_COMMENT = "FIXME: Warning: There is no comment in database!";
+    /* It has been skipped from the modell */
+    final public String SKIPPED_FROM_MODEL = "**************************** SKIPPED FROM MODEL! Check replacement lists. ****************************";
 
     /* Database connection */
     protected Connection con;
@@ -55,6 +57,8 @@ public class ModelBuilder {
     protected boolean hasFieldPostfix;
     /* database configuration for model builder */
     protected ModelBuilderConfig config;
+    /* primary key field name list */
+    private List<String> pkFieldNameList = new ArrayList<>();
 
     /**
      * Model builder constructor.
@@ -79,11 +83,17 @@ public class ModelBuilder {
         this.config = config;
     }
 
+    /**
+     * Build database java model from database.
+     * @return database java model
+     * @throws SQLException
+     */
     final public Database build() throws SQLException {
-        Database database = null;
+        Database database = new Database();
         List<Table> tableList = this.getTableList();
         for (Table table : tableList) {
             table.setFieldList(this.getFieldList(table));
+            database.addTable(table);
         }
         return database;
     }
@@ -105,7 +115,15 @@ public class ModelBuilder {
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
-                    String javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
+                    String javaName = config.getReplacementName(config.getReplacementNameOfTables(), tableName);
+                    if ("".equals(javaName)) {
+                        // if replacement name is empty string, then table has been skipped from the model
+                        System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
+                        continue;
+                    }
+                    if (javaName == null) {
+                        javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
+                    }
                     Table table = new Table(tableName, tableComment, javaName, null);
 
                     System.out.println("table name: " + tableName + " - " + javaName + " = " + tableComment);
@@ -123,17 +141,20 @@ public class ModelBuilder {
      * @return List of name of primary keys.
      */
     protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException {
-        List<String> fieldNameList = new ArrayList<>();
+        if (!pkFieldNameList.isEmpty()) {
+            // caching
+            return pkFieldNameList;
+        }
         try (PreparedStatement ps = con.prepareStatement(config.getSelectForPrimaryKeyFieldNameList())) {
             ps.setString(1, tableName);
             try (ResultSet rs = ps.executeQuery();) {
                 while (rs.next()) {
                     String fieldName = rs.getString("COLUMN_NAME");
-                    fieldNameList.add(fieldName);
+                    pkFieldNameList.add(fieldName);
                 }
             }
         }
-        return fieldNameList;
+        return pkFieldNameList;
     }
 
     /**
@@ -152,13 +173,22 @@ public class ModelBuilder {
                 while (rs.next()) {
                     boolean nullable = !rs.getBoolean("NOT_NULL");
                     boolean array = rs.getInt("ARRAY_DIM_SIZE") > 0;
-                    String dbName = rs.getString("COLUMN_NAME");
-                    boolean primaryKey = getPrimaryKeyFieldNameList(tableName).indexOf(dbName) >= 0;
+                    String fieldName = rs.getString("COLUMN_NAME");
+                    boolean primaryKey = getPrimaryKeyFieldNameList(tableName).indexOf(fieldName) >= 0;
                     String dbType = rs.getString("DATA_TYPE");
                     String comment = rs.getString("COMMENTS");
-                    String javaName = createJavaName(dbName, false, hasFieldPrefix, hasFieldPostfix);
+
+                    String javaName = config.getReplacementName(config.getReplacementNameOfFields(), tableName + "." + fieldName);
+                    if ("".equals(javaName)) {
+                        // if replacement name is empty string, then field has been skipped from the model
+                        System.out.println("field name: " + tableName + "." + fieldName + " " + SKIPPED_FROM_MODEL);
+                        continue;
+                    }
+                    if (javaName == null) {
+                        javaName = createJavaName(fieldName, false, hasFieldPrefix, hasFieldPostfix);
+                    }
                     Class javaType = config.getJavaType(dbType);
-                    Field field = new Field(primaryKey, nullable, array, dbName, dbType, comment, javaName, javaType);
+                    Field field = new Field(primaryKey, nullable, array, fieldName, dbType, comment, javaName, javaType);
 
                     System.out.println(field.toString());
 
@@ -173,8 +203,8 @@ public class ModelBuilder {
      * Create Java name from database's name
      * @param dbName database's name
      * @param firstCharToUpperCase set first result char to uppercase, i.e: class name
-     * @param hasPrefix dbName has prefix
-     * @param hasPostFix dbName has postfix
+     * @param hasPrefix fieldName has prefix
+     * @param hasPostFix fieldName has postfix
      * @return Java name based on java convention
      */
     final protected String createJavaName(String dbName,
@@ -202,7 +232,7 @@ public class ModelBuilder {
                 result += s;
             }
         } else {
-            // dbName does not contain _ character
+            // fieldName does not contain _ character
             result = dbName.toLowerCase();
         }
         // handling first character

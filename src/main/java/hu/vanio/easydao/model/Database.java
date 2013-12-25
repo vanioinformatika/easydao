@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package hu.vanio.easydao.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +31,20 @@ import java.util.List;
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class Database {
-    
+
     /** Database's tables */
     private List<Table> tableList;
+
+    /**
+     * Add table to database model.
+     * @param table table model
+     */
+    public void addTable(Table table) {
+        if (tableList == null) {
+            tableList = new ArrayList<>();
+        }
+        tableList.add(table);
+    }
 
 //<editor-fold defaultstate="collapsed" desc="gettersetter">
     /**
@@ -42,7 +53,7 @@ public class Database {
     public List<Table> getTableList() {
         return tableList;
     }
-    
+
     /**
      * @param tableList the tableList to set
      */
@@ -50,5 +61,5 @@ public class Database {
         this.tableList = tableList;
     }
 //</editor-fold>
-    
+
 }

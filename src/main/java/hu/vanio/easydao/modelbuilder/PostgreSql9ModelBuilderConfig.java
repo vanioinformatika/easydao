@@ -79,7 +79,7 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig {
         JAVA_TYPE_MAP.put("integer|int|int4|smallint|smallserial|serial", Integer.class);
         JAVA_TYPE_MAP.put("bigint|int8|bigserial|money", Long.class);
         JAVA_TYPE_MAP.put("json", String.class);
-        
+
         JAVA_TYPE_MAP.put("numeric", Integer.class);
         JAVA_TYPE_MAP.put("numeric\\([1-9]\\)", Integer.class);
         JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)", Integer.class);
@@ -88,7 +88,7 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig {
         JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)", String.class);
         JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class);
         JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)", Double.class);
-        
+
         JAVA_TYPE_MAP.put("numeric\\[\\]", Integer[].class);
         JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", Integer[].class);
         JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)\\[\\]", Integer[].class);
@@ -104,6 +104,20 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig {
         JAVA_TYPE_MAP.put("text", String.class);
         JAVA_TYPE_MAP.put("uuid", String.class);
         JAVA_TYPE_MAP.put("xml", String.class);
+    }
+
+    /* Replacement map for tables. Empty string value means it has been skipped from the model. */
+    public static final HashMap<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
+
+    static {
+        REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME");
+    }
+
+    /* Replacement map for fields. Empty string value means it has been skipped from the model. */
+    public static final HashMap<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
+
+    static {
+        REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME");
     }
 
     public PostgreSql9ModelBuilderConfig() {
@@ -127,5 +141,15 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig {
     @Override
     public Class getJavaType(String dbType) throws IllegalArgumentException {
         return convertToJavaType(JAVA_TYPE_MAP, dbType);
+    }
+
+    @Override
+    public HashMap<String, String> getReplacementNameOfTables() {
+        return REPLACEMENT_TABLE_MAP;
+    }
+
+    @Override
+    public HashMap<String, String> getReplacementNameOfFields() {
+        return REPLACEMENT_FIELD_MAP;
     }
 }

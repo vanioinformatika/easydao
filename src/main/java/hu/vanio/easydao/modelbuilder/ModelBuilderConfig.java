@@ -57,6 +57,36 @@ abstract class ModelBuilderConfig {
     }
 
     /**
+     * Return replacement name of table or field name.
+     * You must use it, when database table names does not always use table or field name convention,
+     * i.e.: CUS_CUSTOMER (good), CUS_ORDER (good), CSTATISTIC (it is a wrong table name declaration).
+     * @param dbName database table or field name
+     * @return replacementMap name map for the table or field
+     */
+    final protected String getReplacementName(HashMap<String, String> replacementMap, String dbName) {
+        String rn = replacementMap.get(dbName);
+        if (rn == null) {
+            rn = replacementMap.get(dbName.toLowerCase());
+            if (rn == null) {
+                replacementMap.get(dbName.toUpperCase());
+            }
+        }
+        return rn;
+    }
+
+    /**
+     * Return replacement map of table names.
+     * @return map
+     */
+    abstract public HashMap<String, String> getReplacementNameOfTables();
+
+    /**
+     * Return replacement map of field names.
+     * @return map
+     */
+    abstract public HashMap<String, String> getReplacementNameOfFields();
+
+    /**
      * Return java type.
      * @param dbType field type string from database
      * @return java class
