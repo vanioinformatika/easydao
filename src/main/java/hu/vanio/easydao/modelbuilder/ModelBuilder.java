@@ -107,9 +107,9 @@ public class ModelBuilder {
                     }
                     String javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
                     Table table = new Table(tableName, tableComment, javaName, null);
-                    
+
                     System.out.println("table name: " + tableName + " - " + javaName + " = " + tableComment);
-                    
+
                     tableList.add(table);
                 }
             }
@@ -181,23 +181,29 @@ public class ModelBuilder {
             boolean firstCharToUpperCase,
             boolean hasPrefix,
             boolean hasPostFix) {
-        String[] sArray = dbName.toLowerCase().split("_");
+
         String result = "";
-        for (int i = 0; i < sArray.length; i++) {
-            String s = sArray[i];
-            if (hasPrefix && i == 0) {
-                // skip first chunk
-                continue;
+        if (dbName.indexOf("_") > -1) {
+            String[] sArray = dbName.toLowerCase().split("_");
+            for (int i = 0; i < sArray.length; i++) {
+                String s = sArray[i];
+                if (hasPrefix && i == 0) {
+                    // skip first chunk
+                    continue;
+                }
+                if (hasPostFix && i == sArray.length - 1) {
+                    // skip last chunk
+                    continue;
+                }
+                if (i > 0) {
+                    // upper case chunks' first character
+                    s = changeFirstCharTo(CHAR_CASE_TYPE.UPPERCASE, s);
+                }
+                result += s;
             }
-            if (hasPostFix && i == sArray.length - 1) {
-                // skip last chunk
-                continue;
-            }
-            if (i > 0) {
-                // upper case chunks' first character
-                s = changeFirstCharTo(CHAR_CASE_TYPE.UPPERCASE, s);
-            }
-            result += s;
+        } else {
+            // dbName does not contain _ character
+            result = dbName.toLowerCase();
         }
         // handling first character
         if (firstCharToUpperCase) {

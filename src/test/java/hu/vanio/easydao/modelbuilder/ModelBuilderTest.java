@@ -172,6 +172,21 @@ public class ModelBuilderTest {
     }
 
     /**
+     * Test of createJavaName method with prefix BUT ther is no prefix in database name, of class ModelBuilder.
+     * This test for table's field name.
+     */
+    @Test
+    public void testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName() {
+        System.out.println("testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName");
+        String dbName = "CUSTOMER";
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        String expResult = "Customer";
+        String result = instance.createJavaName(dbName, true, true, true);
+        System.out.println("testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName = " + dbName + " -> " + result);
+        assertEquals(expResult, result);
+    }
+
+    /**
      * FIXME: Test of getPrimaryKeyFieldNameList method, of class ModelBuilder.
      */
     public void testGetPrimaryKeyFieldNameList() throws Exception {
@@ -194,7 +209,7 @@ public class ModelBuilderTest {
         ModelBuilder instance = null;
         List<Field> expResult = null;
         Table table = new Table("TE_TEST", "Test table data.", "Test", null);
-        
+
         List<Field> result = instance.getFieldList(table);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
