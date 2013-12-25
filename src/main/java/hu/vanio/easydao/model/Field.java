@@ -55,6 +55,14 @@ public class Field {
                 + ", primaryKey=" + primaryKey + ", nullable=" + nullable + ", array=" + array
                 + ", comment=" + comment + "}";
     }
+    
+    /**
+     * Return javaType as string.
+     * @return javaType as string 
+     */
+    public String getJavaTypeAsString() {
+        return this.javaType.getSimpleName();
+    }
 
     /**
      * @return the primaryKey
