@@ -26,7 +26,7 @@ package hu.vanio.easydao.modelbuilder;
 import java.util.HashMap;
 
 /**
- * PostgreSQL database selects.
+ * PostgreSQL 9 configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class PostgreSql9Config extends Config {
@@ -62,6 +62,7 @@ public class PostgreSql9Config extends Config {
     /* Data type mapping: database -> java */
     public static final HashMap<String, Class> JAVA_TYPE_MAP = new HashMap<>();
 
+    /* see: http://www.postgresql.org/docs/current/static/datatype.html */
     static {
         JAVA_TYPE_MAP.put("boolean", Boolean.class);
         JAVA_TYPE_MAP.put("boolean\\[\\]", Boolean[].class);
