@@ -82,11 +82,11 @@ public class PostgreSql9Config extends Config {
         JAVA_TYPE_MAP.put("numeric", Integer.class);
         JAVA_TYPE_MAP.put("numeric\\([1-9]\\)", Integer.class);
         JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)", Integer.class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-9]\\)", Long.class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-9]+,[0]\\)", Long.class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)", Long.class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8]+,[0]\\)", Long.class);
         JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)", Double.class);
         JAVA_TYPE_MAP.put("numeric\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-9]\\)\\[\\]", Long[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)\\[\\]", Long[].class);
         JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", Integer[].class);
         JAVA_TYPE_MAP.put("numeric\\([\\d]+,[\\d]+\\)\\[\\]", Double[].class);
         JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class);

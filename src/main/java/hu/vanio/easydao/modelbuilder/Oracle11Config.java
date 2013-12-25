@@ -80,8 +80,8 @@ public class Oracle11Config extends Config {
         JAVA_TYPE_MAP.put("number|numeric", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9]\\)", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9],[0]*\\)", Integer.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-9]\\)", Long.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-9]*,[0]\\)", Long.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8]\\)", Long.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8]*,[0]\\)", Long.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([\\d]*,[1-9]*\\)", Double.class);
 
         JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
