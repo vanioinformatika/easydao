@@ -50,7 +50,6 @@ public class Database {
             tableList = new ArrayList<>();
         }
         tableList.add(table);
-        Ugyved u = new Ugyved();
     }
 
     /**
