@@ -79,7 +79,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPrefix() {
         System.out.println("testCreateJavaName_SimpleString");
         String dbName = "CUS_CUSTOMER";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, false);
         System.out.println("testCreateJavaName_SimpleString = " + dbName + " -> " + result);
@@ -93,7 +93,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPostfix() {
         System.out.println("testCreateJavaName_StringWithPostfix");
         String dbName = "CUSTOMER_CUS";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, true);
         System.out.println("testCreateJavaName_StringWithPostfix = " + dbName + " -> " + result);
@@ -107,7 +107,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_XXX";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -121,7 +121,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -135,7 +135,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_MoreStringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER_ORDERS";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -149,7 +149,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_MoreStringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_ORDERS_ORD";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -164,7 +164,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar() {
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar");
         String dbName = "CUS_CUSTOMER_ORDERS_LIST_ORD";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "customerOrdersList";
         String result = instance.createJavaName(dbName, false, true, true);
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar = " + dbName + " -> " + result);
@@ -179,7 +179,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName() {
         System.out.println("testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName");
         String dbName = "CUSTOMER";
-        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9Config());
+        ModelBuilder instance = new ModelBuilder(null, true, true, true, true, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName = " + dbName + " -> " + result);

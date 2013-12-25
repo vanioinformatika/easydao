@@ -27,10 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * database configuration for model builder
+ * Database model builder configuration for model builder
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-abstract class Config {
+abstract class ModelBuilderConfig {
 
     /**
      * Return java type of field.

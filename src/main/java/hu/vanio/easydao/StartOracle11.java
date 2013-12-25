@@ -25,7 +25,7 @@ package hu.vanio.easydao;
 
 import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
-import hu.vanio.easydao.modelbuilder.Oracle11Config;
+import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -45,14 +45,14 @@ public class StartOracle11 {
         String url = "jdbc:oracle:thin:@10.128.2.82:1521:HOTDEV";
         String username = "idtvt1";
         String password = "idtvt1";
-        boolean hasTablePrefix = false;
+        boolean hasTablePrefix = true;
         boolean hasTablePostfix = false;
-        boolean hasFieldPrefix = false;
+        boolean hasFieldPrefix = true;
         boolean hasFieldPostfix = false;
 
         try (Connection con = DriverManager.getConnection(url, username, password);) {
             // Building java model from database metadata
-            ModelBuilder modelBuilder = new ModelBuilder(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix, new Oracle11Config());
+            ModelBuilder modelBuilder = new ModelBuilder(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix, new Oracle11ModelBuilderConfig());
             // FIXME: hasPostfix and hasPrefix comes from configuration 
             Database database = modelBuilder.build();
         } finally {

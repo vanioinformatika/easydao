@@ -54,7 +54,7 @@ public class ModelBuilder {
     /* true, if table has postfix */
     protected boolean hasFieldPostfix;
     /* database configuration for model builder */
-    protected Config config;
+    protected ModelBuilderConfig config;
 
     /**
      * Model builder constructor.
@@ -70,7 +70,7 @@ public class ModelBuilder {
             boolean hasTablePostfix,
             boolean hasFieldPrefix,
             boolean hasFieldPostfix,
-            Config config) {
+            ModelBuilderConfig config) {
         this.con = con;
         this.hasTablePrefix = hasTablePrefix;
         this.hasTablePostfix = hasTablePostfix;

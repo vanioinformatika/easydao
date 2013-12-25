@@ -30,7 +30,7 @@ import java.util.HashMap;
  * Oracle 11 configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class Oracle11Config extends Config {
+public class Oracle11ModelBuilderConfig extends ModelBuilderConfig {
 
     /* Sql query for table list, result: TABLE_NAME, COMMENTS fields */
     final String selectForTableList = "select ut.table_name as TABLE_NAME, tc.comments as COMMENTS"
@@ -96,7 +96,7 @@ public class Oracle11Config extends Config {
         JAVA_TYPE_MAP.put("varray", java.sql.Array.class);
     }
 
-    public Oracle11Config() {
+    public Oracle11ModelBuilderConfig() {
     }
 
     @Override

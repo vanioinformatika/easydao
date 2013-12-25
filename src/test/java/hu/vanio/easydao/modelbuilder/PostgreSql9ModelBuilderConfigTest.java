@@ -42,11 +42,11 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 @RunWith(Parameterized.class)
-public class PostgreSql9ConfigTest {
+public class PostgreSql9ModelBuilderConfigTest {
 
     private TestParams testParam;
 
-    public PostgreSql9ConfigTest(TestParams testParam) {
+    public PostgreSql9ModelBuilderConfigTest(TestParams testParam) {
         this.testParam = testParam;
     }
 
@@ -163,11 +163,11 @@ public class PostgreSql9ConfigTest {
     }
 
     /**
-     * Test of getSelectForPrimaryKeyFieldNameList method, of class PostgreSql9Config.
+     * Test of getSelectForPrimaryKeyFieldNameList method, of class PostgreSql9ModelBuilderConfig.
      */
     @Test
     public void testGetJavaType() {
-        PostgreSql9Config instance = new PostgreSql9Config();
+        PostgreSql9ModelBuilderConfig instance = new PostgreSql9ModelBuilderConfig();
         Class expResult = testParam.expectedJavaType;
         Class result = instance.getJavaType(testParam.dbType);
         System.out.println("testGetJavaType: " + testParam.dbType + " " + result);

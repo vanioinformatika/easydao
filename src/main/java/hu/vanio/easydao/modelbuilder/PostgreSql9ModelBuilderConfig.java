@@ -29,7 +29,7 @@ import java.util.HashMap;
  * PostgreSQL 9 configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class PostgreSql9Config extends Config {
+public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig {
 
     /* Sql query for table list, result: TABLE_NAME, COMMENTS fields */
     final String selectForTableList = "select c.relname as TABLE_NAME, obj_description(c.oid) as COMMENTS from pg_catalog.pg_class c"
@@ -106,7 +106,7 @@ public class PostgreSql9Config extends Config {
         JAVA_TYPE_MAP.put("xml", String.class);
     }
 
-    public PostgreSql9Config() {
+    public PostgreSql9ModelBuilderConfig() {
     }
 
     @Override

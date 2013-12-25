@@ -46,11 +46,11 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 @RunWith(Parameterized.class)
-public class Oracle11ConfigTest {
+public class Oracle11ModelBuilderConfigTest {
 
     private TestParams testParam;
 
-    public Oracle11ConfigTest(TestParams testParam) {
+    public Oracle11ModelBuilderConfigTest(TestParams testParam) {
         this.testParam = testParam;
     }
 
@@ -200,11 +200,11 @@ public class Oracle11ConfigTest {
     }
 
     /**
-     * Test of getSelectForPrimaryKeyFieldNameList method, of class Oracle11Config.
+     * Test of getSelectForPrimaryKeyFieldNameList method, of class Oracle11ModelBuilderConfig.
      */
     @Test
     public void testGetJavaType() {
-        Oracle11Config instance = new Oracle11Config();
+        Oracle11ModelBuilderConfig instance = new Oracle11ModelBuilderConfig();
         Class expResult = testParam.expectedJavaType;
         Class result = instance.getJavaType(testParam.dbType);
         System.out.println("testGetJavaType: " + testParam.dbType + " " + result);
