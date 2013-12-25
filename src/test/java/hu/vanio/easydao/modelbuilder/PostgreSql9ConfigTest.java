@@ -37,7 +37,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- *
+ * PostgreSQL 9 configuration unit test.
+ * Test database type string - java type conversations.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 @RunWith(Parameterized.class)
@@ -79,6 +80,10 @@ public class PostgreSql9ConfigTest {
     public void tearDown() {
     }
 
+    /**
+     * Test data: database type as string and expected java type.
+     * @return 
+     */
     @Parameters
     static public Collection<Object[]> data() {
         Object[][] data = {
