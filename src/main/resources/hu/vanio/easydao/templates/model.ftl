@@ -38,9 +38,19 @@ public class ${t.javaName} implements java.io.Serializable {
     /**
      * ${field.comment}
      * <br>${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if>
+     * @return ${field.javaName} value
      */
     public ${field.javaTypeAsString} get${field.javaName?cap_first}() {
         return this.${field.javaName};
+    }
+    
+    /**
+     * ${field.comment}
+     * <br>${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if>
+     * @param ${field.javaName} new value
+     */
+    public void set${field.javaName?cap_first}(${field.javaTypeAsString} ${field.javaName}) {
+        return this.${field.javaName} = ${field.javaName};
     }
 
     </#list>
