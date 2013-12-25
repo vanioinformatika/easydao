@@ -54,5 +54,4 @@ public class ${t.javaName} implements java.io.Serializable {
     }
 
     </#list>
-
 }
