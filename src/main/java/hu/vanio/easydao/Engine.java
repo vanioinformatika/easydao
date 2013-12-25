@@ -99,16 +99,39 @@ public class Engine {
 
         // create java source codes: model and dao
         generateModelClasses();
-        Template temp = cfg.getTemplate("test.ftl");
-        Writer out = new OutputStreamWriter(System.out);
-        temp.process(engineConf, out);
+        generateDaoClasses();
     }
 
+    /**
+     * Generate model classes.
+     * @throws IOException
+     * @throws TemplateException
+     */
     private void generateModelClasses() throws IOException, TemplateException {
         // TODO: generateLicence();
         List<Table> tableList = engineConf.getDatabase().getTableList();
         for (Table table : tableList) {
             Template temp = cfg.getTemplate("model.ftl");
+            Writer out = new OutputStreamWriter(System.out);
+            Map<String, Object> m = new HashMap<>();
+            m.put("t", table);
+            m.put("e", engineConf);
+            m.put("appname", name);
+            m.put("appversion", version);
+            temp.process(m, out);
+        }
+    }
+
+    /**
+     * Generate Dao classes.
+     * @throws IOException
+     * @throws TemplateException
+     */
+    private void generateDaoClasses() throws IOException, TemplateException {
+        // TODO: generateLicence();
+        List<Table> tableList = engineConf.getDatabase().getTableList();
+        for (Table table : tableList) {
+            Template temp = cfg.getTemplate("dao.ftl");
             Writer out = new OutputStreamWriter(System.out);
             Map<String, Object> m = new HashMap<>();
             m.put("t", table);
