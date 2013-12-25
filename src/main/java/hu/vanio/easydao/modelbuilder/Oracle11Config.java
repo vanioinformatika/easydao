@@ -23,10 +23,11 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 /**
- * PostgreSQL database selects.
+ * Oracle 11 configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class Oracle11Config extends Config {
@@ -61,41 +62,41 @@ public class Oracle11Config extends Config {
     /* Data type mapping: database -> java */
     public static final HashMap<String, Class> JAVA_TYPE_MAP = new HashMap<>();
 
-    // FIXME: creating oracle datatypes mappings
+    /* see: http://docs.oracle.com/cd/B19306_01/java.102/b14188/datamap.htm */
     static {
-        JAVA_TYPE_MAP.put("bigint|int8", Long.class);
+        JAVA_TYPE_MAP.put("char|long|string|varchar|varchar2", String.class);
+        JAVA_TYPE_MAP.put("bytea|raw|long raw", Byte.class);
+        JAVA_TYPE_MAP.put("binary_integer|natural|naturaln|pls_integer|positive|positiven|signtype|int|integer|smallint", Integer.class);
+        JAVA_TYPE_MAP.put("dec|decimal", BigDecimal.class);
+        JAVA_TYPE_MAP.put("double precision|float", Double.class);
+        JAVA_TYPE_MAP.put("real", Float.class);
+        JAVA_TYPE_MAP.put("rowid", java.sql.RowId.class);
         JAVA_TYPE_MAP.put("boolean", Boolean.class);
-        JAVA_TYPE_MAP.put("boolean\\[\\]", Boolean[].class);
-        JAVA_TYPE_MAP.put("bytea", Byte[].class);
-        JAVA_TYPE_MAP.put("char", String.class);
+        JAVA_TYPE_MAP.put("clob", java.sql.Clob.class);
+        JAVA_TYPE_MAP.put("blob", java.sql.Blob.class);
+
         JAVA_TYPE_MAP.put("character", String.class);
         JAVA_TYPE_MAP.put("character\\([\\d]*\\)", String.class);
-        JAVA_TYPE_MAP.put("character\\([\\d]*\\)\\[\\]", String[].class);
-        JAVA_TYPE_MAP.put("character\\[\\]", String[].class);
         JAVA_TYPE_MAP.put("character varying", String.class);
         JAVA_TYPE_MAP.put("character varying\\([\\d]*\\)", String.class);
-        JAVA_TYPE_MAP.put("character varying\\([\\d]*\\)\\[\\]", String[].class);
         JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("double precision|float8", Double.class);
         JAVA_TYPE_MAP.put("integer|int|int4", Integer.class);
         JAVA_TYPE_MAP.put("json", String.class);
-        JAVA_TYPE_MAP.put("number", Integer.class);
-        JAVA_TYPE_MAP.put("number\\([1-9]\\)", Integer.class);
-        JAVA_TYPE_MAP.put("number\\([1-9],[0]*\\)", Integer.class);
-        JAVA_TYPE_MAP.put("number\\([1][0-9]\\)", Long.class);
-        JAVA_TYPE_MAP.put("number\\([1][0-9]*,[0]\\)", Long.class);
-        JAVA_TYPE_MAP.put("number\\([\\d]*,[1-9]*\\)", Double.class);
+        JAVA_TYPE_MAP.put("number|numeric", Integer.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1-9]\\)", Integer.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1-9],[0]*\\)", Integer.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-9]\\)", Long.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-9]*,[0]\\)", Long.class);
+        JAVA_TYPE_MAP.put("(number|numeric)\\([\\d]*,[1-9]*\\)", Double.class);
 
-        JAVA_TYPE_MAP.put("number\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("number\\([1][0-9]\\)\\[\\]", Long[].class);
-        JAVA_TYPE_MAP.put("number\\([1-9]\\)\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("number\\([\\d]*,[\\d]*\\)\\[\\]", Double[].class);
-
-        JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("timestamp with time zone", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("timestamp with tz", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("timestamp with local tz", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("varchar2", String.class);
         JAVA_TYPE_MAP.put("varchar2\\([\\d]*\\)", String.class);
+        JAVA_TYPE_MAP.put("varray", java.sql.Array.class);
         JAVA_TYPE_MAP.put("uuid", String.class);
         JAVA_TYPE_MAP.put("xml", String.class);
     }
