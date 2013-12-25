@@ -56,7 +56,7 @@ public class ModelBuilder {
     /* true, if table has postfix */
     protected boolean hasFieldPostfix;
     /* database configuration for model builder */
-    protected ModelBuilderConfig config;
+    protected IModelBuilderConfig config;
     /* primary key field name list */
     private List<String> pkFieldNameList = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class ModelBuilder {
             boolean hasTablePostfix,
             boolean hasFieldPrefix,
             boolean hasFieldPostfix,
-            ModelBuilderConfig config) {
+            IModelBuilderConfig config) {
         this.con = con;
         this.hasTablePrefix = hasTablePrefix;
         this.hasTablePostfix = hasTablePostfix;
@@ -115,7 +115,7 @@ public class ModelBuilder {
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
-                    String javaName = config.getReplacementName(config.getReplacementNameOfTables(), tableName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(config.getReplacementNameOfTables(), tableName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then table has been skipped from the model
                         System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
@@ -178,7 +178,7 @@ public class ModelBuilder {
                     String dbType = rs.getString("DATA_TYPE");
                     String comment = rs.getString("COMMENTS");
 
-                    String javaName = config.getReplacementName(config.getReplacementNameOfFields(), tableName + "." + fieldName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(config.getReplacementNameOfFields(), tableName + "." + fieldName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then field has been skipped from the model
                         System.out.println("field name: " + tableName + "." + fieldName + " " + SKIPPED_FROM_MODEL);

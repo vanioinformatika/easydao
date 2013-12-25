@@ -21,63 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydao.model;
+package hu.vanio.easydao.modelbuilder;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.HashMap;
 
 /**
- * Database java representation.
+ * Interface for model builder configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class Database {
-
-    /* database name */
-    private String name = "DatabaseNameFromConfig";
-    /* model creation date */
-    private Timestamp modelCreationDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
-    /** Database's tables */
-    private List<Table> tableList;
+public interface IModelBuilderConfig {
 
     /**
-     * Add table to database model.
-     * @param table table model
+     * Return replacement map of table names.
+     * @return map
      */
-    public void addTable(Table table) {
-        if (tableList == null) {
-            tableList = new ArrayList<>();
-        }
-        tableList.add(table);
-    }
+    public HashMap<String, String> getReplacementNameOfTables();
 
     /**
-     * @return the name
+     * Return replacement map of field names.
+     * @return map
      */
-    public String getName() {
-        return name;
-    }
+    public HashMap<String, String> getReplacementNameOfFields();
 
     /**
-     * @param name the name to set
+     * Return java type.
+     * @param dbType field type string from database
+     * @return java class
+     * @throws IllegalArgumentException java class not found for dbType
      */
-    public void setName(String name) {
-        this.name = name;
-    }
+    public Class getJavaType(String dbType) throws IllegalArgumentException;
 
     /**
-     * @return the modelCreationDate
+     * Sql query for table list, result: TABLE_NAME, COMMENT fields
+     * @return SQL query, TABLE_NAME, COMMENT
      */
-    public Timestamp getModelCreationDate() {
-        return modelCreationDate;
-    }
+    public String getSelectForTableList();
 
     /**
-     * @param modelCreationDate the modelCreationDate to set
+     * Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
+     * @return SQL query, COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
      */
-    public void setModelCreationDate(Timestamp modelCreationDate) {
-        this.modelCreationDate = modelCreationDate;
-    }
+    public String getSelectForFieldList();
 
+    /**
+     * Sql query for primary key field name list, result: COLUMN_NAME
+     * @return SQL query, COLUMN_NAME
+     */
+    public String getSelectForPrimaryKeyFieldNameList();
 }

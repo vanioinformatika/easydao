@@ -24,6 +24,22 @@
 package hu.vanio.easydao;
 
 import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
+import freemarker.template.Version;
+import hu.vanio.easydao.model.EngineConfiguration;
+import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
+import hu.vanio.easydao.modelbuilder.ModelBuilder;
+import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
+import hu.vanio.easydao.modelbuilder.PostgreSql9ModelBuilderConfig;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * Generate model and Dao from database based on configuration.
@@ -37,17 +53,67 @@ public class Engine {
     /* Application version */
     private String version;
 
+    private EngineConfiguration engineConf;
+
+    private IModelBuilderConfig mdc;
+
     /** Freemarker configuration */
-    private Configuration freemarkerConfig;
-    
-    private String jdbcDriverClassname;
-    /** Database JDBC URL */
-    private String databaseUrl;
-    /** Database user */
-    private String databaseUser;
-    /** Password of the database user */
-    private String databasePassword;
-    
+    private Configuration cfg;
+
+    public Engine() throws SQLException {
+        this.initFreemarkerConfiguration();
+        // FIXME: read from configuration
+        this.initEngineConfiguration();
+    }
+
+    /**
+     * Execute java model generator engine.
+     * @throws IOException
+     * @throws java.sql.SQLException
+     * @throws TemplateException
+     */
+    public void execute() throws IOException, SQLException, TemplateException {
+
+        try (Connection con = DriverManager.getConnection(
+                engineConf.getUrl(),
+                engineConf.getUsername(),
+                engineConf.getPassword());) {
+            // Building java model from database metadata
+            ModelBuilder modelBuilder = new ModelBuilder(con,
+                    engineConf.isTablePrefix(),
+                    engineConf.isTablePostfix(),
+                    engineConf.isFieldPrefix(),
+                    engineConf.isFieldPostfix(),
+                    mdc);
+            engineConf.setDatabase(modelBuilder.build());
+        }
+        Template temp = cfg.getTemplate("test.ftl");
+        Writer out = new OutputStreamWriter(System.out);
+        temp.process(engineConf, out);
+    }
+
+    /**
+     * Engine configuration initialization.
+     * @throws SQLException
+     */
+    private void initEngineConfiguration() throws SQLException {
+        engineConf = new EngineConfiguration();
+
+        // FIXME: load data from config file!
+        engineConf.setDatabaseType(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9);
+
+        switch (engineConf.getDatabaseType()) {
+            case POSTGRESQL9:
+                DriverManager.registerDriver(new org.postgresql.Driver());
+                mdc = new PostgreSql9ModelBuilderConfig();
+                break;
+            case ORACLE11:
+                DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+                mdc = new Oracle11ModelBuilderConfig();
+                break;
+        }
+    }
+
     /**
      * @return the name
      */
@@ -75,10 +141,31 @@ public class Engine {
     public void setVersion(String version) {
         this.version = version;
     }
-    
-    private Configuration createFreemarkerConfiguration() {
-        Configuration retVal = new Configuration();
-        retVal.setClassForTemplateLoading(Engine.class, "/hu/vanio/easydao/templates");
-        return retVal;
+
+    /**
+     * @see http://freemarker.org/docs/pgui_quickstart_createconfiguration.html
+     * @return Freemarker configuration
+     */
+    private void initFreemarkerConfiguration() {
+        cfg = new Configuration();
+        cfg.setClassForTemplateLoading(Engine.class, "/hu/vanio/easydao/templates");
+        cfg.setObjectWrapper(new DefaultObjectWrapper());
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setIncompatibleImprovements(new Version(2, 3, 20));
+    }
+
+    /**
+     * @return the engineConf
+     */
+    public EngineConfiguration getEngineConf() {
+        return engineConf;
+    }
+
+    /**
+     * @param engineConf the engineConf to set
+     */
+    public void setEngineConf(EngineConfiguration engineConf) {
+        this.engineConf = engineConf;
     }
 }

@@ -30,7 +30,7 @@ import java.util.HashMap;
  * Oracle 11 configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class Oracle11ModelBuilderConfig extends ModelBuilderConfig {
+public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IModelBuilderConfig {
 
     /* Sql query for table list, result: TABLE_NAME, COMMENTS fields */
     final String selectForTableList = "select ut.table_name as TABLE_NAME, tc.comments as COMMENTS"

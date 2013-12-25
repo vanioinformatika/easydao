@@ -30,7 +30,7 @@ import java.util.Map;
  * Database model builder configuration for model builder
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-abstract class ModelBuilderConfig {
+class ModelBuilderConfig {
 
     /**
      * Return java type of field.
@@ -73,43 +73,5 @@ abstract class ModelBuilderConfig {
         }
         return rn;
     }
-
-    /**
-     * Return replacement map of table names.
-     * @return map
-     */
-    abstract public HashMap<String, String> getReplacementNameOfTables();
-
-    /**
-     * Return replacement map of field names.
-     * @return map
-     */
-    abstract public HashMap<String, String> getReplacementNameOfFields();
-
-    /**
-     * Return java type.
-     * @param dbType field type string from database
-     * @return java class
-     * @throws IllegalArgumentException java class not found for dbType
-     */
-    abstract public Class getJavaType(String dbType) throws IllegalArgumentException;
-
-    /**
-     * Sql query for table list, result: TABLE_NAME, COMMENT fields
-     * @return SQL query, TABLE_NAME, COMMENT
-     */
-    abstract public String getSelectForTableList();
-
-    /**
-     * Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
-     * @return SQL query, COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT
-     */
-    abstract public String getSelectForFieldList();
-
-    /**
-     * Sql query for primary key field name list, result: COLUMN_NAME
-     * @return SQL query, COLUMN_NAME
-     */
-    abstract public String getSelectForPrimaryKeyFieldNameList();
 
 }

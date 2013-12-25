@@ -23,11 +23,8 @@
  */
 package hu.vanio.easydao;
 
-import hu.vanio.easydao.model.Database;
-import hu.vanio.easydao.modelbuilder.ModelBuilder;
-import hu.vanio.easydao.modelbuilder.PostgreSql9ModelBuilderConfig;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import freemarker.template.TemplateException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -35,28 +32,11 @@ import java.sql.SQLException;
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class StartPostgreSql9 {
-    
-    
 
-    public static void main(String[] args) throws SQLException {
-        DriverManager.registerDriver(new org.postgresql.Driver());
+    public static void main(String[] args) throws SQLException, IOException, TemplateException {
 
-        // FIXME: read from configuration and move to Engine class
-        String url = "jdbc:postgresql://localhost/callistof";
-        String username = "callisto";
-        String password = "callisto";
-        boolean hasTablePrefix = true;
-        boolean hasTablePostfix = false;
-        boolean hasFieldPrefix = true;
-        boolean hasFieldPostfix = false;
+        Engine e = new Engine();
+        e.execute();
 
-        try (Connection con = DriverManager.getConnection(url, username, password);) {
-            // Building java model from database metadata
-            ModelBuilder modelBuilder = new ModelBuilder(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix, new PostgreSql9ModelBuilderConfig());
-            // FIXME: hasPostfix and hasPrefix comes from configuration 
-            Database database = modelBuilder.build();
-        } finally {
-            //dataSource.close();
-        }
     }
 }
