@@ -52,7 +52,7 @@ public class Field {
     @Override
     public String toString() {
         return "Field{" + ", dbName=" + dbName + ", javaName=" + javaName + ", dbType=" + dbType + ", javaType=" + javaType
-                + "primaryKey=" + primaryKey + ", nullable=" + nullable + ", array=" + array
+                + ", primaryKey=" + primaryKey + ", nullable=" + nullable + ", array=" + array
                 + ", comment=" + comment + "}";
     }
 
