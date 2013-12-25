@@ -51,9 +51,9 @@ public class Field {
 
     @Override
     public String toString() {
-        return "Field{" + "primaryKey=" + primaryKey + ", nullable=" + nullable + ", array=" + array
-                + ", dbName=" + dbName + ", dbType=" + dbType + ", comment=" + comment
-                + ", javaName=" + javaName + ", javaType=" + javaType + '}';
+        return "Field{" + ", dbName=" + dbName + ", javaName=" + javaName + ", dbType=" + dbType + ", javaType=" + javaType
+                + "primaryKey=" + primaryKey + ", nullable=" + nullable + ", array=" + array
+                + ", comment=" + comment + "}";
     }
 
     /**
