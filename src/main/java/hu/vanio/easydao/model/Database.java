@@ -25,7 +25,6 @@ package hu.vanio.easydao.model;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class Database {
     /* database name */
     private String name = "DatabaseNameFromConfig";
     /* model creation date */
-    private Timestamp modelCreationDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    private Timestamp modelCreationDate = new Timestamp(System.currentTimeMillis());
     /** Database's tables */
     private List<Table> tableList;
 
