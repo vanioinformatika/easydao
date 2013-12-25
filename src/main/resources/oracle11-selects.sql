@@ -23,7 +23,7 @@ where utc.table_name = ? and ucc.table_name = utc.table_name and ucc.column_name
 -- return primary key for a table
 select column_name
     from user_cons_columns c, user_constraints t
-    where c.table_name = upper('ir_ugyek') and
+    where c.table_name = upper(?) and
     t.constraint_type = 'P' and
     t.constraint_name = c.constraint_name
     order by c.position
