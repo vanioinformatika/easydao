@@ -78,6 +78,7 @@ public class Oracle11Config extends Config {
         JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("double precision|float8", Double.class);
 
+        JAVA_TYPE_MAP.put("number|numeric", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\(,\\)", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9]\\)", Integer.class);
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9],[0]\\)", Integer.class);

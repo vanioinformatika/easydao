@@ -121,6 +121,7 @@ public class Oracle11ConfigTest {
             {new TestParams("double precision", Double.class)},
             {new TestParams("float", Double.class)},
             {new TestParams("numeric", Integer.class)},
+            {new TestParams("numeric(,)", Integer.class)},
             {new TestParams("numeric(1)", Integer.class)},
             {new TestParams("numeric(2)", Integer.class)},
             {new TestParams("numeric(3)", Integer.class)},
@@ -154,6 +155,7 @@ public class Oracle11ConfigTest {
             {new TestParams("numeric(19,1)", Double.class)},
             
             {new TestParams("number", Integer.class)},
+            {new TestParams("number(,)", Integer.class)},
             {new TestParams("number(1)", Integer.class)},
             {new TestParams("number(2)", Integer.class)},
             {new TestParams("number(3)", Integer.class)},
