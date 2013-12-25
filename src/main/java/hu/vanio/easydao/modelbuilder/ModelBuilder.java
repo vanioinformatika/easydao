@@ -102,14 +102,14 @@ public class ModelBuilder {
                 while (rs.next()) {
                     String tableName = rs.getString("TABLE_NAME");
                     String tableComment = rs.getString("COMMENTS");
-
-                    System.out.println("table name: " + tableName + " = " + tableComment);
-
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
                     String javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
                     Table table = new Table(tableName, tableComment, javaName, null);
+                    
+                    System.out.println("table name: " + tableName + " - " + javaName + " = " + tableComment);
+                    
                     tableList.add(table);
                 }
             }
@@ -194,20 +194,43 @@ public class ModelBuilder {
             }
             if (i > 0) {
                 // upper case chunks' first character
-                String firstChar = s.substring(0, 1).toUpperCase();
-                s = firstChar + s.substring(1, s.length());
+                s = changeFirstCharTo(CHAR_CASE_TYPE.UPPERCASE, s);
             }
             result += s;
         }
         // handling first character
         if (firstCharToUpperCase) {
             // upper case
-            String firstChar = result.substring(0, 1).toUpperCase();
-            result = firstChar + result.substring(1, result.length());
+            result = changeFirstCharTo(CHAR_CASE_TYPE.UPPERCASE, result);
         } else {
             // lower case
-            String firstChar = result.substring(0, 1).toLowerCase();
-            result = firstChar + result.substring(1, result.length());
+            result = changeFirstCharTo(CHAR_CASE_TYPE.LOWERCASE, result);
+        }
+        return result;
+    }
+
+    /**
+     * Character uppercase or lowercase.
+     */
+    enum CHAR_CASE_TYPE {
+
+        UPPERCASE, LOWERCASE;
+    }
+
+    /**
+     * UpperCase first char.
+     * @param s input
+     * @return "" if input is null, and uppercased first char if not
+     */
+    private String changeFirstCharTo(CHAR_CASE_TYPE c, String s) {
+        String result = "";
+        s = s.trim();
+        if (s != null && s.length() > 0) {
+            if (CHAR_CASE_TYPE.UPPERCASE.equals(c)) {
+                result = s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
+            } else {
+                result = s.substring(0, 1).toLowerCase() + s.substring(1, s.length());
+            }
         }
         return result;
     }
