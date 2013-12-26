@@ -44,6 +44,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Generate model and Dao from database based on configuration.
@@ -149,6 +150,7 @@ public class Engine {
     private void initEngineConfiguration() throws SQLException {
         engineConf = new EngineConfiguration();
         Database database = new Database();
+        loadReplacementFile(engineConf.getReplacementTableFilename());
         // FIXME: load data from config file!
         database.setName("callisto");
         engineConf.setDatabase(database);
@@ -164,6 +166,10 @@ public class Engine {
                 mdc = new Oracle11ModelBuilderConfig();
                 break;
         }
+    }
+    
+    private void loadReplacementFile(String fileName) {
+        ResourceBundle myResources = ResourceBundle.getBundle(fileName);
     }
 
     /**

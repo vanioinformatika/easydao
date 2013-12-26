@@ -23,6 +23,7 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
+import hu.vanio.easydao.EngineConfiguration;
 import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
@@ -113,7 +114,7 @@ public class ModelBuilder {
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
-                    String javaName = ((ModelBuilderConfig) config).getReplacementName(config.getReplacementNameOfTables(), tableName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(EngineConfiguration.getReplacementNameOfTables(), tableName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then table has been skipped from the model
                         System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
@@ -178,7 +179,7 @@ public class ModelBuilder {
                     if (comment == null) {
                         comment = EMPTY_COMMENT;
                     }
-                    String javaName = ((ModelBuilderConfig) config).getReplacementName(config.getReplacementNameOfFields(), tableName + "." + fieldName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(EngineConfiguration.getReplacementNameOfFields(), tableName + "." + fieldName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then field has been skipped from the model
                         System.out.println("field name: " + tableName + "." + fieldName + " " + SKIPPED_FROM_MODEL);

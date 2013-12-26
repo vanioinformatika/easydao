@@ -97,20 +97,6 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
         JAVA_TYPE_MAP.put("varray", java.sql.Array.class);
     }
 
-    /* Replacement map for tables. Empty string value means it has been skipped from the model. */
-    public static final Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
-
-    static {
-        REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME");
-    }
-
-    /* Replacement map for fields. Empty string value means it has been skipped from the model. */
-    public static final Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
-
-    static {
-        REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME");
-    }
-
     public Oracle11ModelBuilderConfig() {
     }
 
@@ -132,16 +118,6 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
     @Override
     public Class getJavaType(String dbType) throws IllegalArgumentException {
         return convertToJavaType(JAVA_TYPE_MAP, dbType);
-    }
-
-    @Override
-    public Map<String, String> getReplacementNameOfTables() {
-        return REPLACEMENT_TABLE_MAP;
-    }
-
-    @Override
-    public Map<String, String> getReplacementNameOfFields() {
-        return REPLACEMENT_FIELD_MAP;
     }
 
 }

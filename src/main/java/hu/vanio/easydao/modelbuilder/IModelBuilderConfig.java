@@ -23,25 +23,11 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import java.util.Map;
-
 /**
  * Interface for model builder configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public interface IModelBuilderConfig {
-
-    /**
-     * Return replacement map of table names.
-     * @return map
-     */
-    public Map<String, String> getReplacementNameOfTables();
-
-    /**
-     * Return replacement map of field names.
-     * @return map
-     */
-    public Map<String, String> getReplacementNameOfFields();
 
     /**
      * Return java type.

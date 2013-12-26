@@ -24,12 +24,42 @@
 package hu.vanio.easydao;
 
 import hu.vanio.easydao.model.Database;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Source code generator model.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class EngineConfiguration {
+
+    /**
+     * @return the replacementTableFilename
+     */
+    public String getReplacementTableFilename() {
+        return replacementTableFilename;
+    }
+
+    /**
+     * @param replacementTableFilename the replacementTableFilename to set
+     */
+    public void setReplacementTableFilename(String replacementTableFilename) {
+        this.replacementTableFilename = replacementTableFilename;
+    }
+
+    /**
+     * @return the replacementFieldFilename
+     */
+    public String getReplacementFieldFilename() {
+        return replacementFieldFilename;
+    }
+
+    /**
+     * @param replacementFieldFilename the replacementFieldFilename to set
+     */
+    public void setReplacementFieldFilename(String replacementFieldFilename) {
+        this.replacementFieldFilename = replacementFieldFilename;
+    }
 
     /**
      * Valid database types.
@@ -56,6 +86,30 @@ public class EngineConfiguration {
     private String packageOfJavaDao = "hu.vanio.easydaodemo.dao";
     private String daoPostfix = "Dao";
     private Database database;
+    private String replacementTableFilename = "replacement-table";
+    private String replacementFieldFilename = "replacement-field";
+
+    /* Replacement map for tables. Empty string value means it has been skipped from the model. */
+    public static Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
+
+    static {
+        REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME");
+    }
+
+    /* Replacement map for fields. Empty string value means it has been skipped from the model. */
+    public static Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
+
+    static {
+        REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME");
+    }
+
+    static public Map<String, String> getReplacementNameOfTables() {
+        return REPLACEMENT_TABLE_MAP;
+    }
+
+    static public Map<String, String> getReplacementNameOfFields() {
+        return REPLACEMENT_FIELD_MAP;
+    }
 
     /**
      * @return the url
