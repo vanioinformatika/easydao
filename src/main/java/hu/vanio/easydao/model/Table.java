@@ -23,6 +23,7 @@
  */
 package hu.vanio.easydao.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +41,14 @@ public class Table {
     /* Table's fields */
     private List<Field> fieldList;
 
+    /**
+     * Constructs a new instance
+     * 
+     * @param dbName Table name in database
+     * @param comment Table comment
+     * @param javaName Table's java name
+     * @param fieldList Table's fields
+     */
     public Table(String dbName, String comment, String javaName, List<Field> fieldList) {
         this.dbName = dbName;
         this.comment = comment;
@@ -48,7 +57,9 @@ public class Table {
     }
 
 //<editor-fold defaultstate="collapsed" desc="gettersetter">
+    
     /**
+     * Table's fields
      * @return the fieldList
      */
     public List<Field> getFieldList() {
@@ -56,6 +67,7 @@ public class Table {
     }
 
     /**
+     * Table's fields
      * @param fieldList the fieldList to set
      */
     public void setFieldList(List<Field> fieldList) {
@@ -63,6 +75,35 @@ public class Table {
     }
 
     /**
+     * Returns primary key fields
+     * @return The list of primary key fields
+     */
+    public List<Field> getPkFields() {
+        List<Field> retVal = new ArrayList<>();
+        for (Field fd : this.fieldList) {
+            if (fd.isPrimaryKey()) {
+                retVal.add(fd);
+            }
+        }
+        return retVal;
+    }
+
+    /**
+     * Returns non-primary key fields
+     * @return The list of non-primary key fields
+     */
+    public List<Field> getNonPkFields() {
+        List<Field> retVal = new ArrayList<>();
+        for (Field fd : this.fieldList) {
+            if (!fd.isPrimaryKey()) {
+                retVal.add(fd);
+            }
+        }
+        return retVal;
+    }
+    
+    /**
+     * Table name in database
      * @return the dbName
      */
     public String getDbName() {
@@ -70,6 +111,7 @@ public class Table {
     }
 
     /**
+     * Table name in database
      * @param dbName the dbName to set
      */
     public void setDbName(String dbName) {
@@ -77,6 +119,7 @@ public class Table {
     }
 
     /**
+     * Table comment
      * @return the comment
      */
     public String getComment() {
@@ -84,6 +127,7 @@ public class Table {
     }
 
     /**
+     * Table comment
      * @param comment the comment to set
      */
     public void setComment(String comment) {
@@ -91,6 +135,7 @@ public class Table {
     }
 
     /**
+     * Table's java name
      * @return the javaName
      */
     public String getJavaName() {
@@ -98,6 +143,7 @@ public class Table {
     }
 
     /**
+     * Table's java name
      * @param javaName the javaName to set
      */
     public void setJavaName(String javaName) {
