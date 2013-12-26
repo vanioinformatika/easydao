@@ -47,7 +47,7 @@ public class ${t.javaName} implements hu.vanio.easydao.core.Model, java.io.Seria
     /**
      * ${field.comment}
      * <br>${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if>
-     * @param ${field.comment}
+     * @param ${field.javaName} ${field.comment}
      */
     public void set${field.javaName?cap_first}(<#if field.javaTypeAsString == 'Clob'>String<#elseif field.javaTypeAsString == 'Blob'>Byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}) {
         this.${field.javaName} = ${field.javaName};
