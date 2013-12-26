@@ -37,7 +37,7 @@ public class StartOracle {
 
     public static void main(String[] args) throws SQLException, IOException, TemplateException {
 
-        EngineConfiguration conf = new EngineConfiguration();
+        EngineConfiguration conf = new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.ORACLE11);
         conf.setTablePrefix(true);
         conf.setTablePostfix(false);
         conf.setUrl("jdbc:oracle:thin:@10.128.2.82:1521:HOTDEV");
