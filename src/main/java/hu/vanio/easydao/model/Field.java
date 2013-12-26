@@ -231,10 +231,12 @@ public class Field {
      * indicates whether the value of this field sould be read from the resultset as a String
      * @return true if this field should be read from the resultset as a String
      */
-    public boolean readAsString() {
+    public boolean isReadAsString() {
         boolean retVal = false;
-        if (this.javaType != String.class) {
-            
+        if (this.javaType != String.class 
+                && this.javaType != java.util.Date.class
+                && this.javaType != java.sql.Timestamp.class) {
+            retVal = true;
         }
         return retVal;
     }
