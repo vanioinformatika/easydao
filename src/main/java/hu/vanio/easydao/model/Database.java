@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class Database {
 
-    /* database name */
+    /* database name (dataSource) */
     private String name = "DatabaseNameFromConfig";
     /* model creation date */
     private Timestamp modelCreationDate = new Timestamp(Calendar.getInstance().getTimeInMillis());

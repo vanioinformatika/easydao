@@ -23,40 +23,20 @@
  */
 package hu.vanio.easydao;
 
-import hu.vanio.easydao.model.Database;
-import hu.vanio.easydao.modelbuilder.ModelBuilder;
-import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import freemarker.template.TemplateException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
  * Application start
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class StartOracle11 {
-    
-    
+public class Start {
 
-    public static void main(String[] args) throws SQLException {
-        DriverManager.registerDriver(new org.postgresql.Driver());
+    public static void main(String[] args) throws SQLException, IOException, TemplateException {
 
-        // FIXME: read from configuration and move to Engine class
-        String url = "jdbc:oracle:thin:@10.128.2.82:1521:HOTDEV";
-        String username = "idtvt1";
-        String password = "idtvt1";
-        boolean hasTablePrefix = true;
-        boolean hasTablePostfix = false;
-        boolean hasFieldPrefix = true;
-        boolean hasFieldPostfix = false;
+        Engine e = new Engine();
+        e.execute();
 
-        try (Connection con = DriverManager.getConnection(url, username, password);) {
-            // Building java model from database metadata
-            ModelBuilder modelBuilder = new ModelBuilder(con, hasTablePrefix, hasTablePostfix, hasFieldPrefix, hasFieldPostfix, new Oracle11ModelBuilderConfig());
-            // FIXME: hasPostfix and hasPrefix comes from configuration 
-            Database database = modelBuilder.build();
-        } finally {
-            //dataSource.close();
-        }
     }
 }

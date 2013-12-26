@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydao.model;
+package hu.vanio.easydao;
+
+import hu.vanio.easydao.model.Database;
 
 /**
  * Source code generator model.
@@ -37,9 +39,14 @@ public class EngineConfiguration {
         POSTGRESQL9, ORACLE11;
     }
     private DATABASE_TYPE databaseType;
+    // postgres
     private String url = "jdbc:postgresql://localhost/callistof";
     private String username = "callisto";
     private String password = "callisto";
+    // oracle
+//    private String url = "jdbc:oracle:thin:@10.128.2.82:1521:HOTDEV";
+//    private String username = "idtvt1";
+//    private String password = "idtvt1";
     private boolean tablePrefix = true;
     private boolean tablePostfix = false;
     private boolean fieldPrefix = true;
