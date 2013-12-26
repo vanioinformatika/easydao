@@ -107,20 +107,6 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
         JAVA_TYPE_MAP.put("xml", String.class);
     }
 
-    /* Replacement map for tables. Empty string value means it has been skipped from the model. */
-    public static final Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
-
-    static {
-        REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME");
-    }
-
-    /* Replacement map for fields. Empty string value means it has been skipped from the model. */
-    public static final Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
-
-    static {
-        REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME");
-    }
-
     public PostgreSql9ModelBuilderConfig() {
     }
 
@@ -144,13 +130,4 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
         return convertToJavaType(JAVA_TYPE_MAP, dbType);
     }
 
-    @Override
-    public Map<String, String> getReplacementNameOfTables() {
-        return REPLACEMENT_TABLE_MAP;
-    }
-
-    @Override
-    public Map<String, String> getReplacementNameOfFields() {
-        return REPLACEMENT_FIELD_MAP;
-    }
 }

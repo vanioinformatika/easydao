@@ -23,7 +23,7 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import hu.vanio.easydao.model.Database;
+import hu.vanio.easydao.EngineConfiguration;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 import java.sql.Connection;
@@ -45,16 +45,10 @@ public class ModelBuilder {
     /* It has been skipped from the modell */
     final public String SKIPPED_FROM_MODEL = "**************************** SKIPPED FROM MODEL! Check replacement lists. ****************************";
 
+    /* Engine configuration */
+    protected EngineConfiguration engineConf;
     /* Database connection */
     protected Connection con;
-    /* true, if table has prefix */
-    protected boolean hasTablePrefix;
-    /* true, if table has postfix */
-    protected boolean hasTablePostfix;
-    /* true, if field has prefix */
-    protected boolean hasFieldPrefix;
-    /* true, if table has postfix */
-    protected boolean hasFieldPostfix;
     /* database configuration for model builder */
     protected IModelBuilderConfig config;
     /* primary key field name list */
@@ -63,36 +57,26 @@ public class ModelBuilder {
     /**
      * Model builder constructor.
      * @param con database connection
-     * @param hasTablePrefix true, if table has prefix
-     * @param hasTablePostfix true, if table has postfix
-     * @param hasFieldPrefix true, if field has prefix
-     * @param hasFieldPostfix true, if table has postfix
+     * @param engineConf
      * @param config database configuration for model builder
      */
     public ModelBuilder(Connection con,
-            boolean hasTablePrefix,
-            boolean hasTablePostfix,
-            boolean hasFieldPrefix,
-            boolean hasFieldPostfix,
+            EngineConfiguration engineConf,
             IModelBuilderConfig config) {
         this.con = con;
-        this.hasTablePrefix = hasTablePrefix;
-        this.hasTablePostfix = hasTablePostfix;
-        this.hasFieldPrefix = hasFieldPrefix;
-        this.hasFieldPostfix = hasFieldPostfix;
+        this.engineConf = engineConf;
         this.config = config;
     }
 
     /**
      * Build database java model from database.
-     * @return database java model
      * @throws SQLException
      */
-    final public void build(Database database) throws SQLException {
+    final public void build() throws SQLException {
         List<Table> tableList = this.getTableList();
         for (Table table : tableList) {
             table.setFieldList(this.getFieldList(table));
-            database.addTable(table);
+            engineConf.getDatabase().addTable(table);
         }
     }
 
@@ -113,14 +97,14 @@ public class ModelBuilder {
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
-                    String javaName = ((ModelBuilderConfig) config).getReplacementName(config.getReplacementNameOfTables(), tableName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementNameOfTables(), tableName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then table has been skipped from the model
                         System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
                         continue;
                     }
                     if (javaName == null) {
-                        javaName = createJavaName(tableName, true, hasTablePrefix, hasTablePostfix);
+                        javaName = createJavaName(tableName, true, engineConf.isTablePrefix(), engineConf.isTablePostfix());
                     }
                     Table table = new Table(tableName, tableComment, javaName, null);
 
@@ -178,14 +162,14 @@ public class ModelBuilder {
                     if (comment == null) {
                         comment = EMPTY_COMMENT;
                     }
-                    String javaName = ((ModelBuilderConfig) config).getReplacementName(config.getReplacementNameOfFields(), tableName + "." + fieldName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementNameOfFields(), tableName + "." + fieldName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then field has been skipped from the model
                         System.out.println("field name: " + tableName + "." + fieldName + " " + SKIPPED_FROM_MODEL);
                         continue;
                     }
                     if (javaName == null) {
-                        javaName = createJavaName(fieldName, false, hasFieldPrefix, hasFieldPostfix);
+                        javaName = createJavaName(fieldName, false, engineConf.isFieldPrefix(), engineConf.isFieldPostfix());
                     }
                     Class javaType = config.getJavaType(dbType);
                     Field field = new Field(primaryKey, nullable, array, fieldName, dbType, comment, javaName, javaType);
