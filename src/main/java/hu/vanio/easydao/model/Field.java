@@ -29,15 +29,34 @@ package hu.vanio.easydao.model;
  */
 public class Field {
 
+    /** Indicates whether this field is a (or part of a) primary key */
     private boolean primaryKey;
+    /** Indicates whether the value of this field can be null */
     private boolean nullable;
+    /** Indicates whether this field is an array */
     private boolean array;
+    /** The name of this field in the database */
     private String dbName;
+    /** The type of this field in the database */
     private String dbType;
+    /** The comment of this field in the database */
     private String comment;
+    /** The name of this field in Java code */
     private String javaName;
+    /** The type of this field in Java code */
     private Class javaType;
 
+    /**
+     * 
+     * @param primaryKey
+     * @param nullable
+     * @param array
+     * @param dbName
+     * @param dbType
+     * @param comment
+     * @param javaName
+     * @param javaType 
+     */
     public Field(boolean primaryKey, boolean nullable, boolean array, String dbName, String dbType, String comment, String javaName, Class javaType) {
         this.primaryKey = primaryKey;
         this.nullable = nullable;
@@ -65,6 +84,7 @@ public class Field {
     }
 
     /**
+     * Indicates whether this field is a (or part of a) primary key
      * @return the primaryKey
      */
     public boolean isPrimaryKey() {
@@ -72,6 +92,7 @@ public class Field {
     }
 
     /**
+     * Indicates whether this field is a (or part of a) primary key
      * @param primaryKey the primaryKey to set
      */
     public void setPrimaryKey(boolean primaryKey) {
@@ -79,6 +100,7 @@ public class Field {
     }
 
     /**
+     * Indicates whether the value of this field can be null
      * @return the nullable
      */
     public boolean isNullable() {
@@ -86,6 +108,7 @@ public class Field {
     }
 
     /**
+     * Indicates whether the value of this field can be null
      * @param nullable the nullable to set
      */
     public void setNullable(boolean nullable) {
@@ -93,6 +116,7 @@ public class Field {
     }
 
     /**
+     * Indicates whether this field is an array
      * @return the array
      */
     public boolean isArray() {
@@ -100,6 +124,7 @@ public class Field {
     }
 
     /**
+     * Indicates whether this field is an array
      * @param array the array to set
      */
     public void setArray(boolean array) {
@@ -107,6 +132,23 @@ public class Field {
     }
 
     /**
+     * Indicates whether this field is a CLOB
+     * @return the clob
+     */
+    public boolean isClob() {
+        return this.javaType == java.sql.Clob.class;
+    }
+
+    /**
+     * Indicates whether this field is a BLOB
+     * @return the blob
+     */
+    public boolean isBlob() {
+        return this.javaType == java.sql.Blob.class;
+    }
+
+    /**
+     * The name of this field in the database
      * @return the dbName
      */
     public String getDbName() {
@@ -114,6 +156,7 @@ public class Field {
     }
 
     /**
+     * The name of this field in the database
      * @param dbName the dbName to set
      */
     public void setDbName(String dbName) {
@@ -121,6 +164,7 @@ public class Field {
     }
 
     /**
+     * The type of this field in the database
      * @return the dbType
      */
     public String getDbType() {
@@ -128,6 +172,7 @@ public class Field {
     }
 
     /**
+     * The type of this field in the database
      * @param dbType the dbType to set
      */
     public void setDbType(String dbType) {
@@ -135,6 +180,7 @@ public class Field {
     }
 
     /**
+     * The comment of this field in the database
      * @return the comment
      */
     public String getComment() {
@@ -142,6 +188,7 @@ public class Field {
     }
 
     /**
+     * The comment of this field in the database
      * @param comment the comment to set
      */
     public void setComment(String comment) {
@@ -149,6 +196,7 @@ public class Field {
     }
 
     /**
+     * The name of this field in Java code
      * @return the javaName
      */
     public String getJavaName() {
@@ -156,6 +204,7 @@ public class Field {
     }
 
     /**
+     * The name of this field in Java code
      * @param javaName the javaName to set
      */
     public void setJavaName(String javaName) {
@@ -163,6 +212,7 @@ public class Field {
     }
 
     /**
+     * The type of this field in Java code
      * @return the javaType
      */
     public Class getJavaType() {
@@ -170,10 +220,23 @@ public class Field {
     }
 
     /**
+     * The type of this field in Java code
      * @param javaType the javaType to set
      */
     public void setJavaType(Class javaType) {
         this.javaType = javaType;
+    }
+
+    /**
+     * indicates whether the value of this field sould be read from the resultset as a String
+     * @return true if this field should be read from the resultset as a String
+     */
+    public boolean readAsString() {
+        boolean retVal = false;
+        if (this.javaType != String.class) {
+            
+        }
+        return retVal;
     }
 
 }
