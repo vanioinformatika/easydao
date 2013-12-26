@@ -29,15 +29,19 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
-import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Table;
 import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
 import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.PostgreSql9ModelBuilderConfig;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -65,6 +69,8 @@ public class Engine {
 
     /** Freemarker configuration */
     private Configuration cfg;
+
+    static final private String fileSeparator = System.getProperty("file.separator");
 
     /**
      * Init engine configuration.
@@ -109,6 +115,10 @@ public class Engine {
     private void generateModelClasses() throws IOException, TemplateException {
         // TODO: generateLicence();
         List<Table> tableList = engineConf.getDatabase().getTableList();
+        // create directory for java package
+        Path dir = Paths.get(engineConf.getGeneratedSourcePath() + engineConf.getPackageOfJavaModel().replace(".", fileSeparator));
+        Path javaDaoPath = Files.createDirectories(dir);
+        System.out.println("Write model classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
             Template temp = cfg.getTemplate("model.ftl");
             Writer out = new OutputStreamWriter(System.out);
@@ -118,6 +128,9 @@ public class Engine {
             m.put("appname", name);
             m.put("appversion", version);
             temp.process(m, out);
+            try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + ".java"))) {
+                temp.process(m, fileWriter);
+            }
         }
     }
 
@@ -153,7 +166,7 @@ public class Engine {
         engineConf.REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
         loadReplacementFile(engineConf.getReplacementFieldFilename(), engineConf.REPLACEMENT_FIELD_MAP);
         engineConf.REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
-        
+
         // FIXME: load data from config file!
         engineConf.getDatabase().setName("callisto");
 
