@@ -152,7 +152,7 @@ public class Engine {
         // FIXME: load data from config file!
         database.setName("callisto");
         engineConf.setDatabase(database);
-        engineConf.setDatabaseType(EngineConfiguration.DATABASE_TYPE.ORACLE11);
+        engineConf.setDatabaseType(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9);
         
         switch (engineConf.getDatabaseType()) {
             case POSTGRESQL9:

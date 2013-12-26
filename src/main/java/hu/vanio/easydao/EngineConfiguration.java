@@ -52,8 +52,8 @@ public class EngineConfiguration {
     private boolean fieldPrefix = true;
     private boolean fieldPostfix = false;
     private String generatedSourcePath = "/tmp/database_model";
-    private String packageOfJavaModel = "hu.vanio.easydao.model";
-    private String packageOfJavaDao = "hu.vanio.easydao.dao";
+    private String packageOfJavaModel = "hu.vanio.easydaodemo.model";
+    private String packageOfJavaDao = "hu.vanio.easydaodemo.dao";
     private String daoPostfix = "Dao";
     private Database database;
 
