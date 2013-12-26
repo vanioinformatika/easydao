@@ -78,8 +78,6 @@ public class Engine {
      */
     public Engine() throws SQLException {
         this.initFreemarkerConfiguration();
-        // FIXME: read from configuration
-        this.initEngineConfiguration();
     }
 
     /**
@@ -90,6 +88,7 @@ public class Engine {
      */
     public void execute() throws IOException, SQLException, TemplateException {
 
+        this.initEngineConfiguration();
         // build java model of database
         try (Connection con = DriverManager.getConnection(
                 engineConf.getUrl(),
@@ -116,8 +115,8 @@ public class Engine {
         // TODO: generateLicence();
         List<Table> tableList = engineConf.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConf.getGeneratedSourcePath() + engineConf.getPackageOfJavaModel().replace(".", fileSeparator));
-        Path javaDaoPath = Files.createDirectories(dir);
+        Path dir = Paths.get(engineConf.getGeneratedSourcePath() + fileSeparator + engineConf.getPackageOfJavaModel().replace(".", fileSeparator));
+        Files.createDirectories(dir);
         System.out.println("Write model classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
             Template temp = cfg.getTemplate("model.ftl");
@@ -142,6 +141,9 @@ public class Engine {
     private void generateDaoClasses() throws IOException, TemplateException {
         // TODO: generateLicence();
         List<Table> tableList = engineConf.getDatabase().getTableList();
+        // create directory for java package
+        Path dir = Paths.get(engineConf.getGeneratedSourcePath() + fileSeparator + engineConf.getPackageOfJavaDao().replace(".", fileSeparator));
+        Files.createDirectories(dir);
         for (Table table : tableList) {
             Template temp = cfg.getTemplate("dao.ftl");
             Writer out = new OutputStreamWriter(System.out);
@@ -151,6 +153,9 @@ public class Engine {
             m.put("appname", name);
             m.put("appversion", version);
             temp.process(m, out);
+            try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConf.getDaoPostfix() +".java"))) {
+                temp.process(m, fileWriter);
+            }
         }
     }
 
@@ -159,16 +164,12 @@ public class Engine {
      * @throws SQLException
      */
     private void initEngineConfiguration() throws SQLException {
-        // init engine configuration with database type
-        engineConf = new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9);
+        
         // load table and field replacement files into maps
         loadReplacementFile(engineConf.getReplacementTableFilename(), engineConf.REPLACEMENT_TABLE_MAP);
         engineConf.REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
         loadReplacementFile(engineConf.getReplacementFieldFilename(), engineConf.REPLACEMENT_FIELD_MAP);
         engineConf.REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
-
-        // FIXME: load data from config file!
-        engineConf.getDatabase().setName("callisto");
 
         switch (engineConf.getDatabaseType()) {
             case POSTGRESQL9:
