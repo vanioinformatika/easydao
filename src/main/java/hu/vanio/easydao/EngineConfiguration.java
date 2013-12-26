@@ -33,6 +33,11 @@ import java.util.Map;
  */
 public class EngineConfiguration {
 
+    public EngineConfiguration(DATABASE_TYPE databaseType) {
+        this.databaseType = databaseType;
+        this.database = new Database();
+    }
+
     /**
      * @return the replacementTableFilename
      */
@@ -88,7 +93,7 @@ public class EngineConfiguration {
     private Database database;
     private String replacementTableFilename = "replacement-table";
     private String replacementFieldFilename = "replacement-field";
-    
+
     /* Replacement map for tables. Empty string value means it has been skipped from the model. */
     public Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
 

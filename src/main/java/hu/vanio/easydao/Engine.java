@@ -146,16 +146,16 @@ public class Engine {
      * @throws SQLException
      */
     private void initEngineConfiguration() throws SQLException {
-        engineConf = new EngineConfiguration();
-        Database database = new Database();
+        // init engine configuration with database type
+        engineConf = new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9);
+        // load table and field replacement files into maps
         loadReplacementFile(engineConf.getReplacementTableFilename(), engineConf.REPLACEMENT_TABLE_MAP);
         engineConf.REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
         loadReplacementFile(engineConf.getReplacementFieldFilename(), engineConf.REPLACEMENT_FIELD_MAP);
         engineConf.REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
+        
         // FIXME: load data from config file!
-        database.setName("callisto");
-        engineConf.setDatabase(database);
-        engineConf.setDatabaseType(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9);
+        engineConf.getDatabase().setName("callisto");
 
         switch (engineConf.getDatabaseType()) {
             case POSTGRESQL9:
