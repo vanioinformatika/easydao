@@ -88,14 +88,12 @@ public class ModelBuilder {
      * @return database java model
      * @throws SQLException
      */
-    final public Database build() throws SQLException {
-        Database database = new Database();
+    final public void build(Database database) throws SQLException {
         List<Table> tableList = this.getTableList();
         for (Table table : tableList) {
             table.setFieldList(this.getFieldList(table));
             database.addTable(table);
         }
-        return database;
     }
 
     /**

@@ -29,6 +29,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
+import hu.vanio.easydao.model.Database;
 import hu.vanio.easydao.model.Table;
 import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
@@ -93,7 +94,7 @@ public class Engine {
                     engineConf.isFieldPrefix(),
                     engineConf.isFieldPostfix(),
                     mdc);
-            engineConf.setDatabase(modelBuilder.build());
+            modelBuilder.build(engineConf.getDatabase());
         }
 
         // create java source codes: model and dao
@@ -147,10 +148,12 @@ public class Engine {
      */
     private void initEngineConfiguration() throws SQLException {
         engineConf = new EngineConfiguration();
-
+        Database database = new Database();
         // FIXME: load data from config file!
-        engineConf.setDatabaseType(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9);
-
+        database.setName("callisto");
+        engineConf.setDatabase(database);
+        engineConf.setDatabaseType(EngineConfiguration.DATABASE_TYPE.ORACLE11);
+        
         switch (engineConf.getDatabaseType()) {
             case POSTGRESQL9:
                 DriverManager.registerDriver(new org.postgresql.Driver());
