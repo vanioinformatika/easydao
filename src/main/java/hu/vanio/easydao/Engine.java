@@ -41,6 +41,7 @@ import java.io.Writer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,12 +91,9 @@ public class Engine {
                 engineConf.getPassword());) {
             // Building java model from database metadata
             ModelBuilder modelBuilder = new ModelBuilder(con,
-                    engineConf.isTablePrefix(),
-                    engineConf.isTablePostfix(),
-                    engineConf.isFieldPrefix(),
-                    engineConf.isFieldPostfix(),
+                    engineConf,
                     mdc);
-            modelBuilder.build(engineConf.getDatabase());
+            modelBuilder.build();
         }
 
         // create java source codes: model and dao
@@ -150,12 +148,15 @@ public class Engine {
     private void initEngineConfiguration() throws SQLException {
         engineConf = new EngineConfiguration();
         Database database = new Database();
-        loadReplacementFile(engineConf.getReplacementTableFilename());
+        loadReplacementFile(engineConf.getReplacementTableFilename(), engineConf.REPLACEMENT_TABLE_MAP);
+        engineConf.REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
+        loadReplacementFile(engineConf.getReplacementFieldFilename(), engineConf.REPLACEMENT_FIELD_MAP);
+        engineConf.REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
         // FIXME: load data from config file!
         database.setName("callisto");
         engineConf.setDatabase(database);
         engineConf.setDatabaseType(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9);
-        
+
         switch (engineConf.getDatabaseType()) {
             case POSTGRESQL9:
                 DriverManager.registerDriver(new org.postgresql.Driver());
@@ -167,9 +168,19 @@ public class Engine {
                 break;
         }
     }
-    
-    private void loadReplacementFile(String fileName) {
-        ResourceBundle myResources = ResourceBundle.getBundle(fileName);
+
+    /**
+     * Load replacement file.
+     * @param fileName replacement file name
+     * @param map replacement map
+     */
+    private void loadReplacementFile(String fileName, Map<String, String> map) {
+        ResourceBundle resource = ResourceBundle.getBundle(fileName);
+        Enumeration<String> keys = resource.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, resource.getString(key));
+        }
     }
 
     /**

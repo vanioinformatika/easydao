@@ -88,26 +88,18 @@ public class EngineConfiguration {
     private Database database;
     private String replacementTableFilename = "replacement-table";
     private String replacementFieldFilename = "replacement-field";
-
+    
     /* Replacement map for tables. Empty string value means it has been skipped from the model. */
-    public static Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
-
-    static {
-        REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME");
-    }
+    public Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
 
     /* Replacement map for fields. Empty string value means it has been skipped from the model. */
-    public static Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
+    public Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
 
-    static {
-        REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME");
-    }
-
-    static public Map<String, String> getReplacementNameOfTables() {
+    public Map<String, String> getReplacementNameOfTables() {
         return REPLACEMENT_TABLE_MAP;
     }
 
-    static public Map<String, String> getReplacementNameOfFields() {
+    public Map<String, String> getReplacementNameOfFields() {
         return REPLACEMENT_FIELD_MAP;
     }
 
