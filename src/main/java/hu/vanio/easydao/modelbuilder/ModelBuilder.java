@@ -177,7 +177,9 @@ public class ModelBuilder {
                     boolean primaryKey = getPrimaryKeyFieldNameList(tableName).indexOf(fieldName) >= 0;
                     String dbType = rs.getString("DATA_TYPE");
                     String comment = rs.getString("COMMENTS");
-
+                    if (comment == null) {
+                        comment = EMPTY_COMMENT;
+                    }
                     String javaName = ((ModelBuilderConfig) config).getReplacementName(config.getReplacementNameOfFields(), tableName + "." + fieldName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then field has been skipped from the model
