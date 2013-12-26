@@ -16,7 +16,7 @@ public class ${t.javaName} implements java.io.Serializable {
 
     <#list t.fieldList as field>
     /* ${field.comment}. Database: ${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if> */
-    private ${field.javaTypeAsString} ${field.javaName};
+    private <#if field.javaTypeAsString == 'Clob'>String<#elseif field.javaTypeAsString == 'Blob'>Byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName};
     </#list>
 
     /** Default constructor. */
@@ -28,7 +28,7 @@ public class ${t.javaName} implements java.io.Serializable {
      * @param ${field.javaName} ${field.comment}
     </#list>
      */
-    public ${t.javaName}(<#list t.fieldList as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list>) {
+    public ${t.javaName}(<#list t.fieldList as field><#if field.javaTypeAsString == 'Clob'>String<#elseif field.javaTypeAsString == 'Blob'>Byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}<#if field_has_next>, </#if></#list>) {
         <#list t.fieldList as field>
         this.${field.javaName} = ${field.javaName};
         </#list>
@@ -40,7 +40,7 @@ public class ${t.javaName} implements java.io.Serializable {
      * <br>${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if>
      * @return ${field.comment}
      */
-    public ${field.javaTypeAsString} get${field.javaName?cap_first}() {
+    public <#if field.javaTypeAsString == 'Clob'>String<#elseif field.javaTypeAsString == 'Blob'>Byte[]<#else>${field.javaTypeAsString}</#if> get${field.javaName?cap_first}() {
         return this.${field.javaName};
     }
     
@@ -49,7 +49,7 @@ public class ${t.javaName} implements java.io.Serializable {
      * <br>${field.dbName}, ${field.dbType}, <#if field.primaryKey>primary key, </#if><#if field.nullable>not nullable.<#else>nullable.</#if>
      * @param ${field.comment}
      */
-    public void set${field.javaName?cap_first}(${field.javaTypeAsString} ${field.javaName}) {
+    public void set${field.javaName?cap_first}(<#if field.javaTypeAsString == 'Clob'>String<#elseif field.javaTypeAsString == 'Blob'>Byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}) {
         return this.${field.javaName} = ${field.javaName};
     }
 
