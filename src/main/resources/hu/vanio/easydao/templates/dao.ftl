@@ -2,10 +2,13 @@
 package ${e.packageOfJavaDao};
 
 import ${e.packageOfJavaModel}.${t.javaName};
+
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
@@ -30,25 +33,47 @@ public class ${t.javaName}${e.daoPostfix} implements GenericDao, RowMapper<${t.j
     protected SimpleJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void setDataSource(DataSource dataSource) {
+    public void setDataSource(@Qualifier("${e.database.name}") DataSource dataSource) {
         this.dataSource = dataSource;
         this.jdbcTemplate = new SimpleJdbcTemplate(dataSource);
     }
 
-    /**
-     * Load data by primary key(s).
-    <#list t.fieldList as field>
-        <#if field.primaryKey>
-    * @param ${field.javaName} ${field.comment}
+    @Override
+    public ${t.javaName} mapRow(ResultSet rs, int rowNum) throws SQLException {
+        String tmp;
+        <#list t.fieldList as field>
+        <#if field.readAsString>
+        ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
+        <#else>
+        ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
         </#if>
-    </#list>
+        </#list>
+        return new ${t.javaName} (<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>)
+    }
+
+    /**
+     * Reads a domain object with the specified primary key from the datastore 
+     <#list t.pkFields as field>
+     * @param ${field.javaName} ${field.comment}
+     </#list>
      * @return ${t.javaName} instance
-     * @throws DataAccessException instance with the given pk(s) has not found.
      */
     @Override
-    public ${t.javaName} get(<#list t.fieldList as field><#if field.primaryKey>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#if></#list>) throws DataAccessException {
-        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list t.fieldList as field><#if field.primaryKey>${field.dbName}<#if field_has_next> = ? and </#if></#if></#list>";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, this, <#list t.fieldList as field><#if field.primaryKey>${field.javaName}<#if field_has_next>, </#if></#if></#list>);
+    public ${t.javaName} read(<#list t.pkFields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list>) {
+        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, this, <#list t.pkFields as field>${field.javaName}<#if field_has_next>, </#if></#list>);
         return retVal;
     }
+
+    /**
+     * Reads all instances of the domain object from the datastore
+     * @return All instances of the domain object
+     */
+    @Override
+    public List<${t.javaName}> readAll() {
+        String query = "select " + SELECTED_FIELDS + " from ${t.dbName}";
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, this);
+        return retVal;
+    }
+
 }
