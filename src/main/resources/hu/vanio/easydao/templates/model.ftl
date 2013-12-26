@@ -50,7 +50,7 @@ public class ${t.javaName} implements hu.vanio.easydao.core.Model, java.io.Seria
      * @param ${field.comment}
      */
     public void set${field.javaName?cap_first}(<#if field.javaTypeAsString == 'Clob'>String<#elseif field.javaTypeAsString == 'Blob'>Byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}) {
-        return this.${field.javaName} = ${field.javaName};
+        this.${field.javaName} = ${field.javaName};
     }
 
     </#list>
