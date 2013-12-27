@@ -145,7 +145,7 @@ public class Engine {
         m.put("e", engineConf);
         m.put("appname", name);
         m.put("appversion", version);
-        temp.process(m, out);
+        //temp.process(m, out);
         try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt"))) {
             temp.process(m, fileWriter);
         }
@@ -175,7 +175,7 @@ public class Engine {
             m.put("e", engineConf);
             m.put("appname", name);
             m.put("appversion", version);
-            temp.process(m, out);
+            //temp.process(m, out);
             try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + ".java"))) {
                 temp.process(m, fileWriter);
             }
@@ -199,16 +199,20 @@ public class Engine {
         Files.createDirectories(dir);
         System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
-            Template temp = cfg.getTemplate("dao.ftl");
-            Writer out = new OutputStreamWriter(System.out);
-            Map<String, Object> m = new HashMap<>();
-            m.put("t", table);
-            m.put("e", engineConf);
-            m.put("appname", name);
-            m.put("appversion", version);
-            temp.process(m, out);
-            try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConf.getDaoSuffix() + ".java"))) {
-                temp.process(m, fileWriter);
+            if (table.getPkFields().size() > 0 || table.getPkField() != null) {
+                Template temp = cfg.getTemplate("dao.ftl");
+                Writer out = new OutputStreamWriter(System.out);
+                Map<String, Object> m = new HashMap<>();
+                m.put("t", table);
+                m.put("e", engineConf);
+                m.put("appname", name);
+                m.put("appversion", version);
+                //temp.process(m, out);
+                try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConf.getDaoSuffix() + ".java"))) {
+                    temp.process(m, fileWriter);
+                }
+            } else {
+                System.out.printf("*** WARN: No primary key on table %s, DAO generation skipped\n", table.getDbName());
             }
         }
     }

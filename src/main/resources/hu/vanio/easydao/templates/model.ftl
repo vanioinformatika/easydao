@@ -52,6 +52,40 @@ public class ${t.javaName} implements hu.vanio.easydao.core.Model, java.io.Seria
     public void set${field.javaName?cap_first}(<#if field.javaTypeAsString == 'Clob'>String<#elseif field.javaTypeAsString == 'Blob'>Byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}) {
         this.${field.javaName} = ${field.javaName};
     }
-
     </#list>
+
+    <#if t.compositePk>
+    /** Class for composite primary key fields */
+    static public class Pk implements java.io.Serializable {
+
+        <#list t.pkFields as field>
+        /** ${field.comment} */
+        private final ${field.javaTypeAsString} ${field.javaName};
+        </#list>
+
+        /**
+         * Constructs a new instance
+         <#list t.pkFields as field>
+         * @param ${field.javaName} ${field.comment}
+         </#list>
+         */
+        public Pk(<#list t.pkFields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list>) {
+            <#list t.pkFields as field>
+            this.${field.javaName} = ${field.javaName};
+            </#list>
+        }
+
+        <#list t.pkFields as field>
+        /**
+         * ${field.comment}
+         * @return The current value
+         */
+        public ${field.javaTypeAsString} get${field.javaName?cap_first}() {
+            return this.${field.javaName};
+        }
+        </#list>
+
+    }
+    </#if>
+
 }
