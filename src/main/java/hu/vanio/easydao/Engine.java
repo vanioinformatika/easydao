@@ -35,6 +35,8 @@ import hu.vanio.easydao.modelbuilder.ModelBuilder;
 import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.PostgreSql9ModelBuilderConfig;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -49,6 +51,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
@@ -80,7 +84,7 @@ public class Engine {
      * @param configFileName configuration file name.
      * @throws SQLException
      */
-    public Engine(String configFileName) throws SQLException {
+    public Engine(String configFileName) throws SQLException, IOException {
         // load configuration file to config map
         configMap = new HashMap<>();
         loadResourceBundleToMap(configFileName, configMap);
@@ -94,7 +98,7 @@ public class Engine {
      * @param configMap configuration map.
      * @throws java.sql.SQLException
      */
-    public Engine(Map<String, String> configMap) throws SQLException {
+    public Engine(Map<String, String> configMap) throws SQLException, IOException {
         this.configMap = configMap;
         this.initEngineConfiguration();
         this.initFreemarkerConfiguration();
@@ -182,7 +186,7 @@ public class Engine {
      * Engine configuration initialization.
      * @throws SQLException db connection error
      */
-    private void initEngineConfiguration() throws SQLException {
+    private void initEngineConfiguration() throws SQLException, IOException {
         engineConf = new EngineConfiguration(
                 configMap.get("database.name"),
                 EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get("databaseType")),
@@ -224,8 +228,14 @@ public class Engine {
      * @param fileName replacement file name
      * @param map replacement map
      */
-    private void loadResourceBundleToMap(String fileName, Map<String, String> map) {
-        ResourceBundle resource = ResourceBundle.getBundle(fileName);
+    private void loadResourceBundleToMap(String fileName, Map<String, String> map) throws IOException, FileNotFoundException {
+        ResourceBundle resource = null;
+        try {
+            resource = ResourceBundle.getBundle(fileName);
+        } catch (MissingResourceException mre) {
+            FileInputStream fis = new FileInputStream(fileName);
+            resource = new PropertyResourceBundle(fis);
+        }
         Enumeration<String> keys = resource.getKeys();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();

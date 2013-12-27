@@ -27,6 +27,7 @@ import hu.vanio.easydao.Engine;
 import hu.vanio.easydao.EngineConfiguration;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import org.junit.After;
@@ -56,7 +57,7 @@ public class ModelBuilderTest {
         try {
             Engine engine = new Engine("test-config-postgresql9");
             ENGINE_CONF = engine.getEngineConf();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
