@@ -35,7 +35,8 @@ public class Start {
 
     public static void main(String[] args) throws SQLException, IOException, TemplateException {
 
-        Engine e = new Engine();
+        Engine e = new Engine("test-config-postgresql9");
+        // Engine e = new Engine("test-config-oracle11");
         e.execute();
 
     }

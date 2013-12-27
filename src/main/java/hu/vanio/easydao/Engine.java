@@ -63,6 +63,9 @@ public class Engine {
     /* Application version */
     private String version = "0.0.0-SNAPSHOT";
 
+    /* Engine configuration file name */
+    private String configFileName;
+    private Map<String, String> configMap = new HashMap<>();
     private EngineConfiguration engineConf;
 
     private IModelBuilderConfig mdc;
@@ -76,7 +79,9 @@ public class Engine {
      * Init engine configuration.
      * @throws SQLException
      */
-    public Engine() throws SQLException {
+    public Engine(String configFileName) throws SQLException {
+        this.configFileName = configFileName;
+        this.initEngineConfiguration();
         this.initFreemarkerConfiguration();
     }
 
@@ -88,7 +93,6 @@ public class Engine {
      */
     public void execute() throws IOException, SQLException, TemplateException {
 
-        this.initEngineConfiguration();
         // build java model of database
         try (Connection con = DriverManager.getConnection(
                 engineConf.getUrl(),
@@ -153,7 +157,7 @@ public class Engine {
             m.put("appname", name);
             m.put("appversion", version);
             temp.process(m, out);
-            try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConf.getDaoPostfix() +".java"))) {
+            try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConf.getDaoSuffix() + ".java"))) {
                 temp.process(m, fileWriter);
             }
         }
@@ -164,13 +168,32 @@ public class Engine {
      * @throws SQLException
      */
     private void initEngineConfiguration() throws SQLException {
-        
-        // load table and field replacement files into maps
-        loadReplacementFile(engineConf.getReplacementTableFilename(), engineConf.REPLACEMENT_TABLE_MAP);
-        engineConf.REPLACEMENT_TABLE_MAP.put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
-        loadReplacementFile(engineConf.getReplacementFieldFilename(), engineConf.REPLACEMENT_FIELD_MAP);
-        engineConf.REPLACEMENT_FIELD_MAP.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
+        // load configuration file to config map
+        loadResourceBundleToMap(this.configFileName, configMap);
+        engineConf = new EngineConfiguration(
+                configMap.get("database.name"),
+                EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get("databaseType")),
+                configMap.get("url"),
+                configMap.get("username"),
+                configMap.get("password"),
+                Boolean.valueOf(configMap.get("tablePrefix")),
+                Boolean.valueOf(configMap.get("tableSuffix")),
+                Boolean.valueOf(configMap.get("fieldPrefix")),
+                Boolean.valueOf(configMap.get("fieldSuffix")),
+                configMap.get("generatedSourcePath"),
+                configMap.get("packageOfJavaModel"),
+                configMap.get("packageOfJavaDao"),
+                configMap.get("daoSuffix"),
+                configMap.get("replacementTableFilename"),
+                configMap.get("replacementFieldFilename"));
 
+        // load table and field replacement files into maps
+        loadResourceBundleToMap(engineConf.getReplacementTableFilename(), engineConf.getReplacementTableMap());
+        engineConf.getReplacementTableMap().put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
+        loadResourceBundleToMap(engineConf.getReplacementFieldFilename(), engineConf.getReplacementFieldMap());
+        engineConf.getReplacementFieldMap().put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
+
+        System.out.println("EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get(\"databaseType\")) = " + EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get("databaseType")));
         switch (engineConf.getDatabaseType()) {
             case POSTGRESQL9:
                 DriverManager.registerDriver(new org.postgresql.Driver());
@@ -184,11 +207,11 @@ public class Engine {
     }
 
     /**
-     * Load replacement file.
+     * Load resource bundle to map.
      * @param fileName replacement file name
      * @param map replacement map
      */
-    private void loadReplacementFile(String fileName, Map<String, String> map) {
+    private void loadResourceBundleToMap(String fileName, Map<String, String> map) {
         ResourceBundle resource = ResourceBundle.getBundle(fileName);
         Enumeration<String> keys = resource.getKeys();
         while (keys.hasMoreElements()) {
@@ -251,4 +274,12 @@ public class Engine {
     public void setEngineConf(EngineConfiguration engineConf) {
         this.engineConf = engineConf;
     }
+
+    /**
+     * @return the configFileName
+     */
+    public String getConfigFileName() {
+        return configFileName;
+    }
+
 }

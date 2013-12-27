@@ -33,39 +33,6 @@ import java.util.Map;
  */
 public class EngineConfiguration {
 
-    public EngineConfiguration(DATABASE_TYPE databaseType) {
-        this.databaseType = databaseType;
-        this.database = new Database();
-    }
-
-    /**
-     * @return the replacementTableFilename
-     */
-    public String getReplacementTableFilename() {
-        return replacementTableFilename;
-    }
-
-    /**
-     * @param replacementTableFilename the replacementTableFilename to set
-     */
-    public void setReplacementTableFilename(String replacementTableFilename) {
-        this.replacementTableFilename = replacementTableFilename;
-    }
-
-    /**
-     * @return the replacementFieldFilename
-     */
-    public String getReplacementFieldFilename() {
-        return replacementFieldFilename;
-    }
-
-    /**
-     * @param replacementFieldFilename the replacementFieldFilename to set
-     */
-    public void setReplacementFieldFilename(String replacementFieldFilename) {
-        this.replacementFieldFilename = replacementFieldFilename;
-    }
-
     /**
      * Valid database types.
      */
@@ -73,207 +40,80 @@ public class EngineConfiguration {
 
         POSTGRESQL9, ORACLE11;
     }
-    private DATABASE_TYPE databaseType;
-    // postgres
-    private String url = "jdbc:postgresql://localhost/callistof";
-    private String username = "callisto";
-    private String password = "callisto";
-    // oracle
-//    private String url = "jdbc:oracle:thin:@10.128.2.82:1521:HOTDEV";
-//    private String username = "idtvt1";
-//    private String password = "idtvt1";
-    private boolean tablePrefix = true;
-    private boolean tablePostfix = false;
-    private boolean fieldPrefix = true;
-    private boolean fieldPostfix = false;
-    private String generatedSourcePath = "/tmp/database_model/"; // required / at the end
-    private String packageOfJavaModel = "hu.vanio.easydaodemo.model";
-    private String packageOfJavaDao = "hu.vanio.easydaodemo.dao";
-    private String daoPostfix = "Dao";
+
     private Database database;
-    private String replacementTableFilename = "replacement-table";
-    private String replacementFieldFilename = "replacement-field";
+    private DATABASE_TYPE databaseType;
+    private String url;
+    private String username;
+    private String password;
+    private boolean tablePrefix;
+    private boolean tableSuffix;
+    private boolean fieldPrefix;
+    private boolean fieldSuffix;
+    private String generatedSourcePath;
+    private String packageOfJavaModel;
+    private String packageOfJavaDao;
+    private String daoSuffix;
+    private String replacementTableFilename;
+    private String replacementFieldFilename;
+
+    /**
+     * Engine configuration init.
+     * @param databaseName database name: generated Dao DataSource name in @Qualifier annotation
+     * @param databaseType database type: ORACLE11, POSTGRESQL9
+     * @param url db connection url
+     * @param username db connection user name
+     * @param password db connection password
+     * @param tablePrefix if true, then table name will be parsed after first _ underscore
+     * @param tableSuffix if true, then table name last part will be ignored after last underscore
+     * @param fieldPrefix if true, then field name will be parsed after first _ underscore
+     * @param fieldSuffix if true, then field name last part will be ignored after last underscore
+     * @param generatedSourcePath file system directory for generated source files
+     * @param packageOfJavaModel package name of the generated source code of the model classes
+     * @param packageOfJavaDao package name of the generated source code of the dao classes
+     * @param daoSuffix dao class's suffix, i.e.: Dao -> UserDao.java
+     * @param replacementTableFilename database table name will be replaced to given java class
+     * name in model and dao, i.e.: APPUSERS = User. APPUSERS: database table name.
+     * User: java name (and not AppUsers). If not set java name, then table will be skipped from
+     * source generation, i.e: APPUSERS =
+     * @param replacementFieldFilename field name will be replaced to given member name,
+     * i.e.: USERS.FNAME = firstName. USERS.FNAME: database table.field name.
+     * firstName: member name (and not fName). If not set java name, then field will be skipped from
+     * source generation, i.e: USERS.FNAME =
+     */
+    public EngineConfiguration(String databaseName, DATABASE_TYPE databaseType, String url, String username, String password,
+            boolean tablePrefix, boolean tableSuffix, boolean fieldPrefix, boolean fieldSuffix,
+            String generatedSourcePath, String packageOfJavaModel,
+            String packageOfJavaDao, String daoSuffix,
+            String replacementTableFilename, String replacementFieldFilename) {
+        this.database = new Database(databaseName);
+        this.databaseType = databaseType;
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.tablePrefix = tablePrefix;
+        this.tableSuffix = tableSuffix;
+        this.fieldPrefix = fieldPrefix;
+        this.fieldSuffix = fieldSuffix;
+        this.generatedSourcePath = generatedSourcePath;
+        this.packageOfJavaModel = packageOfJavaModel;
+        this.packageOfJavaDao = packageOfJavaDao;
+        this.daoSuffix = daoSuffix;
+        this.replacementTableFilename = replacementTableFilename;
+        this.replacementFieldFilename = replacementFieldFilename;
+    }
 
     /* Replacement map for tables. Empty string value means it has been skipped from the model. */
-    public Map<String, String> REPLACEMENT_TABLE_MAP = new HashMap<>();
+    private Map<String, String> replacementTableMap = new HashMap<>();
 
     /* Replacement map for fields. Empty string value means it has been skipped from the model. */
-    public Map<String, String> REPLACEMENT_FIELD_MAP = new HashMap<>();
-
-    public Map<String, String> getReplacementNameOfTables() {
-        return REPLACEMENT_TABLE_MAP;
-    }
-
-    public Map<String, String> getReplacementNameOfFields() {
-        return REPLACEMENT_FIELD_MAP;
-    }
-
-    /**
-     * @return the url
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * @param url the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
-     * @return the username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * @return the tablePrefix
-     */
-    public boolean isTablePrefix() {
-        return tablePrefix;
-    }
-
-    /**
-     * @param tablePrefix the tablePrefix to set
-     */
-    public void setTablePrefix(boolean tablePrefix) {
-        this.tablePrefix = tablePrefix;
-    }
-
-    /**
-     * @return the tablePostfix
-     */
-    public boolean isTablePostfix() {
-        return tablePostfix;
-    }
-
-    /**
-     * @param tablePostfix the tablePostfix to set
-     */
-    public void setTablePostfix(boolean tablePostfix) {
-        this.tablePostfix = tablePostfix;
-    }
-
-    /**
-     * @return the fieldPrefix
-     */
-    public boolean isFieldPrefix() {
-        return fieldPrefix;
-    }
-
-    /**
-     * @param fieldPrefix the fieldPrefix to set
-     */
-    public void setFieldPrefix(boolean fieldPrefix) {
-        this.fieldPrefix = fieldPrefix;
-    }
-
-    /**
-     * @return the fieldPostfix
-     */
-    public boolean isFieldPostfix() {
-        return fieldPostfix;
-    }
-
-    /**
-     * @param fieldPostfix the fieldPostfix to set
-     */
-    public void setFieldPostfix(boolean fieldPostfix) {
-        this.fieldPostfix = fieldPostfix;
-    }
-
-    /**
-     * @return the generatedSourcePath
-     */
-    public String getGeneratedSourcePath() {
-        return generatedSourcePath;
-    }
-
-    /**
-     * @param generatedSourcePath the generatedSourcePath to set
-     */
-    public void setGeneratedSourcePath(String generatedSourcePath) {
-        this.generatedSourcePath = generatedSourcePath;
-    }
-
-    /**
-     * @return the packageOfJavaModel
-     */
-    public String getPackageOfJavaModel() {
-        return packageOfJavaModel;
-    }
-
-    /**
-     * @param packageOfJavaModel the packageOfJavaModel to set
-     */
-    public void setPackageOfJavaModel(String packageOfJavaModel) {
-        this.packageOfJavaModel = packageOfJavaModel;
-    }
-
-    /**
-     * @return the packageOfJavaDao
-     */
-    public String getPackageOfJavaDao() {
-        return packageOfJavaDao;
-    }
-
-    /**
-     * @param packageOfJavaDao the packageOfJavaDao to set
-     */
-    public void setPackageOfJavaDao(String packageOfJavaDao) {
-        this.packageOfJavaDao = packageOfJavaDao;
-    }
-
-    /**
-     * @return the daoPostfix
-     */
-    public String getDaoPostfix() {
-        return daoPostfix;
-    }
-
-    /**
-     * @param daoPostfix the daoPostfix to set
-     */
-    public void setDaoPostfix(String daoPostfix) {
-        this.daoPostfix = daoPostfix;
-    }
+    private Map<String, String> replacementFieldMap = new HashMap<>();
 
     /**
      * @return the database
      */
     public Database getDatabase() {
         return database;
-    }
-
-    /**
-     * @param database the database to set
-     */
-    public void setDatabase(Database database) {
-        this.database = database;
     }
 
     /**
@@ -284,10 +124,121 @@ public class EngineConfiguration {
     }
 
     /**
-     * @param databaseType the databaseType to set
+     * @return the url
      */
-    public void setDatabaseType(DATABASE_TYPE databaseType) {
-        this.databaseType = databaseType;
+    public String getUrl() {
+        return url;
     }
 
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @return the tablePrefix
+     */
+    public boolean isTablePrefix() {
+        return tablePrefix;
+    }
+
+    /**
+     * @return the tableSuffix
+     */
+    public boolean isTableSuffix() {
+        return tableSuffix;
+    }
+
+    /**
+     * @return the fieldPrefix
+     */
+    public boolean isFieldPrefix() {
+        return fieldPrefix;
+    }
+
+    /**
+     * @return the fieldSuffix
+     */
+    public boolean isFieldSuffix() {
+        return fieldSuffix;
+    }
+
+    /**
+     * @return the generatedSourcePath
+     */
+    public String getGeneratedSourcePath() {
+        return generatedSourcePath;
+    }
+
+    /**
+     * @return the packageOfJavaModel
+     */
+    public String getPackageOfJavaModel() {
+        return packageOfJavaModel;
+    }
+
+    /**
+     * @return the packageOfJavaDao
+     */
+    public String getPackageOfJavaDao() {
+        return packageOfJavaDao;
+    }
+
+    /**
+     * @return the daoSuffix
+     */
+    public String getDaoSuffix() {
+        return daoSuffix;
+    }
+
+    /**
+     * @return the replacementTableFilename
+     */
+    public String getReplacementTableFilename() {
+        return replacementTableFilename;
+    }
+
+    /**
+     * @return the replacementFieldFilename
+     */
+    public String getReplacementFieldFilename() {
+        return replacementFieldFilename;
+    }
+
+    /**
+     * @return the replacementTableMap
+     */
+    public Map<String, String> getReplacementTableMap() {
+        return replacementTableMap;
+    }
+
+    /**
+     * @param replacementTableMap the replacementTableMap to set
+     */
+    public void setReplacementTableMap(Map<String, String> replacementTableMap) {
+        this.replacementTableMap = replacementTableMap;
+    }
+
+    /**
+     * @return the replacementFieldMap
+     */
+    public Map<String, String> getReplacementFieldMap() {
+        return replacementFieldMap;
+    }
+
+    /**
+     * @param replacementFieldMap the replacementFieldMap to set
+     */
+    public void setReplacementFieldMap(Map<String, String> replacementFieldMap) {
+        this.replacementFieldMap = replacementFieldMap;
+    }
 }

@@ -34,11 +34,19 @@ import java.util.List;
 public class Database {
 
     /* database name (dataSource) */
-    private String name = "DatabaseNameFromConfig";
+    private String name;
     /* model creation date */
     private Timestamp modelCreationDate = new Timestamp(System.currentTimeMillis());
     /** Database's tables */
     private List<Table> tableList;
+
+    /**
+     * Create database object with database name.
+     * @param name database name. It will be set for @Qualifier(name=databaseName) in Dao classes as DataSource name!
+     */
+    public Database(String name) {
+        this.name = name;
+    }
 
     /**
      * Add table to database model.
@@ -59,24 +67,10 @@ public class Database {
     }
 
     /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * @return the modelCreationDate
      */
     public Timestamp getModelCreationDate() {
         return modelCreationDate;
-    }
-
-    /**
-     * @param modelCreationDate the modelCreationDate to set
-     */
-    public void setModelCreationDate(Timestamp modelCreationDate) {
-        this.modelCreationDate = modelCreationDate;
     }
 
     /**

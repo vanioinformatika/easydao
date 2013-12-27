@@ -97,14 +97,14 @@ public class ModelBuilder {
                     if (tableComment == null) {
                         tableComment = EMPTY_COMMENT;
                     }
-                    String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementNameOfTables(), tableName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementTableMap(), tableName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then table has been skipped from the model
                         System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
                         continue;
                     }
                     if (javaName == null) {
-                        javaName = createJavaName(tableName, true, engineConf.isTablePrefix(), engineConf.isTablePostfix());
+                        javaName = createJavaName(tableName, true, engineConf.isTablePrefix(), engineConf.isTableSuffix());
                     }
                     Table table = new Table(tableName, tableComment, javaName, null);
 
@@ -162,14 +162,14 @@ public class ModelBuilder {
                     if (comment == null) {
                         comment = EMPTY_COMMENT;
                     }
-                    String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementNameOfFields(), tableName + "." + fieldName);
+                    String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementFieldMap(), tableName + "." + fieldName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then field has been skipped from the model
                         System.out.println("field name: " + tableName + "." + fieldName + " " + SKIPPED_FROM_MODEL);
                         continue;
                     }
                     if (javaName == null) {
-                        javaName = createJavaName(fieldName, false, engineConf.isFieldPrefix(), engineConf.isFieldPostfix());
+                        javaName = createJavaName(fieldName, false, engineConf.isFieldPrefix(), engineConf.isFieldSuffix());
                     }
                     Class javaType = config.getJavaType(dbType);
                     Field field = new Field(primaryKey, nullable, array, fieldName, dbType, comment, javaName, javaType);

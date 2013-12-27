@@ -23,9 +23,11 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
+import hu.vanio.easydao.Engine;
 import hu.vanio.easydao.EngineConfiguration;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
+import java.sql.SQLException;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -35,16 +37,29 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * ModelBuilder abstract class implemented methods' unit test.
+ * ModelBuilder unit test.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class ModelBuilderTest {
 
+    /* Engine test configuration */
+    static EngineConfiguration ENGINE_CONF;
+
     public ModelBuilderTest() {
     }
 
+    /**
+     * Init EngineConfiguration ENGINE_CONF.
+     */
     @BeforeClass
     public static void setUpClass() {
+        try {
+            Engine engine = new Engine("test-config-postgresql9");
+            ENGINE_CONF = engine.getEngineConf();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     @AfterClass
@@ -80,7 +95,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPrefix() {
         System.out.println("testCreateJavaName_SimpleString");
         String dbName = "CUS_CUSTOMER";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, false);
         System.out.println("testCreateJavaName_SimpleString = " + dbName + " -> " + result);
@@ -94,7 +109,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPostfix() {
         System.out.println("testCreateJavaName_StringWithPostfix");
         String dbName = "CUSTOMER_CUS";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, true);
         System.out.println("testCreateJavaName_StringWithPostfix = " + dbName + " -> " + result);
@@ -108,7 +123,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_XXX";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -122,7 +137,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_StringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_StringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -136,7 +151,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_MoreStringWithoutPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix");
         String dbName = "CUSTOMER_ORDERS";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, false, false);
         System.out.println("testCreateJavaName_MoreStringWithoutPrefixAndPostfix = " + dbName + " -> " + result);
@@ -150,7 +165,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_MoreStringWithPrefixAndPostfix() {
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER_ORDERS_ORD";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "CustomerOrders";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_MoreStringWithPrefixAndPostfix = " + dbName + " -> " + result);
@@ -165,7 +180,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar() {
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar");
         String dbName = "CUS_CUSTOMER_ORDERS_LIST_ORD";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "customerOrdersList";
         String result = instance.createJavaName(dbName, false, true, true);
         System.out.println("testCreateJavaName_ThreeStringWithPrefixAndPostfixAndLowercaseFirstChar = " + dbName + " -> " + result);
@@ -180,7 +195,7 @@ public class ModelBuilderTest {
     public void testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName() {
         System.out.println("testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName");
         String dbName = "CUSTOMER";
-        ModelBuilder instance = new ModelBuilder(null, new EngineConfiguration(EngineConfiguration.DATABASE_TYPE.POSTGRESQL9), new PostgreSql9ModelBuilderConfig());
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
         String expResult = "Customer";
         String result = instance.createJavaName(dbName, true, true, true);
         System.out.println("testCreateJavaName_PrefixAndPostfixButNoPrefixInDatabaseName = " + dbName + " -> " + result);
