@@ -166,7 +166,7 @@ public class Engine {
                 + fileSeparator
                 + engineConf.getDatabase().getName());
         Files.createDirectories(dir);
-        System.out.println("Write model classes into " + dir.toAbsolutePath());
+        System.out.println("\nWrite model classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
             Template temp = cfg.getTemplate("model.ftl");
             Writer out = new OutputStreamWriter(System.out);
@@ -197,6 +197,7 @@ public class Engine {
                 + fileSeparator
                 + engineConf.getDatabase().getName());
         Files.createDirectories(dir);
+        System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
             Template temp = cfg.getTemplate("dao.ftl");
             Writer out = new OutputStreamWriter(System.out);
