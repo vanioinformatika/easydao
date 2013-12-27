@@ -29,6 +29,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
+import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
@@ -124,9 +125,31 @@ public class Engine {
             modelBuilder.build();
         }
 
+        // create helpers and meta data file
+        generateMetadataFile();
         // create java source codes: model and dao
         generateModelClasses();
         generateDaoClasses();
+    }
+
+    private void generateMetadataFile() throws IOException, TemplateException {
+        Path dir = Paths.get(engineConf.getGeneratedSourcePath());
+        Files.createDirectories(dir);
+        
+        System.out.println("\nGenerate meta data about database: " + dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt");
+        
+        List<Table> tableList = engineConf.getDatabase().getTableList();
+        Template temp = cfg.getTemplate("metadata.ftl");
+        Writer out = new OutputStreamWriter(System.out);
+        Map<String, Object> m = new HashMap<>();
+        m.put("tList", tableList);
+        m.put("e", engineConf);
+        m.put("appname", name);
+        m.put("appversion", version);
+        temp.process(m, out);
+        try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt"))) {
+            temp.process(m, fileWriter);
+        }
     }
 
     /**
