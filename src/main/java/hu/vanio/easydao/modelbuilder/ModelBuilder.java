@@ -222,6 +222,15 @@ public class ModelBuilder {
             // fieldName does not contain _ character
             result = dbName.toLowerCase();
         }
+        
+        if (Character.isDigit(result.charAt(0))) {
+            result = "X" + result;
+        }
+        
+        if (isRestrictedWord(result.toLowerCase())) {
+            result = "X" + result;
+        }
+        
         // handling first character
         if (firstCharToUpperCase) {
             // upper case
@@ -259,4 +268,8 @@ public class ModelBuilder {
         return result;
     }
 
+    protected boolean isRestrictedWord(String word) {
+        return word.matches("class|interface|public|private|protected|package|this|int|long|byte|short|float|double|boolean|for|while|goto|if|do");
+    }
+    
 }

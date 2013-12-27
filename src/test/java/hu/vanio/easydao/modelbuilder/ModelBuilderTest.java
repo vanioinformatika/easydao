@@ -232,4 +232,34 @@ public class ModelBuilderTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+    
+    /**
+     * Test of createJavaName method with prefix BUT ther is no prefix in database name, of class ModelBuilder.
+     * This test for table's field name.
+     */
+    @Test
+    public void testIsRestrictedWord() {
+        System.out.println("testIsRestrictedWord");
+        ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig());
+//        class|this|int|long|byte|short|float|double|boolean|for|while|goto|if|do
+        assertTrue(instance.isRestrictedWord("class"));
+        assertTrue(instance.isRestrictedWord("interface"));
+        assertTrue(instance.isRestrictedWord("public"));
+        assertTrue(instance.isRestrictedWord("private"));
+        assertTrue(instance.isRestrictedWord("protected"));
+        assertTrue(instance.isRestrictedWord("package"));
+        assertTrue(instance.isRestrictedWord("this"));
+        assertTrue(instance.isRestrictedWord("int"));
+        assertTrue(instance.isRestrictedWord("long"));
+        assertTrue(instance.isRestrictedWord("short"));
+        assertTrue(instance.isRestrictedWord("byte"));
+        assertTrue(instance.isRestrictedWord("float"));
+        assertTrue(instance.isRestrictedWord("double"));
+        assertTrue(instance.isRestrictedWord("boolean"));
+        assertTrue(instance.isRestrictedWord("for"));
+        assertTrue(instance.isRestrictedWord("while"));
+        assertTrue(instance.isRestrictedWord("goto"));
+        assertTrue(instance.isRestrictedWord("if"));
+        assertTrue(instance.isRestrictedWord("do"));
+    }
 }
