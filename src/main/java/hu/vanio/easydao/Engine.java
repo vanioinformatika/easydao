@@ -29,7 +29,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
-import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
@@ -192,7 +191,11 @@ public class Engine {
         // TODO: generateLicence();
         List<Table> tableList = engineConf.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConf.getGeneratedSourcePath() + fileSeparator + engineConf.getPackageOfJavaDao().replace(".", fileSeparator));
+        Path dir = Paths.get(engineConf.getGeneratedSourcePath()
+                + fileSeparator
+                + engineConf.getPackageOfJavaDao().replace(".", fileSeparator)
+                + fileSeparator
+                + engineConf.getDatabase().getName());
         Files.createDirectories(dir);
         for (Table table : tableList) {
             Template temp = cfg.getTemplate("dao.ftl");
