@@ -1,7 +1,7 @@
 // GENERATED FILE, DO NOT MODIFY! YOUR MODIFICATION WILL BE LOST!
-package ${e.packageOfJavaDao};
+package ${e.packageOfJavaDao}.${e.database.name};
 
-import ${e.packageOfJavaModel}.${t.javaName};
+import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -9,11 +9,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,19 +29,20 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 <#if t.compositePk>
-public class ${t.javaName}${e.daoSuffix} implements Dao<${t.javaName}, ${t.javaName}.Pk>, RowMapper<${t.javaName}> {
+public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.javaName}.Pk>, RowMapper<${t.javaName}> {
 <#else>
-public class ${t.javaName}${e.daoSuffix} implements Dao<${t.javaName}, ${t.pkField.javaTypeAsString}>, RowMapper<${t.javaName}> {
+public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.pkField.javaTypeAsString}>, RowMapper<${t.javaName}> {
 </#if>
 
     static final protected String SELECTED_FIELDS = "<#list t.fieldList as field>${field.dbName}<#if field_has_next>, </#if></#list>";
 
-    protected SimpleJdbcTemplate jdbcTemplate;
+    protected DataSource dataSource;
+    protected JdbcTemplate jdbcTemplate;
 
     @Autowired
     public void setDataSource(@Qualifier("${e.database.name}") DataSource dataSource) {
         this.dataSource = dataSource;
-        this.jdbcTemplate = new SimpleJdbcTemplate(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
@@ -69,10 +73,10 @@ public class ${t.javaName}${e.daoSuffix} implements Dao<${t.javaName}, ${t.pkFie
     </#if>
         <#if t.compositePk>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, this, <#list t.pkFields as field> pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, (RowMapper<${t.javaName}>)this, <#list t.pkFields as field> pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
         <#else>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where ${t.pkField.dbName} = ?";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, this, ${t.pkField.javaName});
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, (RowMapper<${t.javaName}>)this, ${t.pkField.javaName});
         </#if>
         return retVal;
     }
@@ -84,8 +88,40 @@ public class ${t.javaName}${e.daoSuffix} implements Dao<${t.javaName}, ${t.pkFie
     @Override
     public List<${t.javaName}> readAll() {
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName}";
-        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, this);
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, (RowMapper<${t.javaName}>)this);
         return retVal;
+    }
+
+    /**
+     * Creates a new primary key instance on the specified domain object instance
+     * @param instance The domain object instance
+     */
+    public void createPk(${t.javaName} instance) {
+    }
+
+    /**
+     * Creates a new domain object in the datastore based on the specified instance
+     * @param instance The domain object instance to create
+     * @param createPk Indicates whether a new primary key needs to be created
+     * @return The re-read updated domain object instance (it needs to be re-read because of the computed fields)
+     */
+    @Override
+    public ${t.javaName} create(${t.javaName} instance, boolean createPk) {
+        String sql = "insert into ${t.dbName} (<#list t.fieldList as field>${field.dbName}<#if field_has_next>,</#if></#list>) values (<#list t.fieldList as field>?<#if field_has_next>,</#if></#list>)";
+        if (createPk) createPk(instance);
+        Object[] params = new Object[] {
+            <#list t.fieldList as field>
+            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+            </#list>
+        };
+        this.jdbcTemplate.update(sql, params);
+
+        <#if t.compositePk>
+        ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        return read(pk);
+        <#else>
+        return read(instance.get${t.pkField.javaName?cap_first}());
+        </#if>
     }
 
 }
