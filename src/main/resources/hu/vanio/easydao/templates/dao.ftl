@@ -48,7 +48,7 @@ public class ${t.javaName}${e.daoSuffix} implements GenericDao, RowMapper<${t.ja
         ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
         </#if>
         </#list>
-        return new ${t.javaName} (<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>)
+        return new ${t.javaName} (<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
     }
 
     /**
