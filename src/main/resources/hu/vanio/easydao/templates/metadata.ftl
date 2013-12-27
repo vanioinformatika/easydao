@@ -77,10 +77,10 @@ ${t.dbName?right_pad(50)} ${t.javaName?right_pad(50)} ${t.fieldList?size?left_pa
 # FIELDS
 #
 
-${"TABLE.FIELD NAME"?right_pad(70)} ${"JAVA NAME"?right_pad(30)} ${"DB TYPE"?right_pad(20)} ${"JAVA TYPE"?right_pad(10)} ${"PK"?right_pad(5)} ${"NULLABLE"?right_pad(9)} ${"ARRAY"?right_pad(6)} COMMENT
+${"TABLE.FIELD NAME"?right_pad(70)} ${"JAVA NAME"?right_pad(30)} ${"DB TYPE"?right_pad(30)} ${"JAVA TYPE"?right_pad(10)} ${"PK"?right_pad(5)} ${"NULLABLE"?right_pad(9)} ${"ARRAY"?right_pad(6)} COMMENT
 <#list tList as t>
 <#list t.fieldList as f>
-${"${t.dbName}.${f.dbName}"?right_pad(70)} ${f.javaName?right_pad(30)} ${f.dbType?right_pad(20)} ${f.javaTypeAsString?right_pad(10)} ${"${f.primaryKey?c}"?right_pad(5)} ${"${f.nullable?c}"?right_pad(9)} ${"${f.array?c}"?right_pad(6)} ${f.comment}
+${"${t.dbName}.${f.dbName}"?right_pad(70)} ${f.javaName?right_pad(30)} ${f.dbType?right_pad(30)} ${f.javaTypeAsString?right_pad(10)} ${"${f.primaryKey?c}"?right_pad(5)} ${"${f.nullable?c}"?right_pad(9)} ${"${f.array?c}"?right_pad(6)} ${f.comment}
 </#list>
 </#list>
 
