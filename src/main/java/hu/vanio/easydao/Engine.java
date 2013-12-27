@@ -65,7 +65,7 @@ public class Engine {
 
     /* Engine configuration file name */
     private String configFileName;
-    private Map<String, String> configMap = new HashMap<>();
+    private Map<String, String> configMap;
     private EngineConfiguration engineConf;
 
     private IModelBuilderConfig mdc;
@@ -82,6 +82,7 @@ public class Engine {
      */
     public Engine(String configFileName) throws SQLException {
         // load configuration file to config map
+        configMap = new HashMap<>();
         loadResourceBundleToMap(configFileName, configMap);
         this.configFileName = configFileName;
         this.initEngineConfiguration();
@@ -94,6 +95,7 @@ public class Engine {
      * @throws java.sql.SQLException
      */
     public Engine(Map<String, String> configMap) throws SQLException {
+        this.configMap = configMap;
         this.initEngineConfiguration();
         this.initFreemarkerConfiguration();
     }
