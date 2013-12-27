@@ -135,9 +135,9 @@ public class Engine {
     private void generateMetadataFile() throws IOException, TemplateException {
         Path dir = Paths.get(engineConf.getGeneratedSourcePath());
         Files.createDirectories(dir);
-        
+
         System.out.println("\nGenerate meta data about database: " + dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt");
-        
+
         List<Table> tableList = engineConf.getDatabase().getTableList();
         Template temp = cfg.getTemplate("metadata.ftl");
         Writer out = new OutputStreamWriter(System.out);
@@ -161,7 +161,11 @@ public class Engine {
         // TODO: generateLicence();
         List<Table> tableList = engineConf.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConf.getGeneratedSourcePath() + fileSeparator + engineConf.getPackageOfJavaModel().replace(".", fileSeparator));
+        Path dir = Paths.get(engineConf.getGeneratedSourcePath()
+                + fileSeparator
+                + engineConf.getPackageOfJavaModel().replace(".", fileSeparator)
+                + fileSeparator
+                + engineConf.getDatabase().getName());
         Files.createDirectories(dir);
         System.out.println("Write model classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
