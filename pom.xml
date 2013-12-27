@@ -32,7 +32,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>EasyDao</name>
+    <name>easydao</name>
     <url>https://github.com/vanioinformatika/easydao</url>
     <description>EasyDao is a lightweight, fast and flexible model and Dao code generator.</description>
     
