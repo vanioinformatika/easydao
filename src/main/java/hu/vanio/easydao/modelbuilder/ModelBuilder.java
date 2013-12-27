@@ -31,7 +31,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract class for model builders.
@@ -51,8 +53,8 @@ public class ModelBuilder {
     protected Connection con;
     /* database configuration for model builder */
     protected IModelBuilderConfig config;
-    /* primary key field name list */
-    private List<String> pkFieldNameList = new ArrayList<>();
+    /* primary keys for tables */
+    private Map<String, List<String>> pkFieldsOfTabels = new HashMap<>();
 
     /**
      * Model builder constructor.
@@ -123,18 +125,19 @@ public class ModelBuilder {
      * @return List of name of primary keys.
      */
     protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException {
-        if (!pkFieldNameList.isEmpty()) {
-            // caching
-            return pkFieldNameList;
-        }
-        try (PreparedStatement ps = con.prepareStatement(config.getSelectForPrimaryKeyFieldNameList())) {
-            ps.setString(1, tableName);
-            try (ResultSet rs = ps.executeQuery();) {
-                while (rs.next()) {
-                    String fieldName = rs.getString("COLUMN_NAME");
-                    pkFieldNameList.add(fieldName);
+        List<String> pkFieldNameList = pkFieldsOfTabels.get(tableName);
+        if (pkFieldNameList == null) {
+            pkFieldNameList = new ArrayList<>();
+            try (PreparedStatement ps = con.prepareStatement(config.getSelectForPrimaryKeyFieldNameList())) {
+                ps.setString(1, tableName);
+                try (ResultSet rs = ps.executeQuery();) {
+                    while (rs.next()) {
+                        String fieldName = rs.getString("COLUMN_NAME");
+                        pkFieldNameList.add(fieldName);
+                    }
                 }
             }
+            pkFieldsOfTabels.put(tableName, pkFieldNameList);
         }
         return pkFieldNameList;
     }
