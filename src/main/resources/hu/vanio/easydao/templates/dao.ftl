@@ -124,4 +124,21 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         </#if>
     }
 
+    /**
+     * Updates the specified domain object instance
+     * @param instance The domain object instance to update
+     * @return The re-read updated domain object instance (it needs to be re-read because of the computed fields)
+     */
+    public ${t.javaName} update(${t.javaName} instance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    /**
+     * Deletes the specified domain object instance
+     * @param instance The domain object instance to delete
+     */
+    public void delete(${t.javaName} instance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }
