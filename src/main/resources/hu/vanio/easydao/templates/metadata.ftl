@@ -90,11 +90,9 @@ ${"${t.dbName}.${f.dbName}"?right_pad(70)} ${f.javaName?right_pad(30)} ${f.dbTyp
 
 ${"TABLE NAME"?right_pad(50)} ${"JAVA NAME"?right_pad(30)} COMMENT
 
-<#list tList as t>
-<#assign hasPK=0>
-<#list t.fieldList as f><#if f.primaryKey><#assign hasPK=1></#if></#list>
-<#if hasPK==0>${t.dbName?right_pad(50)} ${t.javaName?right_pad(50)} ${t.comment}</#if>
-</#list>
+<#list tList as t><#assign hasPK=0><#list t.fieldList as f><#if f.primaryKey><#assign hasPK=1></#if></#list>
+<#if hasPK==0>${t.dbName?right_pad(50)} ${t.javaName?right_pad(50)} ${t.comment}
+</#if></#list>
 
 #
 # SECTION 4: Count tables and fields
