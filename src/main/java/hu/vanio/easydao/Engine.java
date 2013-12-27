@@ -76,11 +76,24 @@ public class Engine {
     static final private String fileSeparator = System.getProperty("file.separator");
 
     /**
-     * Init engine configuration.
+     * Engine configuration from configuration file.
+     * @param configFileName configuration file name.
      * @throws SQLException
      */
     public Engine(String configFileName) throws SQLException {
+        // load configuration file to config map
+        loadResourceBundleToMap(configFileName, configMap);
         this.configFileName = configFileName;
+        this.initEngineConfiguration();
+        this.initFreemarkerConfiguration();
+    }
+
+    /**
+     * Engine configuration by Map. Used by maven plugin.
+     * @param configMap configuration map.
+     * @throws java.sql.SQLException
+     */
+    public Engine(Map<String, String> configMap) throws SQLException {
         this.initEngineConfiguration();
         this.initFreemarkerConfiguration();
     }
@@ -165,11 +178,9 @@ public class Engine {
 
     /**
      * Engine configuration initialization.
-     * @throws SQLException
+     * @throws SQLException db connection error
      */
     private void initEngineConfiguration() throws SQLException {
-        // load configuration file to config map
-        loadResourceBundleToMap(this.configFileName, configMap);
         engineConf = new EngineConfiguration(
                 configMap.get("database.name"),
                 EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get("databaseType")),
