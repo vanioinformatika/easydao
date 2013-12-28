@@ -159,6 +159,36 @@ public class Table {
         return this.getPkFields().size() > 1;
     }
     
+    /** 
+     * Indicates whether this table has Blob fields
+     * @return True, if this table has Blob fields
+     */
+    public boolean isHasBlobField() {
+        boolean retVal = false;
+        for (Field field : fieldList) {
+            if (field.getJavaType() == java.sql.Blob.class) {
+                retVal = true;
+                break;
+            }
+        }
+        return retVal;
+    }
+    
+    /** 
+     * Indicates whether this table has Clob fields
+     * @return True, if this table has Clob fields
+     */
+    public boolean isHasClobField() {
+        boolean retVal = false;
+        for (Field field : fieldList) {
+            if (field.getJavaType() == java.sql.Clob.class) {
+                retVal = true;
+                break;
+            }
+        }
+        return retVal;
+    }
+    
     /**
      * Table name in database
      * @return the dbName

@@ -235,7 +235,9 @@ public class Field {
         boolean retVal = false;
         if (this.javaType != String.class 
                 && this.javaType != java.util.Date.class
-                && this.javaType != java.sql.Timestamp.class) {
+                && this.javaType != java.sql.Timestamp.class
+                && this.javaType != java.sql.Clob.class
+                && this.javaType != java.sql.Blob.class) {
             retVal = true;
         }
         return retVal;

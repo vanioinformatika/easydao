@@ -4,6 +4,8 @@ package ${e.packageOfJavaDao}.${e.database.name};
 import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
 
 import java.math.BigDecimal;
+<#if t.hasBlobField>import java.sql.Blob;</#if>
+<#if t.hasClobField>import java.sql.Clob;</#if>
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -48,14 +50,24 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
     @Override
     public ${t.javaName} mapRow(ResultSet rs, int rowNum) throws SQLException {
         String tmp;
+        <#if t.hasBlobField>Blob tmpBlob = null;</#if>
+        <#if t.hasClobField>Clob tmpClob = null;</#if>
         <#list t.fieldList as field>
         <#if field.readAsString>
         ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
         <#else>
+        <#if !field.blob && !field.clob>
         ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
         </#if>
+        </#if>
+        <#if field.blob>
+        byte[] ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
+        </#if>
+        <#if field.clob>
+        String ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
+        </#if>
         </#list>
-        return new ${t.javaName} (<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
+        return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
     }
 
     /**
@@ -96,6 +108,7 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
      * Creates a new primary key instance on the specified domain object instance
      * @param instance The domain object instance
      */
+    @Override
     public void createPk(${t.javaName} instance) {
     }
 
@@ -129,16 +142,70 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
      * @param instance The domain object instance to update
      * @return The re-read updated domain object instance (it needs to be re-read because of the computed fields)
      */
+    @Override
     public ${t.javaName} update(${t.javaName} instance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String sql = "update ${t.dbName} " +
+                     "set <#list t.nonPkFields as field>${field.dbName} = ?<#if field_has_next>, </#if></#list> " + 
+                     <#if t.compositePk>
+                     "where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
+                     <#else>
+                     "where ${t.pkField.dbName} = ?";
+                     </#if>
+
+        Object[] params = new Object[] {
+            <#list t.nonPkFields as field>
+            instance.get${field.javaName?cap_first}(),
+            </#list>
+            <#if t.compositePk>
+            <#list t.pkFields as field>
+            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+            </#list>
+            <#else>
+            instance.get${t.pkField.javaName?cap_first}()
+            </#if>
+        };
+
+        int updRows = this.jdbcTemplate.update(sql, params);
+        if (updRows != 1) {
+            throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(sql, 1, updRows);
+        }
+
+        <#if t.compositePk>
+        ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        return read(pk);
+        <#else>
+        return read(instance.get${t.pkField.javaName?cap_first}());
+        </#if>
     }
+
     
     /**
      * Deletes the specified domain object instance
      * @param instance The domain object instance to delete
      */
+    @Override
     public void delete(${t.javaName} instance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String sql = "delete from ${t.dbName} " +
+                     <#if t.compositePk>
+                     "where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
+                     <#else>
+                     "where ${t.pkField.dbName} = ?";
+                     </#if>
+
+        Object[] params = new Object[] {
+            <#if t.compositePk>
+            <#list t.pkFields as field>
+            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+            </#list>
+            <#else>
+            instance.get${t.pkField.javaName?cap_first}()
+            </#if>
+        };
+
+        int updRows = this.jdbcTemplate.update(sql, params);
+        if (updRows != 1) {
+            throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(sql, 1, updRows);
+        }
     }
 
 }
