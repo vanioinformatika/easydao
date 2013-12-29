@@ -66,8 +66,8 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
     /* see: http://www.postgresql.org/docs/current/static/datatype.html */
     static {
         JAVA_TYPE_MAP.put("boolean", Boolean.class);
-        JAVA_TYPE_MAP.put("boolean\\[\\]", Boolean[].class);
-        JAVA_TYPE_MAP.put("bytea", Byte[].class);
+        JAVA_TYPE_MAP.put("boolean\\[\\]", boolean[].class);
+        JAVA_TYPE_MAP.put("bytea", byte[].class);
         JAVA_TYPE_MAP.put("character", String.class);
         JAVA_TYPE_MAP.put("character\\([\\d]+\\)", String.class);
         JAVA_TYPE_MAP.put("character\\([\\d]+\\)\\[\\]", String[].class);
@@ -90,14 +90,14 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
         JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class);
         JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)", Double.class);
 
-        JAVA_TYPE_MAP.put("numeric\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)\\[\\]", Integer[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)\\[\\]", Long[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)\\[\\]", Long[].class);
+        JAVA_TYPE_MAP.put("numeric\\[\\]", int[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", int[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)\\[\\]", int[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)\\[\\]", long[].class);
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)\\[\\]", long[].class);
         JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)\\[\\]", String[].class);
         JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)\\[\\]", String[].class);
-        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)\\[\\]", Double[].class);
+        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)\\[\\]", double[].class);
 
         JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("timestamp with time zone", java.sql.Timestamp.class);

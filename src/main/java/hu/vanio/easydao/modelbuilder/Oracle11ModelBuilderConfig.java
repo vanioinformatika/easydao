@@ -66,7 +66,7 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
     /* see: http://docs.oracle.com/cd/B19306_01/java.102/b14188/datamap.htm */
     static {
         JAVA_TYPE_MAP.put("char|long|string|varchar|varchar2", String.class);
-        JAVA_TYPE_MAP.put("bytea|raw|long raw", Byte[].class);
+        JAVA_TYPE_MAP.put("bytea|raw|long raw", byte[].class);
         JAVA_TYPE_MAP.put("binary_integer|natural|naturaln|pls_integer|positive|positiven|signtype|int|integer|smallint", Integer.class);
         JAVA_TYPE_MAP.put("dec|decimal", BigDecimal.class);
         JAVA_TYPE_MAP.put("double precision|float", Double.class);
