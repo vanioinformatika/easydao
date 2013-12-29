@@ -1,8 +1,6 @@
 // GENERATED FILE, DO NOT MODIFY! YOUR MODIFICATION WILL BE LOST!
 package ${e.packageOfJavaDao}.${e.database.name};
 
-import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
-
 import java.math.BigDecimal;
 <#if t.hasBlobField>import java.sql.Blob;</#if>
 <#if t.hasClobField>import java.sql.Clob;</#if>
@@ -16,10 +14,11 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
 
 /**
  * ${t.javaName}${e.daoSuffix}.
@@ -31,14 +30,17 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 <#if t.compositePk>
-public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.javaName}.Pk>, RowMapper<${t.javaName}> {
+public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.javaName}.Pk> {
 <#else>
-public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.pkField.javaTypeAsString}>, RowMapper<${t.javaName}> {
+public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.pkField.javaTypeAsString}> {
 </#if>
 
+    /** Selected fields of the database table */
     static final protected String SELECTED_FIELDS = "<#list t.fieldList as field>${field.dbName}<#if field_has_next>, </#if></#list>";
 
+    /** Datasource that can be used for acquiring SQL connections */
     protected DataSource dataSource;
+    /** Runs SQL operations */
     protected JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -47,60 +49,39 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Override
-    public ${t.javaName} mapRow(ResultSet rs, int rowNum) throws SQLException {
-        String tmp;
-        <#if t.hasBlobField>Blob tmpBlob = null;</#if>
-        <#if t.hasClobField>Clob tmpClob = null;</#if>
-        <#list t.fieldList as field>
-        <#if field.readAsString>
-        ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
-        <#else>
-        <#if !field.blob && !field.clob>
-        ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
-        </#if>
-        </#if>
-        <#if field.blob>
-        byte[] ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
-        </#if>
-        <#if field.clob>
-        String ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
-        </#if>
-        </#list>
-        return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
-    }
-
     /**
      * Reads a domain object with the specified primary key from the datastore 
      <#list t.pkFields as field>
      * @param ${field.javaName} ${field.comment}
      </#list>
+     * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
      * @return ${t.javaName} instance
      */
     @Override
     <#if t.compositePk>
-    public ${t.javaName} read(${t.javaName}.Pk pk) {
+    public ${t.javaName} read(${t.javaName}.Pk pk, boolean readLobFields) {
     <#else>
-    public ${t.javaName} read(${t.pkField.javaTypeAsString} ${t.pkField.javaName}) {
+    public ${t.javaName} read(${t.pkField.javaTypeAsString} ${t.pkField.javaName}, boolean readLobFields) {
     </#if>
         <#if t.compositePk>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, (RowMapper<${t.javaName}>)this, <#list t.pkFields as field> pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), <#list t.pkFields as field> pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
         <#else>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where ${t.pkField.dbName} = ?";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, (RowMapper<${t.javaName}>)this, ${t.pkField.javaName});
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), ${t.pkField.javaName});
         </#if>
         return retVal;
     }
 
     /**
      * Reads all instances of the domain object from the datastore
+     * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
      * @return All instances of the domain object
      */
     @Override
-    public List<${t.javaName}> readAll() {
+    public List<${t.javaName}> readAll(boolean readLobFields) {
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName}";
-        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, (RowMapper<${t.javaName}>)this);
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(readLobFields));
         return retVal;
     }
 
@@ -131,9 +112,9 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
 
         <#if t.compositePk>
         ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
-        return read(pk);
+        return read(pk, false);
         <#else>
-        return read(instance.get${t.pkField.javaName?cap_first}());
+        return read(instance.get${t.pkField.javaName?cap_first}(), false);
         </#if>
     }
 
@@ -172,12 +153,11 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
 
         <#if t.compositePk>
         ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
-        return read(pk);
+        return read(pk, false);
         <#else>
-        return read(instance.get${t.pkField.javaName?cap_first}());
+        return read(instance.get${t.pkField.javaName?cap_first}(), false);
         </#if>
     }
-
     
     /**
      * Deletes the specified domain object instance
@@ -205,6 +185,50 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         int updRows = this.jdbcTemplate.update(sql, params);
         if (updRows != 1) {
             throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(sql, 1, updRows);
+        }
+    }
+
+    /** RowMapper implementation */
+    private class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
+        
+        /** Specifies whether BLOB/CLOB fields has to be read from the datastore */
+        private final boolean readLobFields;
+        
+        /**
+         * Constructs a new instance
+         * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
+         */
+        public ${t.javaName}RowMapper(boolean readLobFields) {
+            this.readLobFields = readLobFields;
+        }
+
+        @Override
+        public ${t.javaName} mapRow(ResultSet rs, int rowNum) throws SQLException {
+            String tmp;
+            <#if t.hasBlobField>Blob tmpBlob = null;</#if>
+            <#if t.hasClobField>Clob tmpClob = null;</#if>
+            <#list t.fieldList as field>
+            <#if field.readAsString>
+            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
+            <#else>
+            <#if !field.blob && !field.clob>
+            ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
+            </#if>
+            </#if>
+            <#if field.blob>
+            byte[] ${field.javaName} = null;
+            if (readLobFields) {
+                ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
+            }
+            </#if>
+            <#if field.clob>
+            String ${field.javaName} = null;
+            if (readLobFields) {
+                ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
+            }
+            </#if>
+            </#list>
+            return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
         }
     }
 
