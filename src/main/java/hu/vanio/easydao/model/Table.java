@@ -160,6 +160,21 @@ public class Table {
     }
     
     /** 
+     * Indicates whether this table has array fields
+     * @return True, if this table has array fields
+     */
+    public boolean isHasArrayField() {
+        boolean retVal = false;
+        for (Field field : fieldList) {
+            if (field.isArray()) {
+                retVal = true;
+                break;
+            }
+        }
+        return retVal;
+    }
+    
+    /** 
      * Indicates whether this table has Blob fields
      * @return True, if this table has Blob fields
      */

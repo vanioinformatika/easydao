@@ -237,7 +237,8 @@ public class Field {
                 && this.javaType != java.util.Date.class
                 && this.javaType != java.sql.Timestamp.class
                 && this.javaType != java.sql.Clob.class
-                && this.javaType != java.sql.Blob.class) {
+                && this.javaType != java.sql.Blob.class
+                && !this.javaType.isArray()) {
             retVal = true;
         }
         return retVal;

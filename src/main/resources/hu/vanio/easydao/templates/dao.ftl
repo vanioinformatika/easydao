@@ -2,8 +2,7 @@
 package ${e.packageOfJavaDao}.${e.database.name};
 
 import java.math.BigDecimal;
-<#if t.hasBlobField>import java.sql.Blob;</#if>
-<#if t.hasClobField>import java.sql.Clob;</#if>
+<#if t.hasBlobField>import java.sql.Blob;${'\n'}</#if><#if t.hasClobField>import java.sql.Clob;${'\n'}</#if><#if t.hasArrayField>import java.sql.Array;${'\n'}</#if>
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -105,7 +104,15 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         if (createPk) createPk(instance);
         Object[] params = new Object[] {
             <#list t.fieldList as field>
+            <#if field.array>
+            <#if e.databaseType.name() == 'POSTGRESQL9'>
+            hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}())<#if field_has_next>,</#if>
+            <#else>
+            FIXME: array handling is not yet implemented for Oracle
+            </#if>
+            <#else>
             instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+            </#if>
             </#list>
         };
         this.jdbcTemplate.update(sql, params);
@@ -135,7 +142,15 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
 
         Object[] params = new Object[] {
             <#list t.nonPkFields as field>
+            <#if field.array>
+            <#if e.databaseType.name() == 'POSTGRESQL9'>
+            hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()),
+            <#else>
+            FIXME: array handling is not yet implemented for Oracle
+            </#if>
+            <#else>
             instance.get${field.javaName?cap_first}(),
+            </#if>
             </#list>
             <#if t.compositePk>
             <#list t.pkFields as field>
@@ -205,13 +220,12 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         @Override
         public ${t.javaName} mapRow(ResultSet rs, int rowNum) throws SQLException {
             String tmp;
-            <#if t.hasBlobField>Blob tmpBlob = null;</#if>
-            <#if t.hasClobField>Clob tmpClob = null;</#if>
+            <#if t.hasBlobField>Blob tmpBlob;${'\n'}</#if><#if t.hasClobField>Clob tmpClob;${'\n'}</#if><#if t.hasArrayField>Array tmpArray;${'\n'}</#if>
             <#list t.fieldList as field>
             <#if field.readAsString>
             ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
             <#else>
-            <#if !field.blob && !field.clob>
+            <#if !field.blob && !field.clob && !field.array>
             ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
             </#if>
             </#if>
@@ -226,6 +240,9 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
             if (readLobFields) {
                 ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
             }
+            </#if>
+            <#if field.array>
+            ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
             </#if>
             </#list>
             return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
