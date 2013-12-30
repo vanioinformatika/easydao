@@ -23,12 +23,14 @@
  */
 package hu.vanio.easydao;
 
-import hu.vanio.easydao.model.Database;
 import java.util.HashMap;
 import java.util.Map;
 
+import hu.vanio.easydao.model.Database;
+
 /**
- * Source code generator model.
+ * Source code generator engine configuration.
+ * 
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class EngineConfiguration {
@@ -41,51 +43,102 @@ public class EngineConfiguration {
         POSTGRESQL9, ORACLE11;
     }
 
-    private Database database;
-    private DATABASE_TYPE databaseType;
-    private String url;
-    private String username;
-    private String password;
-    private boolean tablePrefix;
-    private boolean tableSuffix;
-    private boolean fieldPrefix;
-    private boolean fieldSuffix;
-    private String generatedSourcePath;
-    private String packageOfJavaModel;
-    private String packageOfJavaDao;
-    private String daoSuffix;
-    private String replacementTableFilename;
-    private String replacementFieldFilename;
+    /**
+     * Valid sequence name conventions.
+     */
+    static public enum SEQUENCE_NAME_CONVENTION {
+        /** Generate sequence names by prefixing table names with SEQ_ (e.g.: MY_TABLE_NAME -> SEQ_MY_TABLE_NAME) */
+        PREFIXED_TABLE_NAME,
+        /** Generate sequence names by prefixing field names with SEQ_ (e.g.: MY_FIELD_NAME -> SEQ_MY_FIELD_NAME) */
+        PREFIXED_FIELD_NAME,
+        /** Generate sequence names by suffixing table names with _SEQ (e.g.: MY_TABLE_NAME -> MY_TABLE_NAME_SEQ) */
+        SUFFIXED_TABLE_NAME,
+        /** Generate sequence names by suffixing field names with _SEQ (e.g.: MY_FIELD_NAME -> MY_FIELD_NAME_SEQ) */
+        SUFFIXED_FIELD_NAME,
+        /** Generate sequence names by prefixing table names with SEQ_ and suffixing them with field name (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> SEQ_MY_TABLE_NAME_MY_FIELD_NAME) */
+        PREFIXED_TABLE_NAME_WITH_FIELD_NAME, 
+        /** Generate sequence names by suffixing table names with field name and _SEQ (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> MY_TABLE_NAME_MY_FIELD_NAME_SEQ) */
+        SUFFIXED_TABLE_NAME_WITH_FIELD_NAME;
+    }
+    
+    /** Database name and other metadata */
+    private final Database database;
+    /** Database type */
+    private final DATABASE_TYPE databaseType;
+    /** Sequence naming convention of the database */
+    private final SEQUENCE_NAME_CONVENTION sequenceNameConvention;
+    /** Database connection URL */
+    private final String url;
+    /** Database connection user name */
+    private final String username;
+    /** Database connection password */
+    private final String password;
+    /** If true, then table name will be parsed after the first _ underscore */
+    private final boolean tablePrefix;
+    /** If true, then the last part of the table name will be ignored after the last underscore */
+    private final boolean tableSuffix;
+    /** If true, then field name will be parsed after the first _ underscore */
+    private final boolean fieldPrefix;
+    /** If true, then last part of the field name will be ignored after the last underscore */
+    private final boolean fieldSuffix;
+    /** File system directory for generated source files */
+    private final String generatedSourcePath;
+    /** Package name of the generated source code of the model classes */
+    private final String packageOfJavaModel;
+    /** Package name of the generated source code of the dao classes */
+    private final String packageOfJavaDao;
+    /** Suffix used for DAO class names, e.g.: Dao -> UserDao.java */
+    private final String daoSuffix;
+    /** Map of Java class names and database table names. Names not included in this list will be auto-generated.
+     *  e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
+     *  You can disable Java source generation for a certain table by putting the table name in the list with no Java class name.
+     *  e.g.: APPUSERS = */
+    private final String replacementTableFilename;
+    /** Map of Java field names and database field names. Names not included in this list will be auto-generated.
+     *  e.g.: USER.FNAME = firstName -> User.firstName instead of User.fname
+     *  You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
+     *  e.g.: USER.FNAME = */
+    private final String replacementFieldFilename;
+    
+    /** Replacement map for tables. Empty string value means it has been skipped from the model. */
+    private Map<String, String> replacementTableMap = new HashMap<>();
 
+    /** Replacement map for fields. Empty string value means it has been skipped from the model. */
+    private Map<String, String> replacementFieldMap = new HashMap<>();
+    
     /**
      * Engine configuration init.
      * @param databaseName database name: generated Dao DataSource name in @Qualifier annotation
      * @param databaseType database type: ORACLE11, POSTGRESQL9
-     * @param url db connection url
-     * @param username db connection user name
-     * @param password db connection password
-     * @param tablePrefix if true, then table name will be parsed after first _ underscore
-     * @param tableSuffix if true, then table name last part will be ignored after last underscore
-     * @param fieldPrefix if true, then field name will be parsed after first _ underscore
-     * @param fieldSuffix if true, then field name last part will be ignored after last underscore
-     * @param generatedSourcePath file system directory for generated source files
-     * @param packageOfJavaModel package name of the generated source code of the model classes
-     * @param packageOfJavaDao package name of the generated source code of the dao classes
-     * @param daoSuffix dao class's suffix, i.e.: Dao -> UserDao.java
-     * @param replacementTableFilename database table name will be replaced to given java class
-     * name in model and dao, i.e.: APPUSERS = User. APPUSERS: database table name.
-     * User: java name (and not AppUsers). If not set java name, then table will be skipped from
-     * source generation, i.e: APPUSERS =
-     * @param replacementFieldFilename field name will be replaced to given member name,
-     * i.e.: USERS.FNAME = firstName. USERS.FNAME: database table.field name.
-     * firstName: member name (and not fName). If not set java name, then field will be skipped from
-     * source generation, i.e: USERS.FNAME =
+     * @param url Database connection URL
+     * @param username Database connection user name
+     * @param password Database connection password
+     * @param tablePrefix If true, then table name will be parsed after first _ underscore
+     * @param tableSuffix If true, then the last part of the table name will be ignored after the last underscore
+     * @param fieldPrefix If true, then field name will be parsed after the first _ underscore
+     * @param fieldSuffix If true, then last part of the field name will be ignored after the last underscore
+     * @param generatedSourcePath File system directory for generated source files
+     * @param packageOfJavaModel Package name of the generated source code of the model classes
+     * @param packageOfJavaDao Package name of the generated source code of the dao classes
+     * @param daoSuffix Suffix used for DAO class names, e.g.: Dao -> UserDao.java
+     * @param sequenceNameConvention Sequence naming convention of the database
+     * @param replacementTableFilename Map of Java class names and database table names. Names not included in this list will be auto-generated.
+     *                                 e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
+     *                                 You can disable Java source generation for a certain table by putting the table name in the list with no Java class name.
+     *                                 e.g.: APPUSERS =
+     * @param replacementFieldFilename Map of Java field names and database field names. Names not included in this list will be auto-generated.
+     *                                 e.g.: USER.FNAME = firstName -> User.firstName instead of User.fname
+     *                                 You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
+     *                                 e.g.: USER.FNAME =
      */
-    public EngineConfiguration(String databaseName, DATABASE_TYPE databaseType, String url, String username, String password,
+    public EngineConfiguration(
+            String databaseName, DATABASE_TYPE databaseType, String url, String username, String password,
             boolean tablePrefix, boolean tableSuffix, boolean fieldPrefix, boolean fieldSuffix,
             String generatedSourcePath, String packageOfJavaModel,
             String packageOfJavaDao, String daoSuffix,
+            SEQUENCE_NAME_CONVENTION sequenceNameConvention,
             String replacementTableFilename, String replacementFieldFilename) {
+        
         this.database = new Database(databaseName);
         this.databaseType = databaseType;
         this.url = url;
@@ -99,17 +152,13 @@ public class EngineConfiguration {
         this.packageOfJavaModel = packageOfJavaModel;
         this.packageOfJavaDao = packageOfJavaDao;
         this.daoSuffix = daoSuffix;
+        this.sequenceNameConvention = sequenceNameConvention;
         this.replacementTableFilename = replacementTableFilename;
         this.replacementFieldFilename = replacementFieldFilename;
     }
 
-    /* Replacement map for tables. Empty string value means it has been skipped from the model. */
-    private Map<String, String> replacementTableMap = new HashMap<>();
-
-    /* Replacement map for fields. Empty string value means it has been skipped from the model. */
-    private Map<String, String> replacementFieldMap = new HashMap<>();
-
     /**
+     * Database name and other metadata
      * @return the database
      */
     public Database getDatabase() {
@@ -117,6 +166,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Database type
      * @return the databaseType
      */
     public DATABASE_TYPE getDatabaseType() {
@@ -124,6 +174,15 @@ public class EngineConfiguration {
     }
 
     /**
+     * Sequence naming convention of the database
+     * @return the sequenceNameConvention
+     */
+    public SEQUENCE_NAME_CONVENTION getSequenceNameConvention() {
+        return sequenceNameConvention;
+    }
+
+    /**
+     * Database connection URL
      * @return the url
      */
     public String getUrl() {
@@ -131,6 +190,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Database connection user name
      * @return the username
      */
     public String getUsername() {
@@ -138,6 +198,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Database connection password
      * @return the password
      */
     public String getPassword() {
@@ -145,6 +206,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * If true, then table name will be parsed after the first _ underscore
      * @return the tablePrefix
      */
     public boolean isTablePrefix() {
@@ -152,6 +214,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * If true, then the last part of the table name will be ignored after the last underscore
      * @return the tableSuffix
      */
     public boolean isTableSuffix() {
@@ -159,6 +222,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * If true, then field name will be parsed after the first _ underscore
      * @return the fieldPrefix
      */
     public boolean isFieldPrefix() {
@@ -166,6 +230,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * If true, then last part of the field name will be ignored after the last underscore
      * @return the fieldSuffix
      */
     public boolean isFieldSuffix() {
@@ -173,6 +238,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * File system directory for generated source files
      * @return the generatedSourcePath
      */
     public String getGeneratedSourcePath() {
@@ -180,6 +246,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Package name of the generated source code of the model classes
      * @return the packageOfJavaModel
      */
     public String getPackageOfJavaModel() {
@@ -187,6 +254,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Package name of the generated source code of the dao classes
      * @return the packageOfJavaDao
      */
     public String getPackageOfJavaDao() {
@@ -194,6 +262,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Suffix used for DAO class names, e.g.: Dao -> UserDao.java
      * @return the daoSuffix
      */
     public String getDaoSuffix() {
@@ -201,6 +270,10 @@ public class EngineConfiguration {
     }
 
     /**
+     * Map of Java class names and database table names. Names not included in this list will be auto-generated.
+     * e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
+     * You can disable Java source generation for a certain table by putting the table name in the list with no Java class name.
+     * e.g.: APPUSERS =
      * @return the replacementTableFilename
      */
     public String getReplacementTableFilename() {
@@ -208,6 +281,10 @@ public class EngineConfiguration {
     }
 
     /**
+     * Map of Java field names and database field names. Names not included in this list will be auto-generated.
+     * e.g.: USER.FNAME = firstName -> User.firstName instead of User.fname
+     * You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
+     * e.g.: USER.FNAME =
      * @return the replacementFieldFilename
      */
     public String getReplacementFieldFilename() {
@@ -215,6 +292,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Replacement map for tables. Empty string value means it has been skipped from the model.
      * @return the replacementTableMap
      */
     public Map<String, String> getReplacementTableMap() {
@@ -222,6 +300,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Replacement map for tables. Empty string value means it has been skipped from the model.
      * @param replacementTableMap the replacementTableMap to set
      */
     public void setReplacementTableMap(Map<String, String> replacementTableMap) {
@@ -229,6 +308,7 @@ public class EngineConfiguration {
     }
 
     /**
+     * Replacement map for fields. Empty string value means it has been skipped from the model.
      * @return the replacementFieldMap
      */
     public Map<String, String> getReplacementFieldMap() {
@@ -236,9 +316,12 @@ public class EngineConfiguration {
     }
 
     /**
+     * Replacement map for fields. Empty string value means it has been skipped from the model.
      * @param replacementFieldMap the replacementFieldMap to set
      */
     public void setReplacementFieldMap(Map<String, String> replacementFieldMap) {
         this.replacementFieldMap = replacementFieldMap;
     }
+
+
 }

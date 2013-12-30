@@ -236,6 +236,7 @@ public class Engine {
                 configMap.get("packageOfJavaModel"),
                 configMap.get("packageOfJavaDao"),
                 configMap.get("daoSuffix"),
+                EngineConfiguration.SEQUENCE_NAME_CONVENTION.valueOf(configMap.get("sequenceNameConvention")),
                 configMap.get("replacementTableFilename"),
                 configMap.get("replacementFieldFilename"));
 

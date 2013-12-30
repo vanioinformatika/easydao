@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -50,9 +51,11 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
 
     /**
      * Reads a domain object with the specified primary key from the datastore 
-     <#list t.pkFields as field>
-     * @param ${field.javaName} ${field.comment}
-     </#list>
+     <#if t.compositePk>
+     * @param pk Primary key
+     <#else>
+     * @param ${t.pkField.javaName} ${t.pkField.comment}
+     </#if>
      * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
      * @return ${t.javaName} instance
      */
@@ -89,7 +92,36 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
      * @param instance The domain object instance
      */
     @Override
-    public void createPk(${t.javaName} instance) {
+    public void createPk(final ${t.javaName} instance) {
+    <#if t.compositePk>
+        throw new IllegalStateException("Sequence cannot be auto-generated for tables with composite primary key");
+    <#else>
+      <#if e.sequenceNameConvention.name() == 'PREFIXED_TABLE_NAME'><#assign sequenceName = "SEQ_${t.dbName}"></#if>
+      <#if e.sequenceNameConvention.name() == 'PREFIXED_FIELD_NAME'><#assign sequenceName = "SEQ_${t.pkField.dbName}"></#if>
+      <#if e.sequenceNameConvention.name() == 'SUFFIXED_TABLE_NAME'><#assign sequenceName = "${t.dbName}_SEQ"></#if>
+      <#if e.sequenceNameConvention.name() == 'SUFFIXED_FIELD_NAME'><#assign sequenceName = "${t.pkField.dbName}_SEQ"></#if>
+      <#if e.sequenceNameConvention.name() == 'PREFIXED_TABLE_NAME_WITH_FIELD_NAME'><#assign sequenceName = "SEQ_${t.dbName}_${t.pkField.dbName}"></#if>
+      <#if e.sequenceNameConvention.name() == 'SUFFIXED_TABLE_NAME_WITH_FIELD_NAME'><#assign sequenceName = "${t.dbName}_${t.pkField.dbName}_SEQ"></#if>
+      <#if e.databaseType.name() == 'ORACLE11'>
+        String query = "select ${sequenceName}.nextval PK from dual";
+      </#if>
+      <#if e.databaseType.name() == 'POSTGRESQL9'>
+        String query = "select nextval ('${sequenceName}') as PK";
+      </#if>
+        <#assign pkField = t.pkField>
+        this.jdbcTemplate.query(query, new RowCallbackHandler() {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException {
+                <#if pkField.readAsString>
+                String tmp;
+                ${pkField.javaTypeAsString} ${pkField.javaName} = (tmp = rs.getString("PK")) != null ? new ${pkField.javaTypeAsString}(tmp) : null;
+                <#else>
+                ${pkField.javaTypeAsString} ${pkField.javaName} = rs.get${pkField.javaTypeAsString}("PK");
+                </#if>
+                instance.set${pkField.javaName?cap_first}(${pkField.javaName});
+            }
+        });
+    </#if>
     }
 
     /**

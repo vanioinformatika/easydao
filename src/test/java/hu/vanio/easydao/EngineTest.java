@@ -78,6 +78,7 @@ public class EngineTest {
         configMap.put("packageOfJavaModel", "hu.vanio.easydaodemo.model");
         configMap.put("packageOfJavaDao", "hu.vanio.easydaodemo.dao");
         configMap.put("daoSuffix", "Dao");
+        configMap.put("sequenceNameConvention", "PREFIXED_TABLE_NAME");
         configMap.put("replacementTableFilename", "replacement-table");
         configMap.put("replacementFieldFilename", "replacement-field");
         
