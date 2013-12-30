@@ -205,31 +205,28 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         return read(instance.get${t.pkField.javaName?cap_first}(), false);
         </#if>
     }
-    
+
     /**
-     * Deletes the specified domain object instance
-     * @param instance The domain object instance to delete
+     * Deletes the domain object instance specified with its primary key
+     <#if t.compositePk>
+     * @param pk Primary key
+     <#else>
+     * @param ${t.pkField.javaName} ${t.pkField.comment}
+     </#if>
      */
     @Override
-    public void delete(${t.javaName} instance) {
-        String sql = "delete from ${t.dbName} " +
-                     <#if t.compositePk>
-                     "where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-                     <#else>
-                     "where ${t.pkField.dbName} = ?";
-                     </#if>
-
-        Object[] params = new Object[] {
-            <#if t.compositePk>
-            <#list t.pkFields as field>
-            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
-            </#list>
-            <#else>
-            instance.get${t.pkField.javaName?cap_first}()
-            </#if>
-        };
-
-        int updRows = this.jdbcTemplate.update(sql, params);
+    <#if t.compositePk>
+    public void delete(${t.javaName}.Pk pk) {
+    <#else>
+    public void delete(${t.pkField.javaTypeAsString} ${t.pkField.javaName}) {
+    </#if>
+        <#if t.compositePk>
+        String sql = "delete from ${t.dbName} where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
+        int updRows = this.jdbcTemplate.update(sql, <#list t.pkFields as field> pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        <#else>
+        String sql = "delete from ${t.dbName} where ${t.pkField.dbName} = ?";
+        int updRows = this.jdbcTemplate.update(sql, ${t.pkField.javaName});
+        </#if>
         if (updRows != 1) {
             throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(sql, 1, updRows);
         }
