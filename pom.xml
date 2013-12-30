@@ -55,6 +55,19 @@
         <developerConnection>scm:git:git@github.com/vanioinformatika/easydao.git</developerConnection>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>releases</id>
+            <url>${releases-repo-url}</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>snapshots</id>
+            <url>${snapshots-repo-url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <developers>
         <developer>
             <name>Gyula Szalai</name>
