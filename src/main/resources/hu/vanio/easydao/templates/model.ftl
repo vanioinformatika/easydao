@@ -1,4 +1,5 @@
 // GENERATED FILE, DO NOT MODIFY! YOUR MODIFICATION WILL BE LOST!
+${e.licenseText}
 package ${e.packageOfJavaModel}.${e.database.name};
 
 import java.sql.Timestamp;

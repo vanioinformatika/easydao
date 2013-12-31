@@ -1,4 +1,5 @@
 // GENERATED FILE, DO NOT MODIFY! YOUR MODIFICATION WILL BE LOST!
+${e.licenseText}
 package ${e.packageOfJavaDao}.${e.database.name};
 
 import java.math.BigDecimal;
