@@ -23,14 +23,14 @@
  */
 package hu.vanio.easydao;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
+
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * Engine unit test.
@@ -64,28 +64,44 @@ public class EngineTest {
     public void testInitEngineConfiguration() throws Exception {
         System.out.println("testInitEngineConfiguration");
         
-        Map<String, String> configMap = new HashMap<>();
-        configMap.put("database.name", "callisto");
-        configMap.put("databaseType", "POSTGRESQL9");
-        configMap.put("url", "jdbc:postgresql://localhost/callistof");
-        configMap.put("username", "callisto");
-        configMap.put("password", "callisto");
-        configMap.put("tablePrefix", "true");
-        configMap.put("tableSuffix", "false");
-        configMap.put("fieldPrefix", "true");
-        configMap.put("fieldSuffix", "false");
-        configMap.put("generatedSourcePath", "/tmp/database");
-        configMap.put("packageOfJavaModel", "hu.vanio.easydaodemo.model");
-        configMap.put("packageOfJavaDao", "hu.vanio.easydaodemo.dao");
-        configMap.put("daoSuffix", "Dao");
-        configMap.put("sequenceNameConvention", "PREFIXED_TABLE_NAME");
-        configMap.put("replacementTableFilename", "replacement-table");
-        configMap.put("replacementFieldFilename", "replacement-field");
+        Properties props = new Properties();
+        props.put("database.name", "callisto");
+        props.put("databaseType", "POSTGRESQL9");
+        props.put("url", "jdbc:postgresql://localhost/callistof");
+        props.put("username", "callisto");
+        props.put("password", "callisto");
+        props.put("tablePrefix", "true");
+        props.put("tableSuffix", "false");
+        props.put("fieldPrefix", "true");
+        props.put("fieldSuffix", "false");
+        props.put("generatedSourcePath", "/tmp/database");
+        props.put("packageOfJavaModel", "hu.vanio.easydaodemo.model");
+        props.put("packageOfJavaDao", "hu.vanio.easydaodemo.dao");
+        props.put("daoSuffix", "Dao");
+        props.put("sequenceNameConvention", "PREFIXED_TABLE_NAME");
+        props.put("replacementTableFilename", "replacement-table");
+        props.put("replacementFieldFilename", "replacement-field");
+        //props.put("licenseFilename", null);
         
-        Engine instance = new Engine(configMap);
+        EngineConfiguration engineConf = EngineConfiguration.createFromProperties(props);
         
-        assertEquals("callisto", instance.getEngineConf().getDatabase().getName());
-        assertEquals("POSTGRESQL9", instance.getEngineConf().getDatabaseType().name());
+        Engine instance = new Engine(engineConf);
+        
+        assertEquals("callisto", instance.getEngineConfiguration().getDatabase().getName());
+        assertEquals("POSTGRESQL9", instance.getEngineConfiguration().getDatabaseType().name());
+        assertEquals(EngineConfiguration.MISSING_LICENSE_TEXT, instance.getEngineConfiguration().getLicenseText());
+
+        java.net.URL url = Thread.currentThread().getContextClassLoader().getResource("license.txt");
+        
+        props.put("licenseFilename", url.getFile());
+        engineConf = EngineConfiguration.createFromProperties(props);
+        instance = new Engine(engineConf);
+        
+        assertEquals("callisto", instance.getEngineConfiguration().getDatabase().getName());
+        assertEquals("POSTGRESQL9", instance.getEngineConfiguration().getDatabaseType().name());
+        
+        assertNotNull(instance.getEngineConfiguration().getLicenseText());
+        assertEquals("DUMMY LICENSE", instance.getEngineConfiguration().getLicenseText());
     }
 
 }

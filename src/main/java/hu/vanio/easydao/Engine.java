@@ -23,6 +23,21 @@
  */
 package hu.vanio.easydao;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -34,67 +49,43 @@ import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
 import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.PostgreSql9ModelBuilderConfig;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 
 /**
- * Generate model and Dao from database based on configuration.
- *
+ * Generate domain object and Dao classes from database based on configuration.
+ * 
+ * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 public class Engine {
 
-    /* Engine configuration file name */
-    private String configFileName;
-    private Map<String, String> configMap;
-    private EngineConfiguration engineConf;
-
-    private IModelBuilderConfig mdc;
-
-    /** Freemarker configuration */
-    private Configuration cfg;
-
     static final private String fileSeparator = System.getProperty("file.separator");
+    
+    /** Engine configuration */
+    private EngineConfiguration engineConfiguration;
+    /** Database model builder configuration */
+    private IModelBuilderConfig modelBuilderConfig;
+    /** Freemarker configuration */
+    private Configuration freemarkerConfig;
 
     /**
-     * Engine configuration from configuration file.
-     * @param configFileName configuration file name.
-     * @throws SQLException
+     * Constructs a new instance with the specified configuration
+     * 
+     * @param engineConfiguration Engine configuration
+     * @throws java.sql.SQLException If registering the JDBC driver fails
      */
-    public Engine(String configFileName) throws SQLException, IOException {
-        // load configuration file to config map
-        configMap = new HashMap<>();
-        loadResourceBundleToMap(configFileName, configMap);
-        this.configFileName = configFileName;
-        this.initEngineConfiguration();
-        this.initFreemarkerConfiguration();
-    }
-
-    /**
-     * Engine configuration by Map. Used by maven plugin.
-     * @param configMap configuration map.
-     * @throws java.sql.SQLException
-     */
-    public Engine(Map<String, String> configMap) throws SQLException, IOException {
-        this.configMap = configMap;
-        this.initEngineConfiguration();
+    public Engine(EngineConfiguration engineConfiguration) throws SQLException {
+        this.engineConfiguration = engineConfiguration;
+        System.out.println("EngineConfiguration.databaseType = " + engineConfiguration.getDatabaseType());
+        switch (engineConfiguration.getDatabaseType()) {
+            case POSTGRESQL9:
+                DriverManager.registerDriver(new org.postgresql.Driver());
+                modelBuilderConfig = new PostgreSql9ModelBuilderConfig();
+                break;
+            case ORACLE11:
+                DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+                modelBuilderConfig = new Oracle11ModelBuilderConfig();
+                break;
+        }
+        
         this.initFreemarkerConfiguration();
     }
 
@@ -108,13 +99,13 @@ public class Engine {
 
         // build java model of database
         try (Connection con = DriverManager.getConnection(
-                engineConf.getUrl(),
-                engineConf.getUsername(),
-                engineConf.getPassword());) {
+                engineConfiguration.getUrl(),
+                engineConfiguration.getUsername(),
+                engineConfiguration.getPassword());) {
             // Building java model from database metadata
             ModelBuilder modelBuilder = new ModelBuilder(con,
-                    engineConf,
-                    mdc);
+                    engineConfiguration,
+                    modelBuilderConfig);
             modelBuilder.build();
         }
 
@@ -126,17 +117,17 @@ public class Engine {
     }
 
     private void generateMetadataFile() throws IOException, TemplateException {
-        Path dir = Paths.get(engineConf.getGeneratedSourcePath());
+        Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath());
         Files.createDirectories(dir);
 
         System.out.println("\nGenerate meta data about database: " + dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt");
 
-        List<Table> tableList = engineConf.getDatabase().getTableList();
-        Template temp = cfg.getTemplate("metadata.ftl");
+        List<Table> tableList = engineConfiguration.getDatabase().getTableList();
+        Template temp = freemarkerConfig.getTemplate("metadata.ftl");
         Writer out = new OutputStreamWriter(System.out);
         Map<String, Object> m = new HashMap<>();
         m.put("tList", tableList);
-        m.put("e", engineConf);
+        m.put("e", engineConfiguration);
         //temp.process(m, out);
         try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt"))) {
             temp.process(m, fileWriter);
@@ -150,21 +141,21 @@ public class Engine {
      */
     private void generateModelClasses() throws IOException, TemplateException {
         // TODO: generateLicence();
-        List<Table> tableList = engineConf.getDatabase().getTableList();
+        List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConf.getGeneratedSourcePath()
+        Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
                 + fileSeparator
-                + engineConf.getPackageOfJavaModel().replace(".", fileSeparator)
+                + engineConfiguration.getPackageOfJavaModel().replace(".", fileSeparator)
                 + fileSeparator
-                + engineConf.getDatabase().getName());
+                + engineConfiguration.getDatabase().getName());
         Files.createDirectories(dir);
         System.out.println("\nWrite model classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
-            Template temp = cfg.getTemplate("model.ftl");
+            Template temp = freemarkerConfig.getTemplate("model.ftl");
             Writer out = new OutputStreamWriter(System.out);
             Map<String, Object> m = new HashMap<>();
             m.put("t", table);
-            m.put("e", engineConf);
+            m.put("e", engineConfiguration);
             //temp.process(m, out);
             try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + ".java"))) {
                 temp.process(m, fileWriter);
@@ -179,24 +170,24 @@ public class Engine {
      */
     private void generateDaoClasses() throws IOException, TemplateException {
         // TODO: generateLicence();
-        List<Table> tableList = engineConf.getDatabase().getTableList();
+        List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConf.getGeneratedSourcePath()
+        Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
                 + fileSeparator
-                + engineConf.getPackageOfJavaDao().replace(".", fileSeparator)
+                + engineConfiguration.getPackageOfJavaDao().replace(".", fileSeparator)
                 + fileSeparator
-                + engineConf.getDatabase().getName());
+                + engineConfiguration.getDatabase().getName());
         Files.createDirectories(dir);
         System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
             if (table.getPkFields().size() > 0 || table.getPkField() != null) {
-                Template temp = cfg.getTemplate("dao.ftl");
+                Template temp = freemarkerConfig.getTemplate("dao.ftl");
                 Writer out = new OutputStreamWriter(System.out);
                 Map<String, Object> m = new HashMap<>();
                 m.put("t", table);
-                m.put("e", engineConf);
+                m.put("e", engineConfiguration);
                 //temp.process(m, out);
-                try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConf.getDaoSuffix() + ".java"))) {
+                try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConfiguration.getDaoSuffix() + ".java"))) {
                     temp.process(m, fileWriter);
                 }
             } else {
@@ -206,99 +197,24 @@ public class Engine {
     }
 
     /**
-     * Engine configuration initialization.
-     * @throws SQLException db connection error
-     */
-    private void initEngineConfiguration() throws SQLException, IOException {
-        engineConf = new EngineConfiguration(
-                configMap.get("database.name"),
-                EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get("databaseType")),
-                configMap.get("url"),
-                configMap.get("username"),
-                configMap.get("password"),
-                Boolean.valueOf(configMap.get("tablePrefix")),
-                Boolean.valueOf(configMap.get("tableSuffix")),
-                Boolean.valueOf(configMap.get("fieldPrefix")),
-                Boolean.valueOf(configMap.get("fieldSuffix")),
-                configMap.get("generatedSourcePath"),
-                configMap.get("packageOfJavaModel"),
-                configMap.get("packageOfJavaDao"),
-                configMap.get("daoSuffix"),
-                EngineConfiguration.SEQUENCE_NAME_CONVENTION.valueOf(configMap.get("sequenceNameConvention")),
-                configMap.get("replacementTableFilename"),
-                configMap.get("replacementFieldFilename"));
-
-        // load table and field replacement files into maps
-        loadResourceBundleToMap(engineConf.getReplacementTableFilename(), engineConf.getReplacementTableMap());
-        engineConf.getReplacementTableMap().put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
-        loadResourceBundleToMap(engineConf.getReplacementFieldFilename(), engineConf.getReplacementFieldMap());
-        engineConf.getReplacementFieldMap().put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
-
-        System.out.println("EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get(\"databaseType\")) = " + EngineConfiguration.DATABASE_TYPE.valueOf(configMap.get("databaseType")));
-        switch (engineConf.getDatabaseType()) {
-            case POSTGRESQL9:
-                DriverManager.registerDriver(new org.postgresql.Driver());
-                mdc = new PostgreSql9ModelBuilderConfig();
-                break;
-            case ORACLE11:
-                DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-                mdc = new Oracle11ModelBuilderConfig();
-                break;
-        }
-    }
-
-    /**
-     * Load resource bundle to map.
-     * @param fileName replacement file name
-     * @param map replacement map
-     */
-    private void loadResourceBundleToMap(String fileName, Map<String, String> map) throws IOException, FileNotFoundException {
-        ResourceBundle resource = null;
-        try {
-            resource = ResourceBundle.getBundle(fileName);
-        } catch (MissingResourceException mre) {
-            FileInputStream fis = new FileInputStream(fileName);
-            resource = new PropertyResourceBundle(fis);
-        }
-        Enumeration<String> keys = resource.getKeys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            map.put(key, resource.getString(key));
-        }
-    }
-
-    /**
      * @see http://freemarker.org/docs/pgui_quickstart_createconfiguration.html
      * @return Freemarker configuration
      */
     private void initFreemarkerConfiguration() {
-        cfg = new Configuration();
-        cfg.setClassForTemplateLoading(Engine.class, "/hu/vanio/easydao/templates");
-        cfg.setObjectWrapper(new DefaultObjectWrapper());
-        cfg.setDefaultEncoding("UTF-8");
-        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        cfg.setIncompatibleImprovements(new Version(2, 3, 20));
+        freemarkerConfig = new Configuration();
+        freemarkerConfig.setClassForTemplateLoading(Engine.class, "/hu/vanio/easydao/templates");
+        freemarkerConfig.setObjectWrapper(new DefaultObjectWrapper());
+        freemarkerConfig.setDefaultEncoding("UTF-8");
+        freemarkerConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        freemarkerConfig.setIncompatibleImprovements(new Version(2, 3, 20));
     }
 
     /**
-     * @return the engineConf
+     * Engine configuration
+     * @return the engineConfiguration
      */
-    public EngineConfiguration getEngineConf() {
-        return engineConf;
-    }
-
-    /**
-     * @param engineConf the engineConf to set
-     */
-    public void setEngineConf(EngineConfiguration engineConf) {
-        this.engineConf = engineConf;
-    }
-
-    /**
-     * @return the configFileName
-     */
-    public String getConfigFileName() {
-        return configFileName;
+    public EngineConfiguration getEngineConfiguration() {
+        return engineConfiguration;
     }
 
 }

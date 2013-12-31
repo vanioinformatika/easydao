@@ -53,14 +53,10 @@ public class ModelBuilderTest {
      * Init EngineConfiguration ENGINE_CONF.
      */
     @BeforeClass
-    public static void setUpClass() {
-        try {
-            Engine engine = new Engine("test-config-postgresql9");
-            ENGINE_CONF = engine.getEngineConf();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
+    public static void setUpClass() throws Exception {
+        EngineConfiguration engineConf = EngineConfiguration.createFromProperties("test-config-postgresql9.properties");
+        Engine engine = new Engine(engineConf);
+        ENGINE_CONF = engine.getEngineConfiguration();
     }
 
     @AfterClass

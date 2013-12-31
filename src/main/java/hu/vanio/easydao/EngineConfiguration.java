@@ -23,8 +23,19 @@
  */
 package hu.vanio.easydao;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 import hu.vanio.easydao.model.Database;
 
@@ -60,6 +71,9 @@ public class EngineConfiguration {
         /** Generate sequence names by suffixing table names with field name and _SEQ (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> MY_TABLE_NAME_MY_FIELD_NAME_SEQ) */
         SUFFIXED_TABLE_NAME_WITH_FIELD_NAME;
     }
+    
+    /** Default license text if no license file name specified */
+    static public final String MISSING_LICENSE_TEXT = "/** No license specified */";
     
     /** Database name and other metadata */
     private final Database database;
@@ -100,6 +114,11 @@ public class EngineConfiguration {
      *  e.g.: USER.FNAME = */
     private final String replacementFieldFilename;
     
+    /** License file name (its content will be inserted into all generated Java source files) */
+    private final String licenseFilename;
+    /** License text */
+    private final String licenseText;
+    
     /** Replacement map for tables. Empty string value means it has been skipped from the model. */
     private Map<String, String> replacementTableMap = new HashMap<>();
 
@@ -130,6 +149,8 @@ public class EngineConfiguration {
      *                                 e.g.: USER.FNAME = firstName -> User.firstName instead of User.fname
      *                                 You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
      *                                 e.g.: USER.FNAME =
+     * @param licenseFilename License file name (its content will be inserted into all generated Java source files)
+     * @throws java.io.IOException
      */
     public EngineConfiguration(
             String databaseName, DATABASE_TYPE databaseType, String url, String username, String password,
@@ -137,7 +158,8 @@ public class EngineConfiguration {
             String generatedSourcePath, String packageOfJavaModel,
             String packageOfJavaDao, String daoSuffix,
             SEQUENCE_NAME_CONVENTION sequenceNameConvention,
-            String replacementTableFilename, String replacementFieldFilename) {
+            String replacementTableFilename, String replacementFieldFilename,
+            String licenseFilename) throws IOException {
         
         this.database = new Database(databaseName);
         this.databaseType = databaseType;
@@ -155,8 +177,95 @@ public class EngineConfiguration {
         this.sequenceNameConvention = sequenceNameConvention;
         this.replacementTableFilename = replacementTableFilename;
         this.replacementFieldFilename = replacementFieldFilename;
+        this.licenseFilename = licenseFilename;
+        
+        // load table and field replacement files into maps
+        loadResourceBundleToMap(this.replacementTableFilename, this.replacementTableMap);
+        this.replacementTableMap.put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
+        loadResourceBundleToMap(this.replacementFieldFilename, this.replacementFieldMap);
+        this.replacementFieldMap.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
+        
+        if (this.licenseFilename != null) {
+            this.licenseText = readFile(this.licenseFilename, Charset.forName("utf-8"));
+        } else {
+            this.licenseText = MISSING_LICENSE_TEXT;
+        }
     }
 
+    /**
+     * Creates a new instance from the specified properties resource
+     * @param propertiesName The resource name of the properties file
+     * @return The new EngineConfiguration instance
+     * @throws java.io.IOException
+     */
+    static public EngineConfiguration createFromProperties(String propertiesName) throws IOException {
+        Properties props = new Properties();
+        props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesName));
+        return createFromProperties(props);
+    }
+    
+    /**
+     * Creates a new instance from the specified properties
+     * @param props The properties
+     * @return The new EngineConfiguration instance
+     * @throws java.io.IOException
+     */
+    static public EngineConfiguration createFromProperties(Properties props) throws IOException {
+        
+        EngineConfiguration engineConf = new EngineConfiguration(
+                props.getProperty("database.name"),
+                EngineConfiguration.DATABASE_TYPE.valueOf(props.getProperty("databaseType")),
+                props.getProperty("url"),
+                props.getProperty("username"),
+                props.getProperty("password"),
+                Boolean.valueOf(props.getProperty("tablePrefix")),
+                Boolean.valueOf(props.getProperty("tableSuffix")),
+                Boolean.valueOf(props.getProperty("fieldPrefix")),
+                Boolean.valueOf(props.getProperty("fieldSuffix")),
+                props.getProperty("generatedSourcePath"),
+                props.getProperty("packageOfJavaModel"),
+                props.getProperty("packageOfJavaDao"),
+                props.getProperty("daoSuffix"),
+                EngineConfiguration.SEQUENCE_NAME_CONVENTION.valueOf(props.getProperty("sequenceNameConvention")),
+                props.getProperty("replacementTableFilename"),
+                props.getProperty("replacementFieldFilename"),
+                props.getProperty("licenseFilename"));
+        
+        return engineConf;
+    }
+    
+    /**
+     * Load resource bundle to map.
+     * @param fileName replacement file name
+     * @param map replacement map
+     */
+    private void loadResourceBundleToMap(String fileName, Map<String, String> map) throws IOException, FileNotFoundException {
+        ResourceBundle resource;
+        try {
+            resource = ResourceBundle.getBundle(fileName);
+        } catch (MissingResourceException mre) {
+            FileInputStream fis = new FileInputStream(fileName);
+            resource = new PropertyResourceBundle(fis);
+        }
+        Enumeration<String> keys = resource.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, resource.getString(key));
+        }
+    }
+    
+    /**
+     * Loads the contents of the specified file
+     * @param path The file name with path
+     * @param encoding The encoding
+     * @return The loaded file contents
+     * @throws IOException If the file is not found or is not readable
+     */
+    static String readFile(String path, Charset encoding) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
+    
     /**
      * Database name and other metadata
      * @return the database
@@ -289,6 +398,22 @@ public class EngineConfiguration {
      */
     public String getReplacementFieldFilename() {
         return replacementFieldFilename;
+    }
+
+    /**
+     * License file name (its content will be inserted into all generated Java source files)
+     * @return the licenseFilename
+     */
+    public String getLicenseFilename() {
+        return licenseFilename;
+    }
+
+    /**
+     * License text
+     * @return the licenseText
+     */
+    public String getLicenseText() {
+        return licenseText;
     }
 
     /**

@@ -23,9 +23,10 @@
  */
 package hu.vanio.easydao;
 
-import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.sql.SQLException;
+
+import freemarker.template.TemplateException;
 
 /**
  * Application start
@@ -34,13 +35,13 @@ import java.sql.SQLException;
 public class Start {
 
     public static void main(String[] args) throws SQLException, IOException, TemplateException {
-
-        // postgres
-        //Engine e = new Engine("test-config-postgresql9");
+        
         // oracle
-        Engine e = new Engine("test-config-oracle11");
-
+        EngineConfiguration engineConf = EngineConfiguration.createFromProperties("test-config-oracle11.properties");
+        // postgres
+        //EngineConfiguration engineConf = EngineConfiguration.createFromProperties("test-config-postgresql9");
+        
+        Engine e = new Engine(engineConf);
         e.execute();
-
     }
 }
