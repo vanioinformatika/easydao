@@ -61,12 +61,6 @@ import java.util.ResourceBundle;
  */
 public class Engine {
 
-    /* Application name */
-    private String name = "EasyDao";
-
-    /* Application version */
-    private String version = "0.0.0-SNAPSHOT";
-
     /* Engine configuration file name */
     private String configFileName;
     private Map<String, String> configMap;
@@ -143,8 +137,6 @@ public class Engine {
         Map<String, Object> m = new HashMap<>();
         m.put("tList", tableList);
         m.put("e", engineConf);
-        m.put("appname", name);
-        m.put("appversion", version);
         //temp.process(m, out);
         try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt"))) {
             temp.process(m, fileWriter);
@@ -173,8 +165,6 @@ public class Engine {
             Map<String, Object> m = new HashMap<>();
             m.put("t", table);
             m.put("e", engineConf);
-            m.put("appname", name);
-            m.put("appversion", version);
             //temp.process(m, out);
             try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + ".java"))) {
                 temp.process(m, fileWriter);
@@ -205,8 +195,6 @@ public class Engine {
                 Map<String, Object> m = new HashMap<>();
                 m.put("t", table);
                 m.put("e", engineConf);
-                m.put("appname", name);
-                m.put("appversion", version);
                 //temp.process(m, out);
                 try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConf.getDaoSuffix() + ".java"))) {
                     temp.process(m, fileWriter);
@@ -277,34 +265,6 @@ public class Engine {
             String key = keys.nextElement();
             map.put(key, resource.getString(key));
         }
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the version
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     /**
