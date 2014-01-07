@@ -234,7 +234,7 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
     }
 
     /** RowMapper implementation */
-    private class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
+    protected class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
         
         /** Specifies whether BLOB/CLOB fields has to be read from the datastore */
         private final boolean readLobFields;
