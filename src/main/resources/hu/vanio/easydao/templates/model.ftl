@@ -55,6 +55,18 @@ public class ${t.javaName} implements hu.vanio.easydao.core.Model, java.io.Seria
     }
     </#list>
 
+
+    <#if e.generateModelToString>
+    @Override
+    public String toString() {
+        return "${t.javaName}{" 
+        <#list t.fieldList as field>
+            + "${field.javaName}=" + ${field.javaName}<#if field_has_next> +", "</#if>
+        </#list>
+            + '}';
+    }
+    </#if>
+
     <#if t.compositePk>
     /** Class for composite primary key fields */
     static public class Pk implements java.io.Serializable {
