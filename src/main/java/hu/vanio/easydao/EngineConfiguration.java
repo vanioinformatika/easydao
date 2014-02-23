@@ -103,6 +103,9 @@ public class EngineConfiguration {
     private final String packageOfJavaDao;
     /** Suffix used for DAO class names, e.g.: Dao -> UserDao.java */
     private final String daoSuffix;
+    /** If true, a toString method that outputs data in JSON format will be generated to all model classes */
+    protected boolean generateModelToString;
+    
     /** Map of Java class names and database table names. Names not included in this list will be auto-generated.
      *  e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
      *  You can disable Java source generation for a certain table by putting the table name in the list with no Java class name.
@@ -140,6 +143,7 @@ public class EngineConfiguration {
      * @param packageOfJavaModel Package name of the generated source code of the model classes
      * @param packageOfJavaDao Package name of the generated source code of the dao classes
      * @param daoSuffix Suffix used for DAO class names, e.g.: Dao -> UserDao.java
+     * @param generateModelToString If true, a toString method that outputs data in JSON format will be generated to all model classes
      * @param sequenceNameConvention Sequence naming convention of the database
      * @param replacementTableFilename Map of Java class names and database table names. Names not included in this list will be auto-generated.
      *                                 e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
@@ -157,6 +161,7 @@ public class EngineConfiguration {
             boolean tablePrefix, boolean tableSuffix, boolean fieldPrefix, boolean fieldSuffix,
             String generatedSourcePath, String packageOfJavaModel,
             String packageOfJavaDao, String daoSuffix,
+            boolean generateModelToString,
             SEQUENCE_NAME_CONVENTION sequenceNameConvention,
             String replacementTableFilename, String replacementFieldFilename,
             String licenseFilename) throws IOException {
@@ -174,6 +179,7 @@ public class EngineConfiguration {
         this.packageOfJavaModel = packageOfJavaModel;
         this.packageOfJavaDao = packageOfJavaDao;
         this.daoSuffix = daoSuffix;
+        this.generateModelToString = generateModelToString;
         this.sequenceNameConvention = sequenceNameConvention;
         this.replacementTableFilename = replacementTableFilename;
         this.replacementFieldFilename = replacementFieldFilename;
@@ -226,6 +232,7 @@ public class EngineConfiguration {
                 props.getProperty("packageOfJavaModel"),
                 props.getProperty("packageOfJavaDao"),
                 props.getProperty("daoSuffix"),
+                Boolean.valueOf(props.getProperty("generateModelToString")),
                 EngineConfiguration.SEQUENCE_NAME_CONVENTION.valueOf(props.getProperty("sequenceNameConvention")),
                 props.getProperty("replacementTableFilename"),
                 props.getProperty("replacementFieldFilename"),
@@ -379,6 +386,22 @@ public class EngineConfiguration {
     }
 
     /**
+     * If true, a toString method that outputs data in JSON format will be generated to all model classes
+     * @return the generateModelToString
+     */
+    public boolean isGenerateModelToString() {
+        return generateModelToString;
+    }
+
+    /**
+     * If true, a toString method that outputs data in JSON format will be generated to all model classes
+     * @param generateModelToString the generateModelToString to set
+     */
+    public void setGenerateModelToString(boolean generateModelToString) {
+        this.generateModelToString = generateModelToString;
+    }
+
+    /**
      * Map of Java class names and database table names. Names not included in this list will be auto-generated.
      * e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
      * You can disable Java source generation for a certain table by putting the table name in the list with no Java class name.
@@ -448,5 +471,9 @@ public class EngineConfiguration {
         this.replacementFieldMap = replacementFieldMap;
     }
 
+    @Override
+    public String toString() {
+        return "EngineConfiguration{" + "database=" + database + ", databaseType=" + databaseType + ", sequenceNameConvention=" + sequenceNameConvention + ", url=" + url + ", username=" + username + ", password=" + password + ", tablePrefix=" + tablePrefix + ", tableSuffix=" + tableSuffix + ", fieldPrefix=" + fieldPrefix + ", fieldSuffix=" + fieldSuffix + ", generatedSourcePath=" + generatedSourcePath + ", packageOfJavaModel=" + packageOfJavaModel + ", packageOfJavaDao=" + packageOfJavaDao + ", daoSuffix=" + daoSuffix + ", generateModelToString=" + generateModelToString + ", replacementTableFilename=" + replacementTableFilename + ", replacementFieldFilename=" + replacementFieldFilename + ", licenseFilename=" + licenseFilename + ", licenseText=" + licenseText + ", replacementTableMap=" + replacementTableMap + ", replacementFieldMap=" + replacementFieldMap + '}';
+    }
 
 }
