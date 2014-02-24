@@ -103,8 +103,8 @@ public class Table {
     }
     
     /**
-     * Returns the standalone primary key field of this table. If there is no primary key field in this table, it tries to guess one. 
-     * @return The standalone primary key field of this table or null if there is no primary key field in this table and one cannot be guessed.
+     * Returns the standalone primary key field of this table. If there is no primary key field in this table, it returns null. 
+     * @return The standalone primary key field of this table or null if there is no primary key field in this table.
      * @throws IllegalStateException If there are more primary key fields in this table.
      */
     public Field getPkField() {
@@ -114,39 +114,6 @@ public class Table {
             throw new IllegalStateException("There is no standalone PK field");
         } else if (pkFields.size() == 1) {
             retVal = pkFields.get(0);
-        } else {
-            retVal = guessPkField();
-        }
-        return retVal;
-    }
-    
-    /**
-     * Tries to find a PK-like field in the field list. It is used when there is no PK constraint on a table.
-     * @return 
-     */
-    private Field guessPkField() {
-        System.out.printf("*** WARN: Guessing primary key field for table %s\n", this.dbName);
-        Field retVal = null;
-        for (Field field : fieldList) {
-            if (field.getJavaType() == Long.class 
-                    || field.getJavaType() == Integer.class 
-                    || field.getJavaType() == java.math.BigDecimal.class) {
-                retVal = field;
-                break;
-            }
-        }
-        if (retVal == null) {
-            for (Field field : fieldList) {
-                if (field.getJavaType() == String.class) {
-                    retVal = field;
-                    break;
-                }
-            }
-        }
-        if (retVal != null) {
-            System.out.printf("*** WARN: Guessed primary key field for table %s is: %s\n", this.dbName, retVal.getDbName());
-        } else {
-            System.out.printf("*** WARN: Unable to guess primary key field for table %s", this.dbName);
         }
         return retVal;
     }

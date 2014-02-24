@@ -140,7 +140,6 @@ public class Engine {
      * @throws TemplateException
      */
     private void generateModelClasses() throws IOException, TemplateException {
-        // TODO: generateLicence();
         List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         // create directory for java package
         Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
@@ -169,7 +168,6 @@ public class Engine {
      * @throws TemplateException
      */
     private void generateDaoClasses() throws IOException, TemplateException {
-        // TODO: generateLicence();
         List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         // create directory for java package
         Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
@@ -180,7 +178,7 @@ public class Engine {
         Files.createDirectories(dir);
         System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());
         for (Table table : tableList) {
-            if (table.getPkFields().size() > 0 || table.getPkField() != null) {
+            if (table.getPkFields().size() > 0) {
                 Template temp = freemarkerConfig.getTemplate("dao.ftl");
                 Writer out = new OutputStreamWriter(System.out);
                 Map<String, Object> m = new HashMap<>();
