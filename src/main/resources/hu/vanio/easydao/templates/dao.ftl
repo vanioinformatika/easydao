@@ -168,7 +168,7 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         String sql = "update ${t.dbName} " +
                      "set " +
                      <#list t.nonPkFields as field>
-                     <#if field.blob||field.clob>(updateLobFields?"${field.dbName} = ?<#if field_has_next>, </#if>":"") +<#else>"    ${field.dbName} = ?<#if field_has_next>, </#if>" +</#if>
+                     <#if field.blob||field.clob>(updateLobFields?"${field.dbName} = ? <#if field_has_next>, </#if>":"") +<#else>"    ${field.dbName} = ? <#if field_has_next>, </#if>" +</#if>
                      </#list>
                      <#if t.compositePk>"where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
                      <#else>"where ${t.pkField.dbName} = ?";
