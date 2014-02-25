@@ -164,15 +164,43 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
      * @return The re-read updated domain object instance (it needs to be re-read because of the computed fields)
      */
     @Override
-    public ${t.javaName} update(${t.javaName} instance) {
+    public ${t.javaName} update(${t.javaName} instance, boolean updateLobFields) {
         String sql = "update ${t.dbName} " +
-                     "set <#list t.nonPkFields as field>${field.dbName} = ?<#if field_has_next>, </#if></#list> " + 
-                     <#if t.compositePk>
-                     "where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-                     <#else>
-                     "where ${t.pkField.dbName} = ?";
+                     "set " +
+                     <#list t.nonPkFields as field>
+                     <#if field.blob||field.clob>(updateLobFields?"${field.dbName} = ?<#if field_has_next>, </#if>":"") +<#else>"    ${field.dbName} = ?<#if field_has_next>, </#if>" +</#if>
+                     </#list>
+                     <#if t.compositePk>"where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
+                     <#else>"where ${t.pkField.dbName} = ?";
                      </#if>
 
+        <#if t.hasClobField||t.hasBlobField>
+        List paramsList = new java.util.ArrayList();
+
+        <#list t.nonPkFields as field>
+        <#if field.array>
+        <#if e.databaseType.name() == 'POSTGRESQL9'>
+        paramsList.add(hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()));
+        <#else>
+        FIXME: array handling is not yet implemented for Oracle
+        </#if>
+        <#else>
+        <#if field.blob||field.clob>
+        if (updateLobFields) { paramsList.add(instance.get${field.javaName?cap_first}()); }
+        <#else>
+        paramsList.add(instance.get${field.javaName?cap_first}());
+        </#if>
+        </#if>
+        </#list>
+        <#if t.compositePk>
+        <#list t.pkFields as field>
+        paramsList.add(instance.get${field.javaName?cap_first}());
+        </#list>
+        <#else>
+        paramsList.add(instance.get${t.pkField.javaName?cap_first}());
+        </#if>
+        Object[] params = paramsList.toArray();
+        <#else>
         Object[] params = new Object[] {
             <#list t.nonPkFields as field>
             <#if field.array>
@@ -193,6 +221,7 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
             instance.get${t.pkField.javaName?cap_first}()
             </#if>
         };
+        </#if>
 
         int updRows = this.jdbcTemplate.update(sql, params);
         if (updRows != 1) {
