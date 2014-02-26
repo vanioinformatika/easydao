@@ -60,6 +60,23 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
             + "  and cn.conrelid = c.oid and cn.contype = 'p' "
             + "  and a.attnum = any(cn.conkey)";
 
+    final String selectForIndexList = 
+              "SELECT i.relname as INDEX_NAME, "
+            + "       idx.indisunique as UNIQUENESS, "
+            + "       idx.indrelid::regclass TABLE_NAME, "
+            + "       ARRAY( "
+            + "           SELECT pg_get_indexdef(idx.indexrelid, k + 1, true) "
+            + "           FROM generate_subscripts(idx.indkey, 1) as k "
+            + "           ORDER BY k "
+            + "       ) as COLUMN_NAMES "
+            + "FROM   pg_index as idx "
+            + "JOIN   pg_class as i "
+            + "ON     i.oid = idx.indexrelid "
+            + "JOIN   pg_namespace as ns "
+            + "ON     ns.oid = i.relnamespace "
+            + "AND    ns.nspname = ANY(current_schemas(false)) "
+            + "ORDER BY TABLE_NAME, idx.indkey";
+    
     /* Data type mapping: database -> java */
     public static final Map<String, Class> JAVA_TYPE_MAP = new HashMap<>();
 
@@ -113,6 +130,12 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
     @Override
     public String getSelectForTableList() {
         return this.selectForTableList;
+    }
+    
+     @Override
+    public String getSelectForIndexList() {
+        //FIXME: querying index list for postgreSql must be implemented
+         throw new UnsupportedOperationException();
     }
 
     @Override

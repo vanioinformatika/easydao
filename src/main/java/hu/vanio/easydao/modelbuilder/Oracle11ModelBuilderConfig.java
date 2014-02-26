@@ -60,6 +60,13 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             + " t.constraint_name = c.constraint_name"
             + " order by c.position";
 
+    final String selectForIndexList = 
+            "select b.uniqueness UNIQUENESS, a.index_name INDEX_NAME, a.table_name TABLE_NAME, a.column_name COLUMN_NAME " +
+                "from user_ind_columns a, user_indexes b " +
+                "where a.index_name=b.index_name " +
+                "  and a.table_name = upper(?) " +
+                "order by a.table_name, a.index_name, a.column_position";
+    
     /* Data type mapping: database -> java */
     public static final Map<String, Class> JAVA_TYPE_MAP = new HashMap<>();
 
@@ -105,6 +112,11 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
         return this.selectForTableList;
     }
 
+    @Override
+    public String getSelectForIndexList() {
+        return this.selectForIndexList;
+    }
+    
     @Override
     public String getSelectForFieldList() {
         return this.selectForFieldList;

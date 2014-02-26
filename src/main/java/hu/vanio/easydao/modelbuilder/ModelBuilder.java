@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hu.vanio.easydao.model.Index;
+
 /**
  * Abstract class for model builders.
  * These methods build java model of database: tables, fields and so on.
@@ -78,6 +80,7 @@ public class ModelBuilder {
         List<Table> tableList = this.getTableList();
         for (Table table : tableList) {
             table.setFieldList(this.getFieldList(table));
+            table.setIndexList(this.getIndexListForTable(table));
             engineConf.getDatabase().addTable(table);
         }
     }
@@ -118,7 +121,68 @@ public class ModelBuilder {
         }
         return tableList;
     }
+    
+    /**
+     * Loads all indexes for the specified tables from database.
+     * @return index list
+     * @throws SQLException
+     */
+    public List<Index> getIndexListForTable(Table table) throws SQLException {
+        System.out.println("getIndexListForTable: " + table.getDbName());
 
+        List<Index> indexList = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(config.getSelectForIndexList())) {
+            ps.setString(1, table.getDbName());
+            try (ResultSet rs = ps.executeQuery();) {
+                String lastIndexName = null;
+                List<String> fieldNames = new ArrayList<>();
+                String uniqueness;
+                boolean unique = false;
+                while (rs.next()) {
+                    uniqueness = rs.getString("UNIQUENESS");
+                    unique = "UNIQUE".equalsIgnoreCase(uniqueness);
+                    String indexDbName = rs.getString("INDEX_NAME");
+                    String fieldName = rs.getString("COLUMN_NAME");
+                    if (lastIndexName == null) { // if this is the first record
+                        lastIndexName = indexDbName;
+                    }
+                    if (!indexDbName.equals(lastIndexName)) {
+                        Index index = createIndexInstance(table, lastIndexName, unique, fieldNames);
+                        indexList.add(index);
+                        fieldNames = new ArrayList<>();
+                        lastIndexName = indexDbName;
+                    }
+                    fieldNames.add(fieldName);
+                }
+                if (lastIndexName != null) {
+                    Index index = createIndexInstance(table, lastIndexName, unique, fieldNames);
+                    indexList.add(index);
+                }
+            }
+        }
+        return indexList;
+    }
+
+    /**
+     * Creates a new Index instance for the specified table
+     * 
+     * @param table The table
+     * @param dbName The name of the index in the database
+     * @param unique Indicates whether the index is unique or not
+     * @param fieldDbNames The names of the indexed fields
+     * @return The new Index instance
+     */
+    protected Index createIndexInstance(Table table, String dbName, boolean unique, List<String> fieldDbNames) {
+        List<Field> fieldList = new ArrayList<>(fieldDbNames.size());
+        for (String fieldDbName : fieldDbNames) {
+            fieldList.add(table.getField(fieldDbName));
+        }
+        String javaName = createJavaName(dbName, true, true, false);
+        Index index = new Index(dbName, javaName, unique, fieldList);
+        System.out.printf("Index for table %s: %s\n", table.getDbName(), index.toString());
+        return index;
+    }
+    
     /**
      * Load primary key field names for a table.
      * @param tableName table name

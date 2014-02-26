@@ -42,6 +42,12 @@ public interface IModelBuilderConfig {
      * @return SQL query, TABLE_NAME, COMMENT
      */
     public String getSelectForTableList();
+    
+    /**
+     * Sql query for index list of a table, result: UNIQUENESS, INDEX_NAME, TABLE_NAME, COLUMN_NAME fields
+     * @return SQL query, UNIQUENESS, INDEX_NAME, TABLE_NAME, COLUMN_NAME
+     */
+    public String getSelectForIndexList();
 
     /**
      * Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENT

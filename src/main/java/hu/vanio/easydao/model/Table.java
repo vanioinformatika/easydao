@@ -24,7 +24,9 @@
 package hu.vanio.easydao.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Database's table meta data
@@ -32,15 +34,19 @@ import java.util.List;
  */
 public class Table {
 
-    /* Table name in database */
+    /** Table name in database */
     private String dbName;
-    /* Table comment */
+    /** Table comment */
     private String comment;
-    /* Table's java name */
+    /** Table's java name */
     private String javaName;
-    /* Table's fields */
+    /** Table's fields */
     private List<Field> fieldList;
-
+    /** Indexes of the table */
+    protected List<Index> indexList;
+    /** Field map, key: dbName, value Field instance */
+    private Map<String, Field> fieldMap;
+    
     /**
      * Constructs a new instance
      * 
@@ -54,26 +60,30 @@ public class Table {
         this.comment = comment;
         this.javaName = javaName;
         this.fieldList = fieldList;
+        this.updateFieldMap();
     }
 
-//<editor-fold defaultstate="collapsed" desc="gettersetter">
+    /**
+     * Updates the field map
+     */
+    protected void updateFieldMap() {
+        if (fieldList != null) {
+            this.fieldMap = new HashMap<>(fieldList.size());
+            for (Field field : fieldList) {
+                fieldMap.put(field.getDbName(), field);
+            }
+        }
+    }
     
     /**
-     * Table's fields
-     * @return the fieldList
+     * Returns the Field instance with the specified dbName
+     * @param dbName The dbName of the field
+     * @return The field or null, if no field exists with the specified dbName
      */
-    public List<Field> getFieldList() {
-        return fieldList;
+    public Field getField(String dbName) {
+        return this.fieldMap.get(dbName);
     }
-
-    /**
-     * Table's fields
-     * @param fieldList the fieldList to set
-     */
-    public void setFieldList(List<Field> fieldList) {
-        this.fieldList = fieldList;
-    }
-
+    
     /**
      * Returns primary key fields
      * @return The list of primary key fields
@@ -171,6 +181,7 @@ public class Table {
         return retVal;
     }
     
+//<editor-fold defaultstate="collapsed" desc="gettersetter">
     /**
      * Table name in database
      * @return the dbName
@@ -219,5 +230,38 @@ public class Table {
         this.javaName = javaName;
     }
 
+    /**
+     * Table's fields
+     * @return the fieldList
+     */
+    public List<Field> getFieldList() {
+        return fieldList;
+    }
+
+    /**
+     * Table's fields
+     * @param fieldList the fieldList to set
+     */
+    public void setFieldList(List<Field> fieldList) {
+        this.fieldList = fieldList;
+        this.updateFieldMap();
+    }
+    
+    /**
+     * Indexes of the table
+     * @return the indexList
+     */
+    public List<Index> getIndexList() {
+        return indexList;
+    }
+
+    /**
+     * Indexes of the table
+     * @param indexList the indexList to set
+     */
+    public void setIndexList(List<Index> indexList) {
+        this.indexList = indexList;
+    }
+    
     //</editor-fold>
 }

@@ -70,9 +70,9 @@ public class Field {
 
     @Override
     public String toString() {
-        return "Field{" + "dbName=" + dbName + ", javaName=" + javaName + ", dbType=" + dbType + ", javaType=" + getJavaType()
-                + ", primaryKey=" + primaryKey + ", nullable=" + nullable + ", array=" + array
-                + ", comment=" + comment + "}";
+        return "Field{" + "dbName: \"" + dbName + "\", javaName: \"" + javaName + "\", dbType: \"" + dbType + "\", javaType: \"" + getJavaType()
+                + "\", primaryKey: " + primaryKey + ", nullable: " + nullable + ", array: " + array
+                + ", comment: \"" + comment + "\"}";
     }
     
     /**
