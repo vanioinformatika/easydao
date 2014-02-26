@@ -23,19 +23,20 @@
  */
 package hu.vanio.easydao.modelbuilder;
 
-import hu.vanio.easydao.EngineConfiguration;
-import hu.vanio.easydao.model.Field;
-import hu.vanio.easydao.model.Table;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hu.vanio.easydao.EngineConfiguration;
+import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Index;
+import hu.vanio.easydao.model.Table;
 
 /**
  * Abstract class for model builders.
@@ -56,7 +57,7 @@ public class ModelBuilder {
     /* database configuration for model builder */
     protected IModelBuilderConfig config;
     /* primary keys for tables */
-    private Map<String, List<String>> pkFieldsOfTabels = new HashMap<>();
+    private final Map<String, List<String>> pkFieldsOfTabels = new HashMap<>();
 
     /**
      * Model builder constructor.
@@ -123,7 +124,8 @@ public class ModelBuilder {
     }
     
     /**
-     * Loads all indexes for the specified tables from database.
+     * Loads all indexes for the specified table from database.
+     * @param table The table
      * @return index list
      * @throws SQLException
      */
@@ -134,28 +136,13 @@ public class ModelBuilder {
         try (PreparedStatement ps = con.prepareStatement(config.getSelectForIndexList())) {
             ps.setString(1, table.getDbName());
             try (ResultSet rs = ps.executeQuery();) {
-                String lastIndexName = null;
-                List<String> fieldNames = new ArrayList<>();
-                String uniqueness;
-                boolean unique = false;
                 while (rs.next()) {
-                    uniqueness = rs.getString("UNIQUENESS");
-                    unique = "UNIQUE".equalsIgnoreCase(uniqueness);
+                    String uniqueness = rs.getString("UNIQUENESS");
+                    boolean unique = "UNIQUE".equalsIgnoreCase(uniqueness);
                     String indexDbName = rs.getString("INDEX_NAME");
-                    String fieldName = rs.getString("COLUMN_NAME");
-                    if (lastIndexName == null) { // if this is the first record
-                        lastIndexName = indexDbName;
-                    }
-                    if (!indexDbName.equals(lastIndexName)) {
-                        Index index = createIndexInstance(table, lastIndexName, unique, fieldNames);
-                        indexList.add(index);
-                        fieldNames = new ArrayList<>();
-                        lastIndexName = indexDbName;
-                    }
-                    fieldNames.add(fieldName);
-                }
-                if (lastIndexName != null) {
-                    Index index = createIndexInstance(table, lastIndexName, unique, fieldNames);
+                    String fieldNamesStr = rs.getString("COLUMN_NAMES");
+                    List<String> fieldNames = Arrays.asList(fieldNamesStr.split(","));
+                    Index index = createIndexInstance(table, indexDbName, unique, fieldNames);
                     indexList.add(index);
                 }
             }
@@ -187,6 +174,7 @@ public class ModelBuilder {
      * Load primary key field names for a table.
      * @param tableName table name
      * @return List of name of primary keys.
+     * @throws java.sql.SQLException
      */
     protected List<String> getPrimaryKeyFieldNameList(String tableName) throws SQLException {
         List<String> pkFieldNameList = pkFieldsOfTabels.get(tableName);

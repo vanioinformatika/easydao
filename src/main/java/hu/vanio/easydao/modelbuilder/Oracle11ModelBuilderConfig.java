@@ -61,11 +61,16 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             + " order by c.position";
 
     final String selectForIndexList = 
-            "select b.uniqueness UNIQUENESS, a.index_name INDEX_NAME, a.table_name TABLE_NAME, a.column_name COLUMN_NAME " +
-                "from user_ind_columns a, user_indexes b " +
-                "where a.index_name=b.index_name " +
-                "  and a.table_name = upper(?) " +
-                "order by a.table_name, a.index_name, a.column_position";
+            "select decode(idx.uniqueness, 'UNIQUE', 'true', 'NONUNIQUE', 'false') as UNIQUENESS, idx.index_name as INDEX_NAME, idx.table_name as TABLE_NAME, " +
+            "            ( select wm_concat(col.column_name) COLUMN_NAMES " +
+            "              from user_ind_columns col  " +
+            "              where col.table_name = idx.table_name and col.index_name = idx.index_name " +
+            "              group by col.index_name) as COLUMN_NAMES " +
+            "from user_indexes idx " +
+            "where idx.table_name = upper(?) " +
+            "  and idx.index_type <> 'LOB' " +
+            "  and idx.dropped = 'NO' " +
+            "order by idx.table_name";
     
     /* Data type mapping: database -> java */
     public static final Map<String, Class> JAVA_TYPE_MAP = new HashMap<>();
