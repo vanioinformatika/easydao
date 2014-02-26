@@ -88,6 +88,38 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         return retVal;
     }
 
+    <#list t.indexList as index>
+    <#if index.unique>
+    /**
+     * Reads a domain object with the specified keys from the datastore 
+     <#list index.fields as field>
+     * @param ${field.javaName} ${field.comment}
+     </#list>
+     * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
+     * @return ${t.javaName} instance
+     */
+    public ${t.javaName} readIndex_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
+        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list index.fields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), <#list index.fields as field> ${field.javaName}<#if field_has_next>, </#if></#list>);
+        return retVal;
+    }
+    <#else>
+    /**
+     * Reads a list of domain objects with the specified keys from the datastore 
+     <#list index.fields as field>
+     * @param ${field.javaName} ${field.comment}
+     </#list>
+     * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
+     * @return ${t.javaName} instances
+     */
+    public List<${t.javaName}> readIndex_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
+        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list index.fields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(readLobFields), <#list index.fields as field> ${field.javaName}<#if field_has_next>, </#if></#list>);
+        return retVal;
+    }
+    </#if>
+    </#list>
+
     /**
      * Creates a new primary key instance on the specified domain object instance
      * @param instance The domain object instance
