@@ -138,7 +138,7 @@ public class ModelBuilder {
             try (ResultSet rs = ps.executeQuery();) {
                 while (rs.next()) {
                     String uniqueness = rs.getString("UNIQUENESS");
-                    boolean unique = "UNIQUE".equalsIgnoreCase(uniqueness);
+                    boolean unique = "t".equalsIgnoreCase(uniqueness);
                     String indexDbName = rs.getString("INDEX_NAME");
                     String fieldNamesStr = rs.getString("COLUMN_NAMES");
                     List<String> fieldNames = Arrays.asList(fieldNamesStr.split(","));

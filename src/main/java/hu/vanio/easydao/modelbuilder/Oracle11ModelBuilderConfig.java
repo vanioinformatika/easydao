@@ -61,7 +61,7 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             + " order by c.position";
 
     final String selectForIndexList = 
-            "select decode(idx.uniqueness, 'UNIQUE', 'true', 'NONUNIQUE', 'false') as UNIQUENESS, idx.index_name as INDEX_NAME, idx.table_name as TABLE_NAME, " +
+            "select decode(idx.uniqueness, 'UNIQUE', 't', 'NONUNIQUE', 'f') as UNIQUENESS, idx.index_name as INDEX_NAME, idx.table_name as TABLE_NAME, " +
             "            ( select wm_concat(col.column_name) COLUMN_NAMES " +
             "              from user_ind_columns col  " +
             "              where col.table_name = idx.table_name and col.index_name = idx.index_name " +
