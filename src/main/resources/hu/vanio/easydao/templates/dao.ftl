@@ -98,9 +98,16 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
      * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
      * @return ${t.javaName} instance
      */
-    public ${t.javaName} readIndex_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
-        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list index.fields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), <#list index.fields as field> ${field.javaName}<#if field_has_next>, </#if></#list>);
+    public ${t.javaName} readIndexed_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
+        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where "<#list index.fields as field>
+                <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
+
+        List params = new java.util.ArrayList(${index.fields?size});
+        <#list index.fields as field>
+        <#if field_index == 0>params.add(${field.javaName});<#else>if (${field.javaName}!=null) {params.add(${field.javaName});}</#if>
+        </#list>
+
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), params.toArray());
         return retVal;
     }
     <#else>
@@ -112,9 +119,16 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
      * @param readLobFields Specifies whether BLOB/CLOB fields has to be read from the datastore
      * @return ${t.javaName} instances
      */
-    public List<${t.javaName}> readIndex_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
-        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list index.fields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(readLobFields), <#list index.fields as field> ${field.javaName}<#if field_has_next>, </#if></#list>);
+    public List<${t.javaName}> readIndexed_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
+        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where "<#list index.fields as field>
+                <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
+        
+        List params = new java.util.ArrayList(${index.fields?size});
+        <#list index.fields as field>
+        <#if field_index == 0>params.add(${field.javaName});<#else>if (${field.javaName}!=null) {params.add(${field.javaName});}</#if>
+        </#list>
+
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(readLobFields), params.toArray());
         return retVal;
     }
     </#if>
