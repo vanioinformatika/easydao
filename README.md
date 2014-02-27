@@ -24,10 +24,10 @@ Changelog:
 
 >*1.0.3:*
 
->*Small fix for DAO update method
+>* Small fix for DAO update method
 
 >*1.0.4:*
 
->*Introduced readIndexedXXX method generation for DAOs
+>* Introduced readIndexedXXX method generation for DAOs
 
 > If you just want **to use** this easy model and dao generator, then use the maven plugin at https://github.com/vanioinformatika/easydao-maven-plugin and a small dependeny in your project: https://github.com/vanioinformatika/easydao-core
