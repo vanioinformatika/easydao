@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -105,6 +106,8 @@ public class EngineConfiguration {
     private final String daoSuffix;
     /** If true, a toString method that outputs data in JSON format will be generated to all model classes */
     protected boolean generateModelToString;
+    /** The locale for generating comments */
+    private Locale locale = Locale.getDefault();
     
     /** Map of Java class names and database table names. Names not included in this list will be auto-generated.
      *  e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
@@ -238,6 +241,13 @@ public class EngineConfiguration {
                 props.getProperty("replacementFieldFilename"),
                 props.getProperty("licenseFilename"));
         
+        String languageCode = props.getProperty("language");
+        if (languageCode != null) {
+            Locale lc = new Locale(languageCode);
+            engineConf.setLocale(lc);
+        } else {
+            engineConf.setLocale(Locale.getDefault());
+        }
         return engineConf;
     }
     
@@ -471,9 +481,25 @@ public class EngineConfiguration {
         this.replacementFieldMap = replacementFieldMap;
     }
 
+    /**
+     * The locale for generating comments
+     * @return the locale
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * The locale for generating comments
+     * @param locale the locale to set
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
     @Override
     public String toString() {
-        return "EngineConfiguration{" + "database=" + database + ", databaseType=" + databaseType + ", sequenceNameConvention=" + sequenceNameConvention + ", url=" + url + ", username=" + username + ", password=" + password + ", tablePrefix=" + tablePrefix + ", tableSuffix=" + tableSuffix + ", fieldPrefix=" + fieldPrefix + ", fieldSuffix=" + fieldSuffix + ", generatedSourcePath=" + generatedSourcePath + ", packageOfJavaModel=" + packageOfJavaModel + ", packageOfJavaDao=" + packageOfJavaDao + ", daoSuffix=" + daoSuffix + ", generateModelToString=" + generateModelToString + ", replacementTableFilename=" + replacementTableFilename + ", replacementFieldFilename=" + replacementFieldFilename + ", licenseFilename=" + licenseFilename + ", licenseText=" + licenseText + ", replacementTableMap=" + replacementTableMap + ", replacementFieldMap=" + replacementFieldMap + '}';
+        return "EngineConfiguration{" + "database=" + database + ", databaseType=" + databaseType + ", sequenceNameConvention=" + sequenceNameConvention + ", url=" + url + ", username=" + username + ", password=" + password + ", tablePrefix=" + tablePrefix + ", tableSuffix=" + tableSuffix + ", fieldPrefix=" + fieldPrefix + ", fieldSuffix=" + fieldSuffix + ", generatedSourcePath=" + generatedSourcePath + ", packageOfJavaModel=" + packageOfJavaModel + ", packageOfJavaDao=" + packageOfJavaDao + ", daoSuffix=" + daoSuffix + ", generateModelToString=" + generateModelToString + ", replacementTableFilename=" + replacementTableFilename + ", replacementFieldFilename=" + replacementFieldFilename + ", licenseFilename=" + licenseFilename + ", licenseText=" + licenseText + ", replacementTableMap=" + replacementTableMap + ", replacementFieldMap=" + replacementFieldMap + ", locale=" + locale +'}';
     }
 
 }

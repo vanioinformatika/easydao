@@ -36,6 +36,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import freemarker.template.Configuration;
@@ -65,7 +66,9 @@ public class Engine {
     private IModelBuilderConfig modelBuilderConfig;
     /** Freemarker configuration */
     private Configuration freemarkerConfig;
-
+    /** Handles localised messages */
+    private LocalisedMessages messages;
+    
     /**
      * Constructs a new instance with the specified configuration
      * 
@@ -85,7 +88,7 @@ public class Engine {
                 modelBuilderConfig = new Oracle11ModelBuilderConfig();
                 break;
         }
-        
+        this.messages = new LocalisedMessages("messages", this.engineConfiguration.getLocale());
         this.initFreemarkerConfiguration();
     }
 
@@ -105,7 +108,7 @@ public class Engine {
             // Building java model from database metadata
             ModelBuilder modelBuilder = new ModelBuilder(con,
                     engineConfiguration,
-                    modelBuilderConfig);
+                    modelBuilderConfig, messages);
             modelBuilder.build();
         }
 
@@ -128,6 +131,7 @@ public class Engine {
         Map<String, Object> m = new HashMap<>();
         m.put("tList", tableList);
         m.put("e", engineConfiguration);
+        m.put("messages", messages);
         //temp.process(m, out);
         try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt"))) {
             temp.process(m, fileWriter);
@@ -155,6 +159,7 @@ public class Engine {
             Map<String, Object> m = new HashMap<>();
             m.put("t", table);
             m.put("e", engineConfiguration);
+            m.put("messages", messages);
             //temp.process(m, out);
             try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + ".java"))) {
                 temp.process(m, fileWriter);
@@ -184,6 +189,7 @@ public class Engine {
                 Map<String, Object> m = new HashMap<>();
                 m.put("t", table);
                 m.put("e", engineConfiguration);
+                m.put("messages", messages);
                 //temp.process(m, out);
                 try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConfiguration.getDaoSuffix() + ".java"))) {
                     temp.process(m, fileWriter);

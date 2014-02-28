@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import hu.vanio.easydao.EngineConfiguration;
+import hu.vanio.easydao.LocalisedMessages;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Index;
 import hu.vanio.easydao.model.Table;
@@ -46,16 +47,19 @@ import hu.vanio.easydao.model.Table;
 public class ModelBuilder {
 
     /* There is no comment in database */
-    final public String EMPTY_COMMENT = "FIXME: Warning: There is no comment in database!";
+    protected String EMPTY_COMMENT;
     /* It has been skipped from the modell */
-    final public String SKIPPED_FROM_MODEL = "**************************** SKIPPED FROM MODEL! Check replacement lists. ****************************";
+    protected String SKIPPED_FROM_MODEL = "**************************** SKIPPED FROM MODEL! Check replacement lists. ****************************";
 
     /* Engine configuration */
     protected EngineConfiguration engineConf;
     /* Database connection */
     protected Connection con;
-    /* database configuration for model builder */
+    /* Database configuration for model builder */
     protected IModelBuilderConfig config;
+    /** Handles localisation */
+    protected LocalisedMessages messages;
+    
     /* primary keys for tables */
     private final Map<String, List<String>> pkFieldsOfTabels = new HashMap<>();
 
@@ -63,14 +67,18 @@ public class ModelBuilder {
      * Model builder constructor.
      * @param con database connection
      * @param engineConf
-     * @param config database configuration for model builder
+     * @param config Database configuration for model builder
+     * @param messages Handles localisation
      */
     public ModelBuilder(Connection con,
             EngineConfiguration engineConf,
-            IModelBuilderConfig config) {
+            IModelBuilderConfig config,
+            LocalisedMessages messages) {
         this.con = con;
         this.engineConf = engineConf;
         this.config = config;
+        this.messages = messages;
+        this.EMPTY_COMMENT = messages.getMessage("emptyComment");
     }
 
     /**
