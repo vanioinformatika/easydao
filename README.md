@@ -30,4 +30,8 @@ Changelog:
 
 >* Introduced readIndexedXXX method generation for DAOs
 
+>*1.0.5:*
+
+>* Introduced localisation of the comments in the generated Java classes (so far only Hungarian and English is supported)
+
 > If you just want **to use** this easy model and dao generator, then use the maven plugin at https://github.com/vanioinformatika/easydao-maven-plugin and a small dependeny in your project: https://github.com/vanioinformatika/easydao-core
