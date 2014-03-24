@@ -57,15 +57,10 @@
 
     <distributionManagement>
         <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>releases</id>
-            <url>${releases-repo-url}</url>
+            <id>bintray-vanioinformatika-easydao-easydao</id>
+            <name>vanioinformatika-easydao-easydao</name>
+            <url>https://api.bintray.com/maven/vanioinformatika/easydao/easydao</url>
         </repository>
-        <snapshotRepository>
-            <uniqueVersion>true</uniqueVersion>
-            <id>snapshots</id>
-            <url>${snapshots-repo-url}</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <developers>
