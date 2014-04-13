@@ -57,9 +57,9 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-vanioinformatika-easydao-easydao</id>
-            <name>vanioinformatika-easydao-easydao</name>
-            <url>https://api.bintray.com/maven/vanioinformatika/easydao/easydao</url>
+            <id>bintray-vanioinformatika-releases-easydao</id>
+            <name>vanioinformatika-releases-easydao</name>
+            <url>https://api.bintray.com/maven/vanioinformatika/releases/easydao</url>
         </repository>
     </distributionManagement>
 
