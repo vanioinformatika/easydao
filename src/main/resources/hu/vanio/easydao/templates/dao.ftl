@@ -37,7 +37,7 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
 </#if>
 
     /** ${messages('selectedFields')} */
-    static final protected String SELECTED_FIELDS = "<#list t.fieldList as field>${field.dbName}<#if field_has_next>, </#if></#list>";
+    static final public String SELECTED_FIELDS = "<#list t.fieldList as field>${field.dbName}<#if field_has_next>, </#if></#list>";
 
     /** ${messages('dataSourceComment')} */
     protected DataSource dataSource;
