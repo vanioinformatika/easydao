@@ -105,6 +105,7 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
         JAVA_TYPE_MAP.put("timestamp with tz", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("timestamp with local tz", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class);
+        JAVA_TYPE_MAP.put("timestamp\\([0-9]\\)", java.sql.Timestamp.class);
         JAVA_TYPE_MAP.put("varchar2\\([\\d]*\\)", String.class);
         JAVA_TYPE_MAP.put("varray", java.sql.Array.class);
     }
