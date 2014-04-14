@@ -10,11 +10,11 @@ Changelog:
 
 >*1.0.7:*
 
->* First Bintray release.
+>* Introduced table name inclusion patterns (tableNameIncludes property in EngineConfiguration)
 
 >*1.0.6:*
 
->* Prepare for Bintray release.
+>* First Bintray release.
 
 >*1.0.5:*
 

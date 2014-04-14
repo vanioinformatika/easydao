@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import hu.vanio.easydao.EngineConfiguration;
 import hu.vanio.easydao.LocalisedMessages;
@@ -62,6 +63,8 @@ public class ModelBuilder {
     
     /* primary keys for tables */
     private final Map<String, List<String>> pkFieldsOfTabels = new HashMap<>();
+    
+    private List<Pattern> tableNameIncludesPatternList;
 
     /**
      * Model builder constructor.
@@ -79,6 +82,15 @@ public class ModelBuilder {
         this.config = config;
         this.messages = messages;
         this.EMPTY_COMMENT = messages.getMessage("emptyComment");
+        
+        List<String> tableNameIncludes = engineConf.getTableNameIncludes();
+        if (tableNameIncludes != null && !tableNameIncludes.isEmpty()) {
+            this.tableNameIncludesPatternList = new ArrayList<>(tableNameIncludes.size());
+            for (String patternStr  : engineConf.getTableNameIncludes()) {
+                Pattern pattern = Pattern.compile(patternStr);
+                tableNameIncludesPatternList.add(pattern);
+            }
+        }
     }
 
     /**
@@ -107,28 +119,50 @@ public class ModelBuilder {
             try (ResultSet rs = ps.executeQuery();) {
                 while (rs.next()) {
                     String tableName = rs.getString("TABLE_NAME");
-                    String tableComment = rs.getString("COMMENTS");
-                    if (tableComment == null) {
-                        tableComment = EMPTY_COMMENT;
-                    }
-                    String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementTableMap(), tableName);
-                    if ("".equals(javaName)) {
-                        // if replacement name is empty string, then table has been skipped from the model
-                        System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
-                        continue;
-                    }
-                    if (javaName == null) {
-                        javaName = createJavaName(tableName, true, engineConf.isTablePrefix(), engineConf.isTableSuffix());
-                    }
-                    Table table = new Table(tableName, tableComment, javaName, null);
+                    if (isTableIncluded(tableName)) {
+                        String tableComment = rs.getString("COMMENTS");
+                        if (tableComment == null) {
+                            tableComment = EMPTY_COMMENT;
+                        }
+                        String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementTableMap(), tableName);
+                        if ("".equals(javaName)) {
+                            // if replacement name is empty string, then table has been skipped from the model
+                            System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
+                            continue;
+                        }
+                        if (javaName == null) {
+                            javaName = createJavaName(tableName, true, engineConf.isTablePrefix(), engineConf.isTableSuffix());
+                        }
+                        Table table = new Table(tableName, tableComment, javaName, null);
 
-                    System.out.println("table name: " + tableName + " - " + javaName + " = " + tableComment);
+                        System.out.println("table name: " + tableName + " - " + javaName + " = " + tableComment);
 
-                    tableList.add(table);
+                        tableList.add(table);
+                    }
                 }
             }
         }
         return tableList;
+    }
+    
+    /**
+     * Checks whether the specified tablename needs to be included in Java code generation, based on the value of the tableNameIncludes property
+     * @param tableName The table name
+     * @return true if the specified tablename needs to be included in Java code generation, based on the value of the tableNameIncludes property
+     */
+    private boolean isTableIncluded(String tableName) {
+        boolean retVal = false;
+        if (this.tableNameIncludesPatternList == null || this.tableNameIncludesPatternList.isEmpty()) {
+            retVal = true;
+        } else {
+            for (Pattern pattern : this.tableNameIncludesPatternList) {
+                retVal = pattern.matcher(tableName).matches();
+                if (retVal) {
+                    break;
+                }
+            }
+        }
+        return retVal;
     }
     
     /**
@@ -260,7 +294,7 @@ public class ModelBuilder {
             boolean hasPostFix) {
 
         String result = "";
-        if (dbName.indexOf("_") > -1) {
+        if (dbName.contains("_")) {
             String[] sArray = dbName.toLowerCase().split("_");
             for (int i = 0; i < sArray.length; i++) {
                 String s = sArray[i];
@@ -315,6 +349,7 @@ public class ModelBuilder {
      * @param s input
      * @return "" if input is null, and uppercased first char if not
      */
+    @SuppressWarnings("AssignmentToMethodParameter")
     private String changeFirstCharTo(CHAR_CASE_TYPE c, String s) {
         String result = "";
         s = s.trim();

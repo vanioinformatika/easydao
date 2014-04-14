@@ -29,8 +29,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -108,6 +110,8 @@ public class EngineConfiguration {
     protected boolean generateModelToString;
     /** The locale for generating comments */
     private Locale locale = Locale.getDefault();
+    /** Table name (regex) patterns to be included during generating Java code  */
+    protected List<String> tableNameIncludes;
     
     /** Map of Java class names and database table names. Names not included in this list will be auto-generated.
      *  e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
@@ -157,6 +161,7 @@ public class EngineConfiguration {
      *                                 You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
      *                                 e.g.: USER.FNAME =
      * @param licenseFilename License file name (its content will be inserted into all generated Java source files)
+     * @param tableNameIncludes
      * @throws java.io.IOException
      */
     public EngineConfiguration(
@@ -167,7 +172,8 @@ public class EngineConfiguration {
             boolean generateModelToString,
             SEQUENCE_NAME_CONVENTION sequenceNameConvention,
             String replacementTableFilename, String replacementFieldFilename,
-            String licenseFilename) throws IOException {
+            String licenseFilename,
+            List<String> tableNameIncludes) throws IOException {
         
         this.database = new Database(databaseName);
         this.databaseType = databaseType;
@@ -187,6 +193,7 @@ public class EngineConfiguration {
         this.replacementTableFilename = replacementTableFilename;
         this.replacementFieldFilename = replacementFieldFilename;
         this.licenseFilename = licenseFilename;
+        this.tableNameIncludes = tableNameIncludes;
         
         // load table and field replacement files into maps
         loadResourceBundleToMap(this.replacementTableFilename, this.replacementTableMap);
@@ -239,7 +246,9 @@ public class EngineConfiguration {
                 EngineConfiguration.SEQUENCE_NAME_CONVENTION.valueOf(props.getProperty("sequenceNameConvention")),
                 props.getProperty("replacementTableFilename"),
                 props.getProperty("replacementFieldFilename"),
-                props.getProperty("licenseFilename"));
+                props.getProperty("licenseFilename"),
+                getPropertyAsList(props, "tableNameIncludes")
+        );
         
         String languageCode = props.getProperty("language");
         if (languageCode != null) {
@@ -249,6 +258,22 @@ public class EngineConfiguration {
             engineConf.setLocale(Locale.getDefault());
         }
         return engineConf;
+    }
+    
+    /**
+     * Reads the specified property from the specified Properties instance as a String list
+     * @param props The Properties instance
+     * @param key The key of the property
+     * @return The loaded array
+     */
+    static protected List<String> getPropertyAsList(Properties props, String key) {
+        List<String> retVal = null;
+        String listProp = props.getProperty(key);
+        if (listProp != null) {
+            String[] valueArray = listProp.split(",\\s*");
+            retVal = Arrays.asList(valueArray);
+        }
+        return retVal;
     }
     
     /**
@@ -409,6 +434,22 @@ public class EngineConfiguration {
      */
     public void setGenerateModelToString(boolean generateModelToString) {
         this.generateModelToString = generateModelToString;
+    }
+
+    /**
+     * Table name (regex) patterns to be included during generating Java code
+     * @return the tableNameIncludes
+     */
+    public List<String> getTableNameIncludes() {
+        return tableNameIncludes;
+    }
+
+    /**
+     * Table name (regex) patterns to be included during generating Java code
+     * @param tableNameIncludes the tableNameIncludes to set
+     */
+    public void setTableNameIncludes(List<String> tableNameIncludes) {
+        this.tableNameIncludes = tableNameIncludes;
     }
 
     /**
