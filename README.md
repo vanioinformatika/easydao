@@ -8,6 +8,10 @@ This project is the engine of the source code generator.
 Changelog:
 ----------
 
+>*1.0.8:*
+
+>* Introduced encoding parameter (encoding property in EngineConfiguration)
+
 >*1.0.7:*
 
 >* Introduced table name inclusion patterns (tableNameIncludes property in EngineConfiguration)
