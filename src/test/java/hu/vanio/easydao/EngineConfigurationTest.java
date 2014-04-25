@@ -84,6 +84,7 @@ public class EngineConfigurationTest {
         assertEquals(EngineConfiguration.SEQUENCE_NAME_CONVENTION.SUFFIXED_TABLE_NAME, conf.getSequenceNameConvention());
         assertEquals(Locale.getDefault(), conf.getLocale());
         assertEquals(Arrays.asList("IR_.+", "KR_.+"), conf.getTableNameIncludes());
+        assertEquals("utf-8", conf.getEncoding());
     }
 
     /**

@@ -112,6 +112,8 @@ public class EngineConfiguration {
     private Locale locale = Locale.getDefault();
     /** Table name (regex) patterns to be included during generating Java code  */
     protected List<String> tableNameIncludes;
+    /** Encoding of the generated source files */
+    protected String encoding;
     
     /** Map of Java class names and database table names. Names not included in this list will be auto-generated.
      *  e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
@@ -162,6 +164,7 @@ public class EngineConfiguration {
      *                                 e.g.: USER.FNAME =
      * @param licenseFilename License file name (its content will be inserted into all generated Java source files)
      * @param tableNameIncludes
+     * @param encoding Encoding of the generated source files
      * @throws java.io.IOException
      */
     public EngineConfiguration(
@@ -173,7 +176,8 @@ public class EngineConfiguration {
             SEQUENCE_NAME_CONVENTION sequenceNameConvention,
             String replacementTableFilename, String replacementFieldFilename,
             String licenseFilename,
-            List<String> tableNameIncludes) throws IOException {
+            List<String> tableNameIncludes,
+            String encoding) throws IOException {
         
         this.database = new Database(databaseName);
         this.databaseType = databaseType;
@@ -194,6 +198,11 @@ public class EngineConfiguration {
         this.replacementFieldFilename = replacementFieldFilename;
         this.licenseFilename = licenseFilename;
         this.tableNameIncludes = tableNameIncludes;
+        this.encoding = encoding;
+        
+        if (encoding == null) {
+            throw new IllegalArgumentException("Encoding cannot be null");
+        }
         
         // load table and field replacement files into maps
         loadResourceBundleToMap(this.replacementTableFilename, this.replacementTableMap);
@@ -202,7 +211,7 @@ public class EngineConfiguration {
         this.replacementFieldMap.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
         
         if (this.licenseFilename != null) {
-            this.licenseText = readFile(this.licenseFilename, Charset.forName("utf-8"));
+            this.licenseText = readFile(this.licenseFilename, Charset.forName(this.encoding));
         } else {
             this.licenseText = MISSING_LICENSE_TEXT;
         }
@@ -247,7 +256,8 @@ public class EngineConfiguration {
                 props.getProperty("replacementTableFilename"),
                 props.getProperty("replacementFieldFilename"),
                 props.getProperty("licenseFilename"),
-                getPropertyAsList(props, "tableNameIncludes")
+                getPropertyAsList(props, "tableNameIncludes"),
+                props.getProperty("encoding")
         );
         
         String languageCode = props.getProperty("language");
@@ -538,9 +548,42 @@ public class EngineConfiguration {
         this.locale = locale;
     }
 
+    /**
+     * Encoding of the generated source files
+     * @return the encoding
+     */
+    public String getEncoding() {
+        return encoding;
+    }
+
     @Override
     public String toString() {
-        return "EngineConfiguration{" + "database=" + database + ", databaseType=" + databaseType + ", sequenceNameConvention=" + sequenceNameConvention + ", url=" + url + ", username=" + username + ", password=" + password + ", tablePrefix=" + tablePrefix + ", tableSuffix=" + tableSuffix + ", fieldPrefix=" + fieldPrefix + ", fieldSuffix=" + fieldSuffix + ", generatedSourcePath=" + generatedSourcePath + ", packageOfJavaModel=" + packageOfJavaModel + ", packageOfJavaDao=" + packageOfJavaDao + ", daoSuffix=" + daoSuffix + ", generateModelToString=" + generateModelToString + ", replacementTableFilename=" + replacementTableFilename + ", replacementFieldFilename=" + replacementFieldFilename + ", licenseFilename=" + licenseFilename + ", licenseText=" + licenseText + ", replacementTableMap=" + replacementTableMap + ", replacementFieldMap=" + replacementFieldMap + ", locale=" + locale +'}';
+        return "EngineConfiguration{" 
+                + "database=" + database 
+                + ", databaseType=" + databaseType 
+                + ", sequenceNameConvention=" + sequenceNameConvention 
+                + ", url=" + url 
+                + ", username=" + username 
+                + ", password=" + password 
+                + ", tablePrefix=" + tablePrefix 
+                + ", tableSuffix=" + tableSuffix 
+                + ", fieldPrefix=" + fieldPrefix 
+                + ", fieldSuffix=" + fieldSuffix 
+                + ", generatedSourcePath=" + generatedSourcePath 
+                + ", packageOfJavaModel=" + packageOfJavaModel 
+                + ", packageOfJavaDao=" + packageOfJavaDao 
+                + ", daoSuffix=" + daoSuffix 
+                + ", generateModelToString=" + generateModelToString 
+                + ", replacementTableFilename=" + replacementTableFilename 
+                + ", replacementFieldFilename=" + replacementFieldFilename 
+                + ", licenseFilename=" + licenseFilename 
+                + ", licenseText=" + licenseText 
+                + ", replacementTableMap=" + replacementTableMap 
+                + ", replacementFieldMap=" + replacementFieldMap 
+                + ", locale=" + locale 
+                + ", tableNameIncludes=" + tableNameIncludes
+                + ", encoding=" + encoding
+                +'}';
     }
 
 }

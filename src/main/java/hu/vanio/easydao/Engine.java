@@ -24,7 +24,7 @@
 package hu.vanio.easydao;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -36,7 +36,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import freemarker.template.Configuration;
@@ -133,7 +132,7 @@ public class Engine {
         m.put("e", engineConfiguration);
         m.put("messages", messages);
         //temp.process(m, out);
-        try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt"))) {
+        try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt")), engineConfiguration.getEncoding())) {
             temp.process(m, fileWriter);
         }
     }
@@ -161,7 +160,7 @@ public class Engine {
             m.put("e", engineConfiguration);
             m.put("messages", messages);
             //temp.process(m, out);
-            try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + ".java"))) {
+            try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + ".java")), engineConfiguration.getEncoding())) {
                 temp.process(m, fileWriter);
             }
         }
@@ -191,7 +190,7 @@ public class Engine {
                 m.put("e", engineConfiguration);
                 m.put("messages", messages);
                 //temp.process(m, out);
-                try (Writer fileWriter = new FileWriter(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConfiguration.getDaoSuffix() + ".java"))) {
+                try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConfiguration.getDaoSuffix() + ".java")), engineConfiguration.getEncoding())) {
                     temp.process(m, fileWriter);
                 }
             } else {
