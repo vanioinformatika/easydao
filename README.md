@@ -8,6 +8,10 @@ This project is the engine of the source code generator.
 Changelog:
 ----------
 
+>*1.0.9:*
+
+>* Introduced handling of fields with enumerated values (these fields can be mapped to Java enums)
+
 >*1.0.8:*
 
 >* Introduced encoding parameter (encoding property in EngineConfiguration)
