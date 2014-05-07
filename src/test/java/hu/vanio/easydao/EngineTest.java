@@ -81,6 +81,7 @@ public class EngineTest {
         props.put("sequenceNameConvention", "PREFIXED_TABLE_NAME");
         props.put("replacementTableFilename", "replacement-table");
         props.put("replacementFieldFilename", "replacement-field");
+        props.put("enumFieldFilename", "replacement-field");
         props.put("encoding", "utf-8");
         //props.put("licenseFilename", null);
         

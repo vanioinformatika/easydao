@@ -35,6 +35,8 @@ public class Field {
     private boolean nullable;
     /** Indicates whether this field is an array */
     private boolean array;
+    /** Indicates whether the value of this field is enumerated */
+    private boolean enumerated;
     /** The name of this field in the database */
     private String dbName;
     /** The type of this field in the database */
@@ -44,23 +46,26 @@ public class Field {
     /** The name of this field in Java code */
     private String javaName;
     /** The type of this field in Java code */
-    private Class javaType;
+    private String javaType;
 
     /**
+     * Constructor
      * 
-     * @param primaryKey
-     * @param nullable
-     * @param array
-     * @param dbName
-     * @param dbType
-     * @param comment
-     * @param javaName
-     * @param javaType 
+     * @param primaryKey Indicates whether this field is a (or part of a) primary key
+     * @param nullable Indicates whether the value of this field can be null
+     * @param array Indicates whether this field is an array
+     * @param enumerated Indicates whether the value of this field is enumerated
+     * @param dbName The name of this field in the database
+     * @param dbType The type of this field in the database
+     * @param comment The comment of this field in the database
+     * @param javaName The name of this field in Java code
+     * @param javaType The type of this field in Java code
      */
-    public Field(boolean primaryKey, boolean nullable, boolean array, String dbName, String dbType, String comment, String javaName, Class javaType) {
+    public Field(boolean primaryKey, boolean nullable, boolean array, boolean enumerated, String dbName, String dbType, String comment, String javaName, String javaType) {
         this.primaryKey = primaryKey;
         this.nullable = nullable;
         this.array = array;
+        this.enumerated = enumerated;
         this.dbName = dbName;
         this.dbType = dbType;
         this.comment = comment;
@@ -71,7 +76,7 @@ public class Field {
     @Override
     public String toString() {
         return "Field{" + "dbName: \"" + dbName + "\", javaName: \"" + javaName + "\", dbType: \"" + dbType + "\", javaType: \"" + getJavaType()
-                + "\", primaryKey: " + primaryKey + ", nullable: " + nullable + ", array: " + array
+                + "\", primaryKey: " + primaryKey + ", nullable: " + nullable + ", array: " + array + ", enumerated: " + enumerated
                 + ", comment: \"" + comment + "\"}";
     }
     
@@ -80,7 +85,8 @@ public class Field {
      * @return javaType as string 
      */
     public String getJavaTypeAsString() {
-        return this.javaType.getSimpleName();
+        int lastDotIdx = this.javaType.lastIndexOf('.');
+        return this.javaType.substring(lastDotIdx+1);
     }
 
     /**
@@ -132,11 +138,27 @@ public class Field {
     }
 
     /**
+     * Indicates whether the value of this field is enumerated
+     * @return the enumerated
+     */
+    public boolean isEnumerated() {
+        return enumerated;
+    }
+
+    /**
+     * Indicates whether the value of this field is enumerated
+     * @param enumerated the enumerated to set
+     */
+    public void setEnumerated(boolean enumerated) {
+        this.enumerated = enumerated;
+    }
+
+    /**
      * Indicates whether this field is a CLOB
      * @return the clob
      */
     public boolean isClob() {
-        return this.javaType == java.sql.Clob.class;
+        return this.javaType.equals(java.sql.Clob.class.getName());
     }
 
     /**
@@ -144,7 +166,7 @@ public class Field {
      * @return the blob
      */
     public boolean isBlob() {
-        return this.javaType == java.sql.Blob.class;
+        return this.javaType.equals(java.sql.Blob.class.getName());
     }
 
     /**
@@ -215,7 +237,7 @@ public class Field {
      * The type of this field in Java code
      * @return the javaType
      */
-    public Class getJavaType() {
+    public String getJavaType() {
         return javaType;
     }
 
@@ -223,7 +245,7 @@ public class Field {
      * The type of this field in Java code
      * @param javaType the javaType to set
      */
-    public void setJavaType(Class javaType) {
+    public void setJavaType(String javaType) {
         this.javaType = javaType;
     }
 
@@ -233,12 +255,21 @@ public class Field {
      */
     public boolean isReadAsString() {
         boolean retVal = false;
-        if (this.javaType != String.class 
-                && this.javaType != java.util.Date.class
-                && this.javaType != java.sql.Timestamp.class
-                && this.javaType != java.sql.Clob.class
-                && this.javaType != java.sql.Blob.class
-                && !this.javaType.isArray()) {
+        
+        Class javaClass = null;
+        try {
+            javaClass = Class.forName(this.javaType);
+        } catch (ClassNotFoundException e) {
+            javaClass = Object.class;
+        }
+        
+        if (    javaClass != String.class 
+                && javaClass != java.util.Date.class
+                && javaClass != java.sql.Timestamp.class
+                && javaClass != java.sql.Clob.class
+                && javaClass != java.sql.Blob.class
+                && !javaClass.isArray()
+                && !this.enumerated) {
             retVal = true;
         }
         return retVal;

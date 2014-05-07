@@ -246,6 +246,7 @@ public class ModelBuilder {
         String tableName = table.getDbName();
         System.out.println("\ngetFieldList of " + table.getJavaName());
         List<Field> fieldList = new ArrayList<>();
+        Map<String, String> enumFieldMap = this.engineConf.getEnumFieldMap();
         try (PreparedStatement ps = con.prepareStatement(config.getSelectForFieldList())) {
             ps.setString(1, tableName);
             try (ResultSet rs = ps.executeQuery();) {
@@ -268,8 +269,15 @@ public class ModelBuilder {
                     if (javaName == null) {
                         javaName = createJavaName(fieldName, false, engineConf.isFieldPrefix(), engineConf.isFieldSuffix());
                     }
-                    Class javaType = config.getJavaType(dbType);
-                    Field field = new Field(primaryKey, nullable, array, fieldName, dbType, comment, javaName, javaType);
+                    String javaType = config.getJavaType(dbType);
+                    String tableAndFieldName = tableName + "." + fieldName;
+                    boolean enumerated = false;
+                    if (enumFieldMap.containsKey(tableAndFieldName)) {
+                        javaType = enumFieldMap.get(tableAndFieldName);
+                        enumerated = true;
+                    }
+                    
+                    Field field = new Field(primaryKey, nullable, array, enumerated, fieldName, dbType, comment, javaName, javaType);
 
                     System.out.println(field.toString());
 

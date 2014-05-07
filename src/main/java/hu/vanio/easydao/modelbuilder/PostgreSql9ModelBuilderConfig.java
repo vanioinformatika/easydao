@@ -77,50 +77,50 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
             "order by TABLE_NAME, idx.indkey";
     
     /* Data type mapping: database -> java */
-    public static final Map<String, Class> JAVA_TYPE_MAP = new HashMap<>();
+    public static final Map<String, String> JAVA_TYPE_MAP = new HashMap<>();
 
     /* see: http://www.postgresql.org/docs/current/static/datatype.html */
     static {
-        JAVA_TYPE_MAP.put("boolean", Boolean.class);
-        JAVA_TYPE_MAP.put("boolean\\[\\]", boolean[].class);
-        JAVA_TYPE_MAP.put("bytea", byte[].class);
-        JAVA_TYPE_MAP.put("character", String.class);
-        JAVA_TYPE_MAP.put("character\\([\\d]+\\)", String.class);
-        JAVA_TYPE_MAP.put("character\\([\\d]+\\)\\[\\]", String[].class);
-        JAVA_TYPE_MAP.put("character\\[\\]", String[].class);
-        JAVA_TYPE_MAP.put("character varying", String.class);
-        JAVA_TYPE_MAP.put("character varying\\([\\d]+\\)", String.class);
-        JAVA_TYPE_MAP.put("character varying\\([\\d]+\\)\\[\\]", String[].class);
-        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("double precision|float8", Double.class);
-        JAVA_TYPE_MAP.put("integer|int|int4|smallint|smallserial|serial", Integer.class);
-        JAVA_TYPE_MAP.put("bigint|int8|bigserial|money", Long.class);
-        JAVA_TYPE_MAP.put("json", String.class);
+        JAVA_TYPE_MAP.put("boolean", Boolean.class.getName());
+        JAVA_TYPE_MAP.put("boolean\\[\\]", boolean[].class.getName());
+        JAVA_TYPE_MAP.put("bytea", byte[].class.getName());
+        JAVA_TYPE_MAP.put("character", String.class.getName());
+        JAVA_TYPE_MAP.put("character\\([\\d]+\\)", String.class.getName());
+        JAVA_TYPE_MAP.put("character\\([\\d]+\\)\\[\\]", String[].class.getName());
+        JAVA_TYPE_MAP.put("character\\[\\]", String[].class.getName());
+        JAVA_TYPE_MAP.put("character varying", String.class.getName());
+        JAVA_TYPE_MAP.put("character varying\\([\\d]+\\)", String.class.getName());
+        JAVA_TYPE_MAP.put("character varying\\([\\d]+\\)\\[\\]", String[].class.getName());
+        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("double precision|float8", Double.class.getName());
+        JAVA_TYPE_MAP.put("integer|int|int4|smallint|smallserial|serial", Integer.class.getName());
+        JAVA_TYPE_MAP.put("bigint|int8|bigserial|money", Long.class.getName());
+        JAVA_TYPE_MAP.put("json", String.class.getName());
 
-        JAVA_TYPE_MAP.put("numeric", Integer.class);
-        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)", Integer.class);
-        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)", Integer.class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)", Long.class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)", Long.class);
-        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)", String.class);
-        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class);
-        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)", Double.class);
+        JAVA_TYPE_MAP.put("numeric", Integer.class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)", Integer.class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)", Integer.class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)", Long.class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)", Long.class.getName());
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)", String.class.getName());
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)", Double.class.getName());
 
-        JAVA_TYPE_MAP.put("numeric\\[\\]", int[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", int[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)\\[\\]", int[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)\\[\\]", long[].class);
-        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)\\[\\]", long[].class);
-        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)\\[\\]", String[].class);
-        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)\\[\\]", String[].class);
-        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)\\[\\]", double[].class);
+        JAVA_TYPE_MAP.put("numeric\\[\\]", int[].class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1-9]\\)\\[\\]", int[].class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1-9],[0]\\)\\[\\]", int[].class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8]\\)\\[\\]", long[].class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([1][0-8],[0]\\)\\[\\]", long[].class.getName());
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,})\\)\\[\\]", String[].class.getName());
+        JAVA_TYPE_MAP.put("numeric\\((19|[2-9]\\d|\\d{3,}),[0]\\)\\[\\]", String[].class.getName());
+        JAVA_TYPE_MAP.put("numeric\\([\\d]+,[1-9]+\\)\\[\\]", double[].class.getName());
 
-        JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("timestamp with time zone", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("text", String.class);
-        JAVA_TYPE_MAP.put("uuid", String.class);
-        JAVA_TYPE_MAP.put("xml", String.class);
+        JAVA_TYPE_MAP.put("timestamp without time zone", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("timestamp with time zone", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("text", String.class.getName());
+        JAVA_TYPE_MAP.put("uuid", String.class.getName());
+        JAVA_TYPE_MAP.put("xml", String.class.getName());
     }
 
     public PostgreSql9ModelBuilderConfig() {
@@ -147,7 +147,7 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
     }
 
     @Override
-    public Class getJavaType(String dbType) throws IllegalArgumentException {
+    public String getJavaType(String dbType) throws IllegalArgumentException {
         return convertToJavaType(JAVA_TYPE_MAP, dbType);
     }
 

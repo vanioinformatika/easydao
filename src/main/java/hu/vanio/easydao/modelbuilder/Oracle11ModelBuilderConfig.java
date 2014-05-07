@@ -73,41 +73,41 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             "order by idx.table_name";
     
     /* Data type mapping: database -> java */
-    public static final Map<String, Class> JAVA_TYPE_MAP = new HashMap<>();
+    public static final Map<String, String> JAVA_TYPE_MAP = new HashMap<>();
 
     /* see: http://docs.oracle.com/cd/B19306_01/java.102/b14188/datamap.htm */
     static {
-        JAVA_TYPE_MAP.put("char|long|string|varchar|varchar2", String.class);
-        JAVA_TYPE_MAP.put("bytea|raw|long raw", byte[].class);
-        JAVA_TYPE_MAP.put("binary_integer|natural|naturaln|pls_integer|positive|positiven|signtype|int|integer|smallint", Integer.class);
-        JAVA_TYPE_MAP.put("dec|decimal", BigDecimal.class);
-        JAVA_TYPE_MAP.put("double precision|float", Double.class);
-        JAVA_TYPE_MAP.put("real", Float.class);
-        JAVA_TYPE_MAP.put("rowid", java.sql.RowId.class);
-        JAVA_TYPE_MAP.put("boolean", Boolean.class);
-        JAVA_TYPE_MAP.put("clob", java.sql.Clob.class);
-        JAVA_TYPE_MAP.put("blob", java.sql.Blob.class);
+        JAVA_TYPE_MAP.put("char|long|string|varchar|varchar2", String.class.getName());
+        JAVA_TYPE_MAP.put("bytea|raw|long raw", byte[].class.getName());
+        JAVA_TYPE_MAP.put("binary_integer|natural|naturaln|pls_integer|positive|positiven|signtype|int|integer|smallint", Integer.class.getName());
+        JAVA_TYPE_MAP.put("dec|decimal", BigDecimal.class.getName());
+        JAVA_TYPE_MAP.put("double precision|float", Double.class.getName());
+        JAVA_TYPE_MAP.put("real", Float.class.getName());
+        JAVA_TYPE_MAP.put("rowid", java.sql.RowId.class.getName());
+        JAVA_TYPE_MAP.put("boolean", Boolean.class.getName());
+        JAVA_TYPE_MAP.put("clob", java.sql.Clob.class.getName());
+        JAVA_TYPE_MAP.put("blob", java.sql.Blob.class.getName());
 
-        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("double precision|float8", Double.class);
+        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("double precision|float8", Double.class.getName());
 
-        JAVA_TYPE_MAP.put("number|numeric", Integer.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\(,\\)", Integer.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\([1-9]\\)", Integer.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\([1-9],[0]\\)", Integer.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8]\\)", Long.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8],[0]\\)", Long.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\((19|[2-9]\\d|\\d{3,})\\)", String.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class);
-        JAVA_TYPE_MAP.put("(number|numeric)\\([\\d]+,[1-9]+\\)", Double.class);
+        JAVA_TYPE_MAP.put("number|numeric", Integer.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\(,\\)", Integer.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1-9]\\)", Integer.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1-9],[0]\\)", Integer.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8]\\)", Long.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8],[0]\\)", Long.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\((19|[2-9]\\d|\\d{3,})\\)", String.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\([\\d]+,[1-9]+\\)", Double.class.getName());
 
-        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("timestamp with tz", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("timestamp with local tz", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("timestamp\\([0-9]\\)", java.sql.Timestamp.class);
-        JAVA_TYPE_MAP.put("varchar2\\([\\d]*\\)", String.class);
-        JAVA_TYPE_MAP.put("varray", java.sql.Array.class);
+        JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("timestamp with tz", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("timestamp with local tz", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("timestamp\\([0-9]\\)", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("varchar2\\([\\d]*\\)", String.class.getName());
+        JAVA_TYPE_MAP.put("varray", java.sql.Array.class.getName());
     }
 
     public Oracle11ModelBuilderConfig() {
@@ -134,7 +134,7 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
     }
 
     @Override
-    public Class getJavaType(String dbType) throws IllegalArgumentException {
+    public String getJavaType(String dbType) throws IllegalArgumentException {
         return convertToJavaType(JAVA_TYPE_MAP, dbType);
     }
 

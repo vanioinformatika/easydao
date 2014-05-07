@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
 
+<#list t.fieldList as field><#if field.enumerated>import ${field.javaType};${'\n'}</#if></#list>
 /**
  * ${t.javaName}${e.daoSuffix}.
  * <br>${t.comment}
@@ -183,24 +184,28 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         if (createPk) createPk(instance);
         Object[] params = new Object[] {
             <#list t.fieldList as field>
-            <#if field.array>
-            <#if e.databaseType.name() == 'POSTGRESQL9'>
-            hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}())<#if field_has_next>,</#if>
-            <#else>
-            FIXME: array handling is not yet implemented for Oracle
-            </#if>
-            <#else>
-            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
-            </#if>
+                <#if field.array>
+                    <#if e.databaseType.name() == 'POSTGRESQL9'>
+                        hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}())<#if field_has_next>,</#if>
+                    <#else>
+                        FIXME: array handling is not yet implemented for Oracle
+                    </#if>
+                <#else>
+                    <#if field.enumerated>
+                        instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null<#if field_has_next>,</#if>
+                    <#else>
+                        instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                    </#if>
+                </#if>
             </#list>
         };
         this.jdbcTemplate.update(sql, params);
 
         <#if t.compositePk>
-        ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
-        return read(pk, false);
+            ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+            return read(pk, false);
         <#else>
-        return read(instance.get${t.pkField.javaName?cap_first}(), false);
+            return read(instance.get${t.pkField.javaName?cap_first}(), false);
         </#if>
     }
 
@@ -221,52 +226,62 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                      </#if>
 
         <#if t.hasClobField||t.hasBlobField>
-        List paramsList = new java.util.ArrayList();
+            List paramsList = new java.util.ArrayList();
 
-        <#list t.nonPkFields as field>
-        <#if field.array>
-        <#if e.databaseType.name() == 'POSTGRESQL9'>
-        paramsList.add(hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()));
-        <#else>
-        FIXME: array handling is not yet implemented for Oracle
-        </#if>
-        <#else>
-        <#if field.blob||field.clob>
-        if (updateLobFields) { paramsList.add(instance.get${field.javaName?cap_first}()); }
-        <#else>
-        paramsList.add(instance.get${field.javaName?cap_first}());
-        </#if>
-        </#if>
-        </#list>
-        <#if t.compositePk>
-        <#list t.pkFields as field>
-        paramsList.add(instance.get${field.javaName?cap_first}());
-        </#list>
-        <#else>
-        paramsList.add(instance.get${t.pkField.javaName?cap_first}());
-        </#if>
-        Object[] params = paramsList.toArray();
-        <#else>
-        Object[] params = new Object[] {
             <#list t.nonPkFields as field>
-            <#if field.array>
-            <#if e.databaseType.name() == 'POSTGRESQL9'>
-            hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()),
-            <#else>
-            FIXME: array handling is not yet implemented for Oracle
-            </#if>
-            <#else>
-            instance.get${field.javaName?cap_first}(),
-            </#if>
+                <#if field.array>
+                    <#if e.databaseType.name() == 'POSTGRESQL9'>
+                        paramsList.add(hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()));
+                    <#else>
+                        FIXME: array handling is not yet implemented for Oracle
+                    </#if>
+                <#else>
+                    <#if field.blob||field.clob>
+                        if (updateLobFields) { paramsList.add(instance.get${field.javaName?cap_first}()); }
+                    <#else>
+                        <#if field.enumerated>
+                            if (instance.get${field.javaName?cap_first}() != null) {
+                                paramsList.add(instance.get${field.javaName?cap_first}().name());
+                            }
+                        <#else>
+                            paramsList.add(instance.get${field.javaName?cap_first}());
+                        </#if>
+                    </#if>
+                </#if>
             </#list>
             <#if t.compositePk>
-            <#list t.pkFields as field>
-            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
-            </#list>
+                <#list t.pkFields as field>
+                    paramsList.add(instance.get${field.javaName?cap_first}());
+                </#list>
             <#else>
-            instance.get${t.pkField.javaName?cap_first}()
+                paramsList.add(instance.get${t.pkField.javaName?cap_first}());
             </#if>
-        };
+            Object[] params = paramsList.toArray();
+        <#else>
+            Object[] params = new Object[] {
+            <#list t.nonPkFields as field>
+                <#if field.array>
+                    <#if e.databaseType.name() == 'POSTGRESQL9'>
+                        hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()),
+                    <#else>
+                        FIXME: array handling is not yet implemented for Oracle
+                    </#if>
+                <#else>
+                    <#if field.enumerated>
+                        instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null,
+                    <#else>
+                        instance.get${field.javaName?cap_first}(),
+                    </#if>
+                </#if>
+            </#list>
+            <#if t.compositePk>
+                <#list t.pkFields as field>
+                    instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                </#list>
+            <#else>
+                instance.get${t.pkField.javaName?cap_first}()
+            </#if>
+            };
         </#if>
 
         int updRows = this.jdbcTemplate.update(sql, params);
@@ -275,10 +290,10 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         }
 
         <#if t.compositePk>
-        ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
-        return read(pk, false);
+            ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+            return read(pk, false);
         <#else>
-        return read(instance.get${t.pkField.javaName?cap_first}(), false);
+            return read(instance.get${t.pkField.javaName?cap_first}(), false);
         </#if>
     }
 
@@ -327,28 +342,32 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
             String tmp;
             <#if t.hasBlobField>Blob tmpBlob;${'\n'}</#if><#if t.hasClobField>Clob tmpClob;${'\n'}</#if><#if t.hasArrayField>Array tmpArray;${'\n'}</#if>
             <#list t.fieldList as field>
-            <#if field.readAsString>
-            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
-            <#else>
-            <#if !field.blob && !field.clob && !field.array>
-            ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
-            </#if>
-            </#if>
-            <#if field.blob>
-            byte[] ${field.javaName} = null;
-            if (readLobFields) {
-                ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
-            }
-            </#if>
-            <#if field.clob>
-            String ${field.javaName} = null;
-            if (readLobFields) {
-                ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
-            }
-            </#if>
-            <#if field.array>
-            ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
-            </#if>
+                <#if field.readAsString>
+                    ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
+                <#else>
+                    <#if !field.blob && !field.clob && !field.array && !field.enumerated>
+                        ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
+                    </#if>
+                    <#if field.enumerated>
+                        ${field.javaTypeAsString} ${field.javaName} = ${field.javaTypeAsString}.valueOf(rs.getString("${field.dbName}"));
+                    </#if>
+                </#if>
+
+                <#if field.blob>
+                    byte[] ${field.javaName} = null;
+                    if (readLobFields) {
+                        ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
+                    }
+                </#if>
+                <#if field.clob>
+                    String ${field.javaName} = null;
+                    if (readLobFields) {
+                        ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
+                    }
+                </#if>
+                <#if field.array>
+                    ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
+                </#if>
             </#list>
             return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
         }

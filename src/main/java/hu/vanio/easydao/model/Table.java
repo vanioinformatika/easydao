@@ -158,7 +158,7 @@ public class Table {
     public boolean isHasBlobField() {
         boolean retVal = false;
         for (Field field : fieldList) {
-            if (field.getJavaType() == java.sql.Blob.class) {
+            if (field.getJavaType().equals(java.sql.Blob.class.getName())) {
                 retVal = true;
                 break;
             }
@@ -173,7 +173,7 @@ public class Table {
     public boolean isHasClobField() {
         boolean retVal = false;
         for (Field field : fieldList) {
-            if (field.getJavaType() == java.sql.Clob.class) {
+            if (field.getJavaType().equals(java.sql.Clob.class.getName())) {
                 retVal = true;
                 break;
             }

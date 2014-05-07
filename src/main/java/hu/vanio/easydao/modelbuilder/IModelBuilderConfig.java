@@ -32,10 +32,10 @@ public interface IModelBuilderConfig {
     /**
      * Return java type.
      * @param dbType field type string from database
-     * @return java class
+     * @return java class name
      * @throws IllegalArgumentException java class not found for dbType
      */
-    public Class getJavaType(String dbType) throws IllegalArgumentException;
+    public String getJavaType(String dbType) throws IllegalArgumentException;
 
     /**
      * Sql query for table list, result: TABLE_NAME, COMMENT fields

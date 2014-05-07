@@ -55,13 +55,13 @@ public class PostgreSql9ModelBuilderConfigTest {
      */
     static class TestParams {
 
-        public TestParams(String dbType, Class expectedJavaType) {
+        public TestParams(String dbType, String expectedJavaType) {
             this.dbType = dbType;
             this.expectedJavaType = expectedJavaType;
         }
 
         public String dbType;
-        public Class expectedJavaType;
+        public String expectedJavaType;
     }
 
     @BeforeClass
@@ -87,77 +87,77 @@ public class PostgreSql9ModelBuilderConfigTest {
     @Parameters
     static public Collection<Object[]> data() {
         Object[][] data = {
-            {new TestParams("boolean", Boolean.class)},
-            {new TestParams("boolean[]", boolean[].class)},
-            {new TestParams("bytea", byte[].class)},
-            {new TestParams("character", String.class)},
-            {new TestParams("character(20)", String.class)},
-            {new TestParams("character(20)[]", String[].class)},
-            {new TestParams("character[]", String[].class)},
-            {new TestParams("character varying", String.class)},
-            {new TestParams("character varying(200)", String.class)},
-            {new TestParams("character varying(200)[]", String[].class)},
-            {new TestParams("date", Timestamp.class)},
-            {new TestParams("double precision", Double.class)},
-            {new TestParams("float8", Double.class)},
-            {new TestParams("integer", Integer.class)},
-            {new TestParams("int", Integer.class)},
-            {new TestParams("int4", Integer.class)},
-            {new TestParams("smallint", Integer.class)},
-            {new TestParams("smallserial", Integer.class)},
-            {new TestParams("serial", Integer.class)},
-            {new TestParams("bigint", Long.class)},
-            {new TestParams("int8", Long.class)},
-            {new TestParams("bigserial", Long.class)},
-            {new TestParams("money", Long.class)},
-            {new TestParams("json", String.class)},
-            {new TestParams("numeric", Integer.class)},
-            {new TestParams("numeric(1)", Integer.class)},
-            {new TestParams("numeric(2)", Integer.class)},
-            {new TestParams("numeric(3)", Integer.class)},
-            {new TestParams("numeric(4)", Integer.class)},
-            {new TestParams("numeric(5)", Integer.class)},
-            {new TestParams("numeric(6)", Integer.class)},
-            {new TestParams("numeric(7)", Integer.class)},
-            {new TestParams("numeric(8)", Integer.class)},
-            {new TestParams("numeric(9)", Integer.class)},
-            {new TestParams("numeric(1,0)", Integer.class)},
-            {new TestParams("numeric(2,0)", Integer.class)},
-            {new TestParams("numeric(3,0)", Integer.class)},
-            {new TestParams("numeric(4,0)", Integer.class)},
-            {new TestParams("numeric(5,0)", Integer.class)},
-            {new TestParams("numeric(6,0)", Integer.class)},
-            {new TestParams("numeric(7,0)", Integer.class)},
-            {new TestParams("numeric(8,0)", Integer.class)},
-            {new TestParams("numeric(9,0)", Integer.class)},
-            {new TestParams("numeric(11)", Long.class)},
-            {new TestParams("numeric(18)", Long.class)},
-            {new TestParams("numeric(19)", String.class)},
-            {new TestParams("numeric(20)", String.class)},
-            {new TestParams("numeric(100)", String.class)},
-            {new TestParams("numeric(11,0)", Long.class)},
-            {new TestParams("numeric(18,0)", Long.class)},
-            {new TestParams("numeric(11,1)", Double.class)},
-            {new TestParams("numeric(11,3)", Double.class)},
-            {new TestParams("numeric(19,1)", Double.class)},
-            {new TestParams("numeric[]", int[].class)},
-            {new TestParams("numeric(10)[]", long[].class)},
-            {new TestParams("numeric(18)[]", long[].class)},
-            {new TestParams("numeric(19)[]", String[].class)},
-            {new TestParams("numeric(20)[]", String[].class)},
-            {new TestParams("numeric(100)[]", String[].class)},
-            {new TestParams("numeric(9)[]", int[].class)},
-            {new TestParams("numeric(11,3)[]", double[].class)},
-            {new TestParams("numeric(19,2)[]", double[].class)},
-            {new TestParams("numeric(19,0)[]", String[].class)},
-            {new TestParams("numeric(20,0)[]", String[].class)},
-            {new TestParams("numeric(100,0)[]", String[].class)},
-            {new TestParams("timestamp without time zone", Timestamp.class)},
-            {new TestParams("timestamp with time zone", Timestamp.class)},
-            {new TestParams("timestamp", Timestamp.class)},
-            {new TestParams("text", String.class)},
-            {new TestParams("uuid", String.class)},
-            {new TestParams("xml", String.class)}
+            {new TestParams("boolean", Boolean.class.getName())},
+            {new TestParams("boolean[]", boolean[].class.getName())},
+            {new TestParams("bytea", byte[].class.getName())},
+            {new TestParams("character", String.class.getName())},
+            {new TestParams("character(20)", String.class.getName())},
+            {new TestParams("character(20)[]", String[].class.getName())},
+            {new TestParams("character[]", String[].class.getName())},
+            {new TestParams("character varying", String.class.getName())},
+            {new TestParams("character varying(200)", String.class.getName())},
+            {new TestParams("character varying(200)[]", String[].class.getName())},
+            {new TestParams("date", Timestamp.class.getName())},
+            {new TestParams("double precision", Double.class.getName())},
+            {new TestParams("float8", Double.class.getName())},
+            {new TestParams("integer", Integer.class.getName())},
+            {new TestParams("int", Integer.class.getName())},
+            {new TestParams("int4", Integer.class.getName())},
+            {new TestParams("smallint", Integer.class.getName())},
+            {new TestParams("smallserial", Integer.class.getName())},
+            {new TestParams("serial", Integer.class.getName())},
+            {new TestParams("bigint", Long.class.getName())},
+            {new TestParams("int8", Long.class.getName())},
+            {new TestParams("bigserial", Long.class.getName())},
+            {new TestParams("money", Long.class.getName())},
+            {new TestParams("json", String.class.getName())},
+            {new TestParams("numeric", Integer.class.getName())},
+            {new TestParams("numeric(1)", Integer.class.getName())},
+            {new TestParams("numeric(2)", Integer.class.getName())},
+            {new TestParams("numeric(3)", Integer.class.getName())},
+            {new TestParams("numeric(4)", Integer.class.getName())},
+            {new TestParams("numeric(5)", Integer.class.getName())},
+            {new TestParams("numeric(6)", Integer.class.getName())},
+            {new TestParams("numeric(7)", Integer.class.getName())},
+            {new TestParams("numeric(8)", Integer.class.getName())},
+            {new TestParams("numeric(9)", Integer.class.getName())},
+            {new TestParams("numeric(1,0)", Integer.class.getName())},
+            {new TestParams("numeric(2,0)", Integer.class.getName())},
+            {new TestParams("numeric(3,0)", Integer.class.getName())},
+            {new TestParams("numeric(4,0)", Integer.class.getName())},
+            {new TestParams("numeric(5,0)", Integer.class.getName())},
+            {new TestParams("numeric(6,0)", Integer.class.getName())},
+            {new TestParams("numeric(7,0)", Integer.class.getName())},
+            {new TestParams("numeric(8,0)", Integer.class.getName())},
+            {new TestParams("numeric(9,0)", Integer.class.getName())},
+            {new TestParams("numeric(11)", Long.class.getName())},
+            {new TestParams("numeric(18)", Long.class.getName())},
+            {new TestParams("numeric(19)", String.class.getName())},
+            {new TestParams("numeric(20)", String.class.getName())},
+            {new TestParams("numeric(100)", String.class.getName())},
+            {new TestParams("numeric(11,0)", Long.class.getName())},
+            {new TestParams("numeric(18,0)", Long.class.getName())},
+            {new TestParams("numeric(11,1)", Double.class.getName())},
+            {new TestParams("numeric(11,3)", Double.class.getName())},
+            {new TestParams("numeric(19,1)", Double.class.getName())},
+            {new TestParams("numeric[]", int[].class.getName())},
+            {new TestParams("numeric(10)[]", long[].class.getName())},
+            {new TestParams("numeric(18)[]", long[].class.getName())},
+            {new TestParams("numeric(19)[]", String[].class.getName())},
+            {new TestParams("numeric(20)[]", String[].class.getName())},
+            {new TestParams("numeric(100)[]", String[].class.getName())},
+            {new TestParams("numeric(9)[]", int[].class.getName())},
+            {new TestParams("numeric(11,3)[]", double[].class.getName())},
+            {new TestParams("numeric(19,2)[]", double[].class.getName())},
+            {new TestParams("numeric(19,0)[]", String[].class.getName())},
+            {new TestParams("numeric(20,0)[]", String[].class.getName())},
+            {new TestParams("numeric(100,0)[]", String[].class.getName())},
+            {new TestParams("timestamp without time zone", Timestamp.class.getName())},
+            {new TestParams("timestamp with time zone", Timestamp.class.getName())},
+            {new TestParams("timestamp", Timestamp.class.getName())},
+            {new TestParams("text", String.class.getName())},
+            {new TestParams("uuid", String.class.getName())},
+            {new TestParams("xml", String.class.getName())}
         };
         return Arrays.asList(data);
     }
@@ -168,8 +168,8 @@ public class PostgreSql9ModelBuilderConfigTest {
     @Test
     public void testGetJavaType() {
         PostgreSql9ModelBuilderConfig instance = new PostgreSql9ModelBuilderConfig();
-        Class expResult = testParam.expectedJavaType;
-        Class result = instance.getJavaType(testParam.dbType);
+        String expResult = testParam.expectedJavaType;
+        String result = instance.getJavaType(testParam.dbType);
         System.out.println("testGetJavaType: " + testParam.dbType + " " + result);
         assertTrue(result.equals(expResult));
     }

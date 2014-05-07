@@ -120,11 +120,17 @@ public class EngineConfiguration {
      *  You can disable Java source generation for a certain table by putting the table name in the list with no Java class name.
      *  e.g.: APPUSERS = */
     private final String replacementTableFilename;
+    
     /** Map of Java field names and database field names. Names not included in this list will be auto-generated.
      *  e.g.: USER.FNAME = firstName -> User.firstName instead of User.fname
      *  You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
      *  e.g.: USER.FNAME = */
     private final String replacementFieldFilename;
+    
+    /** Map of Java enum names and database field names. Names included in this list will be generated with the specified enum type.
+     * The key is the table name and field name, the value is the fully qualified name of the enum.
+     *  e.g.: USER.STATE = hu.vanio.myapp.model.UserState */
+    private final String enumFieldFilename;
     
     /** License file name (its content will be inserted into all generated Java source files) */
     private final String licenseFilename;
@@ -136,6 +142,10 @@ public class EngineConfiguration {
 
     /** Replacement map for fields. Empty string value means it has been skipped from the model. */
     private Map<String, String> replacementFieldMap = new HashMap<>();
+    
+    /** Type map for enum fields. The key is the table name and field name, the value is the fully qualified name of the enum.
+     *  e.g.: USER.STATE = hu.vanio.myapp.model.UserState */
+    private Map<String, String> enumFieldMap = new HashMap<>();
     
     /**
      * Engine configuration init.
@@ -174,7 +184,7 @@ public class EngineConfiguration {
             String packageOfJavaDao, String daoSuffix,
             boolean generateModelToString,
             SEQUENCE_NAME_CONVENTION sequenceNameConvention,
-            String replacementTableFilename, String replacementFieldFilename,
+            String replacementTableFilename, String replacementFieldFilename, String enumFieldFilename,
             String licenseFilename,
             List<String> tableNameIncludes,
             String encoding) throws IOException {
@@ -196,6 +206,7 @@ public class EngineConfiguration {
         this.sequenceNameConvention = sequenceNameConvention;
         this.replacementTableFilename = replacementTableFilename;
         this.replacementFieldFilename = replacementFieldFilename;
+        this.enumFieldFilename = enumFieldFilename;
         this.licenseFilename = licenseFilename;
         this.tableNameIncludes = tableNameIncludes;
         this.encoding = encoding;
@@ -209,6 +220,9 @@ public class EngineConfiguration {
         this.replacementTableMap.put("", "ERROR_EMPTY_TABLE_NAME"); // error name in model if empty table name
         loadResourceBundleToMap(this.replacementFieldFilename, this.replacementFieldMap);
         this.replacementFieldMap.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
+        if (this.enumFieldFilename != null) {
+            loadResourceBundleToMap(this.enumFieldFilename, this.enumFieldMap);
+        }
         
         if (this.licenseFilename != null) {
             this.licenseText = readFile(this.licenseFilename, Charset.forName(this.encoding));
@@ -255,6 +269,7 @@ public class EngineConfiguration {
                 EngineConfiguration.SEQUENCE_NAME_CONVENTION.valueOf(props.getProperty("sequenceNameConvention")),
                 props.getProperty("replacementTableFilename"),
                 props.getProperty("replacementFieldFilename"),
+                props.getProperty("enumFieldFilename"),
                 props.getProperty("licenseFilename"),
                 getPropertyAsList(props, "tableNameIncludes"),
                 props.getProperty("encoding")
@@ -485,6 +500,16 @@ public class EngineConfiguration {
     }
 
     /**
+     * Map of Java enum names and database field names. Names included in this list will be generated with the specified enum type.
+     * The key is the table name and field name, the value is the fully qualified name of the enum.
+     * e.g.: USER.STATE = hu.vanio.myapp.model.UserState
+     * @return the enumFieldFilename
+     */
+    public String getEnumFieldFilename() {
+        return enumFieldFilename;
+    }
+
+    /**
      * License file name (its content will be inserted into all generated Java source files)
      * @return the licenseFilename
      */
@@ -530,6 +555,24 @@ public class EngineConfiguration {
      */
     public void setReplacementFieldMap(Map<String, String> replacementFieldMap) {
         this.replacementFieldMap = replacementFieldMap;
+    }
+
+    /**
+     * Type map for enum fields. The key is the table name and field name, the value is the fully qualified name of the enum.
+     * e.g.: USER.STATE = hu.vanio.myapp.model.UserState
+     * @return the enumFieldMap
+     */
+    public Map<String, String> getEnumFieldMap() {
+        return enumFieldMap;
+    }
+
+    /**
+     * Type map for enum fields. The key is the table name and field name, the value is the fully qualified name of the enum.
+     * e.g.: USER.STATE = hu.vanio.myapp.model.UserState
+     * @param enumFieldMap the enumFieldMap to set
+     */
+    public void setEnumFieldMap(Map<String, String> enumFieldMap) {
+        this.enumFieldMap = enumFieldMap;
     }
 
     /**

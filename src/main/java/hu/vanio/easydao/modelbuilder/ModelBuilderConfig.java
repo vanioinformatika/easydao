@@ -38,13 +38,13 @@ class ModelBuilderConfig {
      * @param dbType database type string, i.e: numeric(10,2), date, timestamp
      * @return Class java class of db field type
      */
-    final protected Class convertToJavaType(Map<String, Class> typeMap, String dbType) throws IllegalArgumentException {
-        Class clazz = null;
+    final protected String convertToJavaType(Map<String, String> typeMap, String dbType) throws IllegalArgumentException {
+        String className = null;
         boolean found = false;
-        for (Map.Entry<String, Class> e : typeMap.entrySet()) {
+        for (Map.Entry<String, String> e : typeMap.entrySet()) {
             if (dbType.matches(e.getKey())) {
                 // found type
-                clazz = e.getValue();
+                className = e.getValue();
                 found = true;
                 break;
             }
@@ -52,7 +52,7 @@ class ModelBuilderConfig {
         if (!found) {
             throw new IllegalArgumentException("There is no Java type definiton for " + dbType + " database type!");
         }
-        return clazz;
+        return className;
     }
 
     /**
