@@ -68,7 +68,7 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             "              group by col.index_name) as COLUMN_NAMES " +
             "from user_indexes idx " +
             "where idx.table_name = upper(?) " +
-            "  and idx.index_type <> 'LOB' " +
+            "  and idx.index_type = 'NORMAL' " +
             "  and idx.dropped = 'NO' " +
             "order by idx.table_name";
     
