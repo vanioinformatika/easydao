@@ -272,12 +272,18 @@ public class ModelBuilder {
                     String javaType = config.getJavaType(dbType);
                     String tableAndFieldName = tableName + "." + fieldName;
                     boolean enumerated = false;
+                    boolean irregularEnum = false;
                     if (enumFieldMap.containsKey(tableAndFieldName)) {
                         javaType = enumFieldMap.get(tableAndFieldName);
+                        if (javaType.trim().endsWith("IRREGULAR")) {
+                            int commaIdx = javaType.indexOf(',');
+                            javaType = javaType.substring(0, commaIdx).trim();
+                            irregularEnum = true;
+                        }
                         enumerated = true;
                     }
                     
-                    Field field = new Field(primaryKey, nullable, array, enumerated, fieldName, dbType, comment, javaName, javaType);
+                    Field field = new Field(primaryKey, nullable, array, enumerated, irregularEnum, fieldName, dbType, comment, javaName, javaType);
 
                     System.out.println(field.toString());
 

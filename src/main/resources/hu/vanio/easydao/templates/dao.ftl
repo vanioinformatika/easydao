@@ -192,7 +192,12 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                     </#if>
                 <#else>
                     <#if field.enumerated>
-                        instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null<#if field_has_next>,</#if>
+                        <#if field.irregularEnum>
+                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().getEnumName() : null
+                        <#else>
+                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null
+                        </#if>
+                        <#if field_has_next>,</#if>
                     <#else>
                         instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
                     </#if>
@@ -240,9 +245,11 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                         if (updateLobFields) { paramsList.add(instance.get${field.javaName?cap_first}()); }
                     <#else>
                         <#if field.enumerated>
-                            if (instance.get${field.javaName?cap_first}() != null) {
+                            <#if field.irregularEnum>
+                                paramsList.add(instance.get${field.javaName?cap_first}().getEnumName());
+                            <#else>
                                 paramsList.add(instance.get${field.javaName?cap_first}().name());
-                            }
+                            </#if>
                         <#else>
                             paramsList.add(instance.get${field.javaName?cap_first}());
                         </#if>
@@ -268,7 +275,11 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                     </#if>
                 <#else>
                     <#if field.enumerated>
-                        instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null,
+                        <#if field.irregularEnum>
+                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().getEnumName() : null,
+                        <#else>
+                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null,
+                        </#if>
                     <#else>
                         instance.get${field.javaName?cap_first}(),
                     </#if>
@@ -349,7 +360,11 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                         ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
                     </#if>
                     <#if field.enumerated>
-                        ${field.javaTypeAsString} ${field.javaName} = ${field.javaTypeAsString}.valueOf(rs.getString("${field.dbName}"));
+                        <#if field.irregularEnum>
+                            ${field.javaTypeAsString} ${field.javaName} = ${field.javaTypeAsString}.getEnumInstance(rs.getString("${field.dbName}"));
+                        <#else>
+                            ${field.javaTypeAsString} ${field.javaName} = ${field.javaTypeAsString}.valueOf(rs.getString("${field.dbName}"));
+                        </#if>
                     </#if>
                 </#if>
 

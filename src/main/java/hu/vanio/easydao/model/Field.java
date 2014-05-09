@@ -37,6 +37,8 @@ public class Field {
     private boolean array;
     /** Indicates whether the value of this field is enumerated */
     private boolean enumerated;
+    /** Indicates whether the value of this field is enumerated and the Java enum that this field is mapped to is not a regular enum. @see hu.vanio.easydao.core.IrregularEnum */
+    private boolean irregularEnum;
     /** The name of this field in the database */
     private String dbName;
     /** The type of this field in the database */
@@ -61,11 +63,12 @@ public class Field {
      * @param javaName The name of this field in Java code
      * @param javaType The type of this field in Java code
      */
-    public Field(boolean primaryKey, boolean nullable, boolean array, boolean enumerated, String dbName, String dbType, String comment, String javaName, String javaType) {
+    public Field(boolean primaryKey, boolean nullable, boolean array, boolean enumerated, boolean irregularEnum, String dbName, String dbType, String comment, String javaName, String javaType) {
         this.primaryKey = primaryKey;
         this.nullable = nullable;
         this.array = array;
         this.enumerated = enumerated;
+        this.irregularEnum = irregularEnum;
         this.dbName = dbName;
         this.dbType = dbType;
         this.comment = comment;
@@ -151,6 +154,22 @@ public class Field {
      */
     public void setEnumerated(boolean enumerated) {
         this.enumerated = enumerated;
+    }
+
+    /**
+     * Indicates whether the value of this field is enumerated and the Java enum that this field is mapped to is not a regular enum. @see hu.vanio.easydao.core.IrregularEnum
+     * @return the irregularEnum
+     */
+    public boolean isIrregularEnum() {
+        return irregularEnum;
+    }
+
+    /**
+     * Indicates whether the value of this field is enumerated and the Java enum that this field is mapped to is not a regular enum. @see hu.vanio.easydao.core.IrregularEnum
+     * @param irregularEnum the irregularEnum to set
+     */
+    public void setIrregularEnum(boolean irregularEnum) {
+        this.irregularEnum = irregularEnum;
     }
 
     /**
