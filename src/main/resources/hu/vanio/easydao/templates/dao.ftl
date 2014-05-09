@@ -193,11 +193,10 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                 <#else>
                     <#if field.enumerated>
                         <#if field.irregularEnum>
-                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().getEnumName() : null
+                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().getEnumName() : null<#if field_has_next>,</#if>
                         <#else>
-                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null
+                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null<#if field_has_next>,</#if>
                         </#if>
-                        <#if field_has_next>,</#if>
                     <#else>
                         instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
                     </#if>
