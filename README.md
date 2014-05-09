@@ -56,7 +56,7 @@ This project is the engine of the source code generator.
 # Fields with enumerated vaules
 As of 1.0.9, you can use Java enums for fields with enumerated values. You have two choices: regular and irregular enumerations.
 If you use fields with enumerated values, values stored in the database need to be mapped to the corresponding enum value and vica versa.
-EasyDao generates the necessary code for you, however if you use irregular enums you have to comply a few rules. For the details, see 
+EasyDao generates the necessary code for you, however if you use irregular enums you have to comply with a few rules. For the details, see 
 the Irregular enumerations section.
 
 ## Regular enumerations 
@@ -85,7 +85,7 @@ Let's assume you have a field MY_TABLE.MY_FIELD that can only contain 'A', 'B' a
 
 ## Iregular enumerations
 An enumeration is irregular if at least one of the values cannot be used as a Java identifier. 
-Irregular enumerations have to comply two rules. They have to implement getEnumName() and static getEnumInstance() methods.
+Irregular enumerations have to comply with two rules. They have to implement getEnumName() and static getEnumInstance() methods.
 Irregular enumerations will be converted to String via the Java enum's getEnumName() method. Strings will be converted to 
 Java enum instances by calling the enum's getEnumInstance() method.
 
