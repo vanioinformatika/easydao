@@ -28,7 +28,7 @@
 
     <groupId>hu.vanio.easydao</groupId>
     <artifactId>easydao</artifactId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.11</version>
     <packaging>jar</packaging>
 
     <name>easydao</name>
@@ -52,7 +52,7 @@
         <url>https://github.com/vanioinformatika/easydao</url>
         <connection>scm:git:${basedir}</connection>
         <developerConnection>scm:git:${basedir}</developerConnection>
-        <tag>HEAD</tag>
+        <tag>easydao-1.0.11</tag>
     </scm>
 
     <distributionManagement>
