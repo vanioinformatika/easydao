@@ -7,6 +7,10 @@ This project is the engine of the source code generator.
 
 #Changelog:
 
+>*1.0.11:*
+
+>* Fixed enum handling in Dao.mapRow method
+
 >*1.0.10:*
 
 >* Introduced handling of fields with enumerated values that do not comform to Java naming conventions (e.g. numeric enum values)
