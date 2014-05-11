@@ -360,9 +360,9 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                     </#if>
                     <#if field.enumerated>
                         <#if field.irregularEnum>
-                            ${field.javaTypeAsString} ${field.javaName} = ${field.javaTypeAsString}.getEnumInstance(rs.getString("${field.dbName}"));
+                            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.getEnumInstance(tmp) : null;
                         <#else>
-                            ${field.javaTypeAsString} ${field.javaName} = ${field.javaTypeAsString}.valueOf(rs.getString("${field.dbName}"));
+                            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.valueOf(tmp) : null;
                         </#if>
                     </#if>
                 </#if>
