@@ -69,7 +69,18 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
     </#if>
         <#if t.compositePk>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), <#list t.pkFields as field> pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), 
+                <#list t.pkFields as field> 
+                <#if field.enumerated>
+                    <#if field.irregularEnum>
+                        pk.get${field.javaName?cap_first}() != null ? pk.get${field.javaName?cap_first}().getEnumName() : null<#if field_has_next>,</#if>
+                    <#else>
+                        pk.get${field.javaName?cap_first}() != null ? pk.get${field.javaName?cap_first}().name() : null<#if field_has_next>,</#if>
+                    </#if>
+                <#else>
+                    pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if>
+                </#if>
+                </#list>);
         <#else>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where ${t.pkField.dbName} = ?";
         ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), ${t.pkField.javaName});
@@ -104,8 +115,28 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                 <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
 
         List params = new java.util.ArrayList(${index.fields?size});
-        <#list index.fields as field>
-        <#if field_index == 0>params.add(${field.javaName});<#else>if (${field.javaName}!=null) {params.add(${field.javaName});}</#if>
+        <#list index.fields as field> 
+        <#if field_index == 0>
+            <#if field.enumerated>
+                <#if field.irregularEnum>
+                    params.add(${field.javaName}.getEnumName());
+                <#else>
+                    params.add(${field.javaName}.name());
+                </#if>
+            <#else>
+                params.add(${field.javaName});
+            </#if>
+        <#else>
+            <#if field.enumerated>
+                <#if field.irregularEnum>
+                    if (${field.javaName}!=null) {params.add(${field.javaName}.getEnumName());}
+                <#else>
+                    if (${field.javaName}!=null) {params.add(${field.javaName}.name());}
+                </#if>
+            <#else>
+                if (${field.javaName}!=null) {params.add(${field.javaName});}
+            </#if>
+        </#if>
         </#list>
 
         ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), params.toArray());
@@ -125,8 +156,28 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                 <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
         
         List params = new java.util.ArrayList(${index.fields?size});
-        <#list index.fields as field>
-        <#if field_index == 0>params.add(${field.javaName});<#else>if (${field.javaName}!=null) {params.add(${field.javaName});}</#if>
+        <#list index.fields as field> 
+        <#if field_index == 0>
+            <#if field.enumerated>
+                <#if field.irregularEnum>
+                    params.add(${field.javaName}.getEnumName());
+                <#else>
+                    params.add(${field.javaName}.name());
+                </#if>
+            <#else>
+                params.add(${field.javaName});
+            </#if>
+        <#else>
+            <#if field.enumerated>
+                <#if field.irregularEnum>
+                    if (${field.javaName}!=null) {params.add(${field.javaName}.getEnumName());}
+                <#else>
+                    if (${field.javaName}!=null) {params.add(${field.javaName}.name());}
+                </#if>
+            <#else>
+                if (${field.javaName}!=null) {params.add(${field.javaName});}
+            </#if>
+        </#if>
         </#list>
 
         List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(readLobFields), params.toArray());

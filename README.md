@@ -7,6 +7,10 @@ This project is the engine of the source code generator.
 
 #Changelog:
 
+>*1.0.12:*
+
+>* Enum fields can be used in composite primary keys and indexes
+
 >*1.0.11:*
 
 >* Fixed enum handling in Dao.mapRow method
