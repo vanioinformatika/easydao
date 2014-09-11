@@ -7,6 +7,10 @@ This project is the engine of the source code generator.
 
 #Changelog:
 
+>*1.0.13:*
+
+>* Various fixes regarding using enum fields in composite primary keys
+
 >*1.0.12:*
 
 >* Enum fields can be used in composite primary keys and indexes
