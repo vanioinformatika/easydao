@@ -308,7 +308,15 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
             </#list>
             <#if t.compositePk>
                 <#list t.pkFields as field>
-                    paramsList.add(instance.get${field.javaName?cap_first}());
+                    <#if field.enumerated>
+                        <#if field.irregularEnum>
+                            if (${field.javaName}!=null) {params.add(instance.get${field.javaName?cap_first}().getEnumName());}
+                        <#else>
+                            if (${field.javaName}!=null) {params.add(instance.get${field.javaName?cap_first}().name());}
+                        </#if>
+                    <#else>
+                        if (${field.javaName}!=null) {params.add(instance.get${field.javaName?cap_first}());}
+                    </#if>
                 </#list>
             <#else>
                 paramsList.add(instance.get${t.pkField.javaName?cap_first}());
@@ -337,7 +345,15 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
             </#list>
             <#if t.compositePk>
                 <#list t.pkFields as field>
-                    instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                    <#if field.enumerated>
+                        <#if field.irregularEnum>
+                            instance.get${field.javaName?cap_first}().getEnumName()<#if field_has_next>,</#if>
+                        <#else>
+                            instance.get${field.javaName?cap_first}().name()<#if field_has_next>,</#if>
+                        </#if>
+                    <#else>
+                        instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                    </#if>
                 </#list>
             <#else>
                 instance.get${t.pkField.javaName?cap_first}()
@@ -378,9 +394,9 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                 <#list t.pkFields as field> 
                 <#if field.enumerated>
                     <#if field.irregularEnum>
-                        pk.get${field.javaName?cap_first}() != null ? pk.get${field.javaName?cap_first}().getEnumName() : null<#if field_has_next>,</#if>
+                        pk.get${field.javaName?cap_first}().getEnumName()<#if field_has_next>,</#if>
                     <#else>
-                        pk.get${field.javaName?cap_first}() != null ? pk.get${field.javaName?cap_first}().name() : null<#if field_has_next>,</#if>
+                        pk.get${field.javaName?cap_first}().name()<#if field_has_next>,</#if>
                     </#if>
                 <#else>
                     pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if>
