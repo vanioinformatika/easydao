@@ -374,7 +374,18 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
     </#if>
         <#if t.compositePk>
         String sql = "delete from ${t.dbName} where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-        int updRows = this.jdbcTemplate.update(sql, <#list t.pkFields as field> pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        int updRows = this.jdbcTemplate.update(sql, 
+                <#list t.pkFields as field> 
+                <#if field.enumerated>
+                    <#if field.irregularEnum>
+                        pk.get${field.javaName?cap_first}() != null ? pk.get${field.javaName?cap_first}().getEnumName() : null<#if field_has_next>,</#if>
+                    <#else>
+                        pk.get${field.javaName?cap_first}() != null ? pk.get${field.javaName?cap_first}().name() : null<#if field_has_next>,</#if>
+                    </#if>
+                <#else>
+                    pk.get${field.javaName?cap_first}()<#if field_has_next>, </#if>
+                </#if>
+                </#list>);
         <#else>
         String sql = "delete from ${t.dbName} where ${t.pkField.dbName} = ?";
         int updRows = this.jdbcTemplate.update(sql, ${t.pkField.javaName});
