@@ -51,7 +51,8 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             + " null as HAS_DEFAULT_VALUE,"
             + " ucc.comments as COMMENTS"
             + " from user_tab_cols utc, user_col_comments ucc"
-            + " where utc.table_name = ? and ucc.table_name = utc.table_name and ucc.column_name = utc.column_name";
+            + " where utc.table_name = ? and ucc.table_name = utc.table_name and ucc.column_name = utc.column_name"
+            + " order by column_id";
     /* Sql query for primary key field name list, result: COLUMN_NAME */
     final String selectForPrimaryKeyFieldNameList = "select COLUMN_NAME"
             + " from user_cons_columns c, user_constraints t"
