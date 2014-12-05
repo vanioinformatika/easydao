@@ -94,6 +94,7 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
 
         JAVA_TYPE_MAP.put("number|numeric", Integer.class.getName());
         JAVA_TYPE_MAP.put("(number|numeric)\\(,\\)", Integer.class.getName());
+        JAVA_TYPE_MAP.put("(number|numeric)\\(,0\\)", Long.class.getName());
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9]\\)", Integer.class.getName());
         JAVA_TYPE_MAP.put("(number|numeric)\\([1-9],[0]\\)", Integer.class.getName());
         JAVA_TYPE_MAP.put("(number|numeric)\\([1][0-8]\\)", Long.class.getName());
