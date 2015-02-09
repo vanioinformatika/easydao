@@ -310,12 +310,12 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                 <#list t.pkFields as field>
                     <#if field.enumerated>
                         <#if field.irregularEnum>
-                            if (${field.javaName}!=null) {params.add(instance.get${field.javaName?cap_first}().getEnumName());}
+                            if (${field.javaName}!=null) {paramsList.add(instance.get${field.javaName?cap_first}().getEnumName());}
                         <#else>
-                            if (${field.javaName}!=null) {params.add(instance.get${field.javaName?cap_first}().name());}
+                            if (${field.javaName}!=null) {paramsList.add(instance.get${field.javaName?cap_first}().name());}
                         </#if>
                     <#else>
-                        if (${field.javaName}!=null) {params.add(instance.get${field.javaName?cap_first}());}
+                        paramsList.add(instance.get${field.javaName?cap_first}());
                     </#if>
                 </#list>
             <#else>
