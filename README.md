@@ -7,6 +7,10 @@ This project is the engine of the source code generator.
 
 #Changelog:
 
+>*1.0.15:*
+
+* Fixed source 'update(...)' generation issue when table has composite keys: https://github.com/vanioinformatika/easydao/issues/3
+
 >*1.0.14:*
 
 * Fixed fields' order issue: https://github.com/vanioinformatika/easydao/issues/2
