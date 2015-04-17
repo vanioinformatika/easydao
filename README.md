@@ -7,6 +7,10 @@ This project is the engine of the source code generator.
 
 #Changelog:
 
+>*1.0.16:*
+
+* Introduced checking of the existence of sequences (used for auto-generating PK values): https://github.com/vanioinformatika/easydao/issues/4
+
 >*1.0.15:*
 
 * Fixed source 'update(...)' generation issue when table has composite keys: https://github.com/vanioinformatika/easydao/issues/3

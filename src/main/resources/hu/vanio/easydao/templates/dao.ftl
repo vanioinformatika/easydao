@@ -192,34 +192,36 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
      */
     @Override
     public void createPk(final ${t.javaName} instance) {
-    <#if t.compositePk>
-        throw new IllegalStateException("Sequence cannot be auto-generated for tables with composite primary key");
+    <#if !t.missingSequence>
+        <#if t.compositePk>
+            throw new IllegalStateException("Primary key value cannot be auto-generated for tables with composite primary key");
+        <#else>
+            <#if (t.sequenceName)??>
+            <#if e.databaseType.name() == 'ORACLE11'>
+            String query = "select ${t.sequenceName}.nextval PK from dual";
+            </#if>
+            <#if e.databaseType.name() == 'POSTGRESQL9'>
+            String query = "select nextval ('${t.sequenceName}') as PK";
+            </#if>
+            <#assign pkField = t.pkField>
+            this.jdbcTemplate.query(query, new RowCallbackHandler() {
+                @Override
+                public void processRow(ResultSet rs) throws SQLException {
+                    <#if pkField.readAsString>
+                    String tmp;
+                    ${pkField.javaTypeAsString} ${pkField.javaName} = (tmp = rs.getString("PK")) != null ? new ${pkField.javaTypeAsString}(tmp) : null;
+                    <#else>
+                    ${pkField.javaTypeAsString} ${pkField.javaName} = rs.get${pkField.javaTypeAsString}("PK");
+                    </#if>
+                    instance.set${pkField.javaName?cap_first}(${pkField.javaName});
+                }
+            });
+            <#else>
+            throw new IllegalStateException("Primary key value cannot be auto-generated for tables with non-integer primary key");
+            </#if>
+        </#if>
     <#else>
-      <#if e.sequenceNameConvention.name() == 'PREFIXED_TABLE_NAME'><#assign sequenceName = "SEQ_${t.dbName}"></#if>
-      <#if e.sequenceNameConvention.name() == 'PREFIXED_FIELD_NAME'><#assign sequenceName = "SEQ_${t.pkField.dbName}"></#if>
-      <#if e.sequenceNameConvention.name() == 'SUFFIXED_TABLE_NAME'><#assign sequenceName = "${t.dbName}_SEQ"></#if>
-      <#if e.sequenceNameConvention.name() == 'SUFFIXED_FIELD_NAME'><#assign sequenceName = "${t.pkField.dbName}_SEQ"></#if>
-      <#if e.sequenceNameConvention.name() == 'PREFIXED_TABLE_NAME_WITH_FIELD_NAME'><#assign sequenceName = "SEQ_${t.dbName}_${t.pkField.dbName}"></#if>
-      <#if e.sequenceNameConvention.name() == 'SUFFIXED_TABLE_NAME_WITH_FIELD_NAME'><#assign sequenceName = "${t.dbName}_${t.pkField.dbName}_SEQ"></#if>
-      <#if e.databaseType.name() == 'ORACLE11'>
-        String query = "select ${sequenceName}.nextval PK from dual";
-      </#if>
-      <#if e.databaseType.name() == 'POSTGRESQL9'>
-        String query = "select nextval ('${sequenceName}') as PK";
-      </#if>
-        <#assign pkField = t.pkField>
-        this.jdbcTemplate.query(query, new RowCallbackHandler() {
-            @Override
-            public void processRow(ResultSet rs) throws SQLException {
-                <#if pkField.readAsString>
-                String tmp;
-                ${pkField.javaTypeAsString} ${pkField.javaName} = (tmp = rs.getString("PK")) != null ? new ${pkField.javaTypeAsString}(tmp) : null;
-                <#else>
-                ${pkField.javaTypeAsString} ${pkField.javaName} = rs.get${pkField.javaTypeAsString}("PK");
-                </#if>
-                instance.set${pkField.javaName?cap_first}(${pkField.javaName});
-            }
-        });
+        throw new IllegalStateException("Missing sequence: ${t.sequenceName}");
     </#if>
     }
 

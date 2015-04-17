@@ -76,7 +76,9 @@ public class Engine {
      */
     public Engine(EngineConfiguration engineConfiguration) throws SQLException {
         this.engineConfiguration = engineConfiguration;
-        System.out.println("EngineConfiguration.databaseType = " + engineConfiguration.getDatabaseType());
+        if (!engineConfiguration.isSilent()) {
+            System.out.println("EngineConfiguration.databaseType = " + engineConfiguration.getDatabaseType());
+        }
         switch (engineConfiguration.getDatabaseType()) {
             case POSTGRESQL9:
                 DriverManager.registerDriver(new org.postgresql.Driver());
@@ -121,12 +123,10 @@ public class Engine {
     private void generateMetadataFile() throws IOException, TemplateException {
         Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath());
         Files.createDirectories(dir);
-
         System.out.println("\nGenerate meta data about database: " + dir.toAbsolutePath().toString() + fileSeparator + "metadata.txt");
 
         List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         Template temp = freemarkerConfig.getTemplate("metadata.ftl");
-        Writer out = new OutputStreamWriter(System.out);
         Map<String, Object> m = new HashMap<>();
         m.put("tList", tableList);
         m.put("e", engineConfiguration);
@@ -151,7 +151,9 @@ public class Engine {
                 + fileSeparator
                 + engineConfiguration.getDatabase().getName());
         Files.createDirectories(dir);
-        System.out.println("\nWrite model classes into " + dir.toAbsolutePath());
+        if (!engineConfiguration.isSilent()) {
+            System.out.println("\nWrite model classes into " + dir.toAbsolutePath());
+        }
         for (Table table : tableList) {
             Template temp = freemarkerConfig.getTemplate("model.ftl");
             Writer out = new OutputStreamWriter(System.out);
@@ -180,7 +182,9 @@ public class Engine {
                 + fileSeparator
                 + engineConfiguration.getDatabase().getName());
         Files.createDirectories(dir);
-        System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());
+        if (!engineConfiguration.isSilent()) {
+            System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());
+        }
         for (Table table : tableList) {
             if (table.getPkFields().size() > 0) {
                 Template temp = freemarkerConfig.getTemplate("dao.ftl");
@@ -194,7 +198,7 @@ public class Engine {
                     temp.process(m, fileWriter);
                 }
             } else {
-                System.out.printf("*** WARN: No primary key on table %s, DAO generation skipped\n", table.getDbName());
+                System.out.printf("*** WARNING: No primary key on table %s, DAO generation skipped\n", table.getDbName());
             }
         }
     }

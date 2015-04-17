@@ -83,7 +83,7 @@ public class EngineConfiguration {
     /** Database type */
     private final DATABASE_TYPE databaseType;
     /** Sequence naming convention of the database */
-    private final SEQUENCE_NAME_CONVENTION sequenceNameConvention;
+    private SEQUENCE_NAME_CONVENTION sequenceNameConvention;
     /** Database connection URL */
     private final String url;
     /** Database connection user name */
@@ -114,6 +114,8 @@ public class EngineConfiguration {
     protected List<String> tableNameIncludes;
     /** Encoding of the generated source files */
     protected String encoding;
+    /** Indicates whether normal output should be suppressed during code generation. If set, only warnings will be printed. */
+    protected boolean silent;
     
     /** Map of Java class names and database table names. Names not included in this list will be auto-generated.
      *  e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
@@ -172,9 +174,13 @@ public class EngineConfiguration {
      *                                 e.g.: USER.FNAME = firstName -> User.firstName instead of User.fname
      *                                 You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
      *                                 e.g.: USER.FNAME =
+     * @param enumFieldFilename Map of Java enum names and database field names. Names included in this list will be generated with the specified enum type.
+     *                          The key is the table name and field name, the value is the fully qualified name of the enum.
+     *                          e.g.: USER.STATE = hu.vanio.myapp.model.UserState
      * @param licenseFilename License file name (its content will be inserted into all generated Java source files)
      * @param tableNameIncludes
      * @param encoding Encoding of the generated source files
+     * @param silent Indicates whether normal output should be suppressed during code generation. If set, only warnings will be printed.
      * @throws java.io.IOException
      */
     public EngineConfiguration(
@@ -187,7 +193,8 @@ public class EngineConfiguration {
             String replacementTableFilename, String replacementFieldFilename, String enumFieldFilename,
             String licenseFilename,
             List<String> tableNameIncludes,
-            String encoding) throws IOException {
+            String encoding,
+            boolean silent) throws IOException {
         
         this.database = new Database(databaseName);
         this.databaseType = databaseType;
@@ -210,6 +217,7 @@ public class EngineConfiguration {
         this.licenseFilename = licenseFilename;
         this.tableNameIncludes = tableNameIncludes;
         this.encoding = encoding;
+        this.silent = silent;
         
         if (encoding == null) {
             throw new IllegalArgumentException("Encoding cannot be null");
@@ -272,7 +280,8 @@ public class EngineConfiguration {
                 props.getProperty("enumFieldFilename"),
                 props.getProperty("licenseFilename"),
                 getPropertyAsList(props, "tableNameIncludes"),
-                props.getProperty("encoding")
+                props.getProperty("encoding"),
+                Boolean.valueOf(props.getProperty("silent", "true"))
         );
         
         String languageCode = props.getProperty("language");
@@ -358,6 +367,14 @@ public class EngineConfiguration {
     }
 
     /**
+     * Sequence naming convention of the database
+     * @param sequenceNameConvention the sequenceNameConvention to set
+     */
+    public void setSequenceNameConvention(SEQUENCE_NAME_CONVENTION sequenceNameConvention) {
+        this.sequenceNameConvention = sequenceNameConvention;
+    }
+
+    /**
      * Database connection URL
      * @return the url
      */
@@ -413,6 +430,14 @@ public class EngineConfiguration {
         return fieldSuffix;
     }
 
+    /**
+     * Indicates whether normal output should be suppressed during code generation. If set, only warnings will be printed.
+     * @return the silent
+     */
+    public boolean isSilent() {
+        return silent;
+    }
+    
     /**
      * File system directory for generated source files
      * @return the generatedSourcePath

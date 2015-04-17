@@ -11,7 +11,8 @@
 # SECTION 1: Help for creating replacement files
 # SECTION 2: Metadata about database.
 # SECTION 3: There is no primary key in these tables
-# SECTION 4: Count tables and fields
+# SECTION 4: There is no sequence for the primary key of these tables
+# SECTION 5: Count tables and fields
 #
 
 #
@@ -88,14 +89,25 @@ ${"${t.dbName}.${f.dbName}"?right_pad(70)} ${f.javaName?right_pad(30)} ${f.dbTyp
 # SECTION 3: There is no primary key in these tables
 #
 
-${"TABLE NAME"?right_pad(50)} ${"JAVA NAME"?right_pad(30)} COMMENT
+${"TABLE NAME"?right_pad(50)} ${"JAVA NAME"?right_pad(50)} COMMENT
 
 <#list tList as t><#assign hasPK=0><#list t.fieldList as f><#if f.primaryKey><#assign hasPK=1></#if></#list>
 <#if hasPK==0>${t.dbName?right_pad(50)} ${t.javaName?right_pad(50)} ${t.comment}
 </#if></#list>
 
 #
-# SECTION 4: Count tables and fields
+# SECTION 4: There is no sequence for the primary key of these tables
 #
 
-There is ${tList?size} tables and ${i} fields in database.
+${"TABLE NAME"?right_pad(50)} ${"SEQUENCE NAME"?right_pad(30)}
+
+<#list tList as t>
+<#if (t.sequenceName)??><#if t.missingSequence>${t.dbName?right_pad(50)} ${t.sequenceName?right_pad(50)}
+</#if></#if></#list>
+
+
+#
+# SECTION 5: Count tables and fields
+#
+
+There are ${tList?size} tables and ${i} fields in the database.

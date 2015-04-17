@@ -27,10 +27,13 @@ import hu.vanio.easydao.Engine;
 import hu.vanio.easydao.EngineConfiguration;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
+
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -261,4 +264,34 @@ public class ModelBuilderTest {
         assertTrue(instance.isRestrictedWord("if"));
         assertTrue(instance.isRestrictedWord("do"));
     }
+    
+    @Test
+    public void testGetSequenceName() throws IOException {
+        System.out.println("testGetSequenceName");
+        EngineConfiguration engineConf = EngineConfiguration.createFromProperties("test-config-oracle11.properties");
+        ModelBuilder instance = new ModelBuilder(null, engineConf, new Oracle11ModelBuilderConfig(), new LocalisedMessages("messages", null));
+        
+        Field pkField = new Field(true, false, false, false, false, "CUS_ID", "NUMBER(10)", "ID field", "id", "java.lang.Long");
+        Field nameField = new Field(false, false, false, false, false, "CUS_NAME", "VARCHAR2", "Name field", "name", "java.lang.String");
+        Table table = new Table("TST_CUSTOMER", "Test comment", "Customer", Arrays.asList(pkField, nameField));
+
+        engineConf.setSequenceNameConvention(EngineConfiguration.SEQUENCE_NAME_CONVENTION.PREFIXED_TABLE_NAME);
+        assertEquals("SEQ_TST_CUSTOMER", instance.getSequenceName(table));
+        
+        engineConf.setSequenceNameConvention(EngineConfiguration.SEQUENCE_NAME_CONVENTION.PREFIXED_FIELD_NAME);
+        assertEquals("SEQ_CUS_ID", instance.getSequenceName(table));
+        
+        engineConf.setSequenceNameConvention(EngineConfiguration.SEQUENCE_NAME_CONVENTION.SUFFIXED_TABLE_NAME);
+        assertEquals("TST_CUSTOMER_SEQ", instance.getSequenceName(table));
+        
+        engineConf.setSequenceNameConvention(EngineConfiguration.SEQUENCE_NAME_CONVENTION.SUFFIXED_FIELD_NAME);
+        assertEquals("CUS_ID_SEQ", instance.getSequenceName(table));
+        
+        engineConf.setSequenceNameConvention(EngineConfiguration.SEQUENCE_NAME_CONVENTION.PREFIXED_TABLE_NAME_WITH_FIELD_NAME);
+        assertEquals("SEQ_TST_CUSTOMER_CUS_ID", instance.getSequenceName(table));
+        
+        engineConf.setSequenceNameConvention(EngineConfiguration.SEQUENCE_NAME_CONVENTION.SUFFIXED_TABLE_NAME_WITH_FIELD_NAME);
+        assertEquals("TST_CUSTOMER_CUS_ID_SEQ", instance.getSequenceName(table));
+    }
+    
 }

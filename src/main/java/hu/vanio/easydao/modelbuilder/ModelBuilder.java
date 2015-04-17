@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import hu.vanio.easydao.EngineConfiguration;
+import hu.vanio.easydao.EngineConfiguration.SEQUENCE_NAME_CONVENTION;
 import hu.vanio.easydao.LocalisedMessages;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Index;
@@ -102,6 +103,16 @@ public class ModelBuilder {
         for (Table table : tableList) {
             table.setFieldList(this.getFieldList(table));
             table.setIndexList(this.getIndexListForTable(table));
+            // sequence check
+            String sequenceName = this.getSequenceName(table);
+            if (sequenceName != null) {
+                table.setSequenceName(sequenceName);
+                if (!this.checkSequenceName(sequenceName)) {
+                    table.setMissingSequence(true);
+                    System.out.printf("*** WARNING: The sequence %s for table %s does not exist!\n", sequenceName.toUpperCase(), table.getDbName().toUpperCase());
+                    //throw new IllegalArgumentException("The sequence does not exist: " + sequenceName);
+                }
+            }
             engineConf.getDatabase().addTable(table);
         }
     }
@@ -112,7 +123,9 @@ public class ModelBuilder {
      * @throws SQLException
      */
     public List<Table> getTableList() throws SQLException {
-        System.out.println("getTableList");
+        if (!engineConf.isSilent()) {
+            System.out.println("getTableList");
+        }
 
         List<Table> tableList = new ArrayList<>();
         try (PreparedStatement ps = con.prepareStatement(config.getSelectForTableList())) {
@@ -127,22 +140,75 @@ public class ModelBuilder {
                         String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementTableMap(), tableName);
                         if ("".equals(javaName)) {
                             // if replacement name is empty string, then table has been skipped from the model
-                            System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
+                            if (!engineConf.isSilent()) {
+                                System.out.println("table name: " + tableName + " " + SKIPPED_FROM_MODEL);
+                            }
                             continue;
                         }
                         if (javaName == null) {
                             javaName = createJavaName(tableName, true, engineConf.isTablePrefix(), engineConf.isTableSuffix());
                         }
                         Table table = new Table(tableName, tableComment, javaName, null);
-
-                        System.out.println("table name: " + tableName + " - " + javaName + " = " + tableComment);
-
+                        if (!engineConf.isSilent()) {
+                            System.out.println("table name: " + tableName + " - " + javaName + " = " + tableComment);
+                        }
                         tableList.add(table);
                     }
                 }
             }
         }
         return tableList;
+    }
+    
+    /**
+     * Computes the sequence name for the given table, if it contains only one PK field
+     * 
+     * @param table The table
+     * @return The sequence name
+     */
+    protected String getSequenceName(Table table) {
+        List<Field> pkFields = table.getPkFields();
+        String sequenceName = null;
+        if (pkFields.size() == 1) {
+            Field pkField = table.getPkField();
+            if (pkField.isInteger()) {
+                switch (engineConf.getSequenceNameConvention()) {
+                    case PREFIXED_TABLE_NAME: 
+                        sequenceName = "SEQ_" + table.getDbName(); break;
+                    case PREFIXED_FIELD_NAME: 
+                        sequenceName = "SEQ_" + pkField.getDbName(); break;
+                    case SUFFIXED_TABLE_NAME: 
+                        sequenceName = table.getDbName() + "_SEQ"; break;
+                    case SUFFIXED_FIELD_NAME: 
+                        sequenceName = pkField.getDbName() + "_SEQ"; break;
+                    case PREFIXED_TABLE_NAME_WITH_FIELD_NAME: 
+                        sequenceName = String.format("SEQ_%s_%s", table.getDbName(), pkField.getDbName()); break;
+                    case SUFFIXED_TABLE_NAME_WITH_FIELD_NAME: 
+                        sequenceName = String.format("%s_%s_SEQ", table.getDbName(), pkField.getDbName()); break;
+                }
+            }
+        }
+        return sequenceName;
+    }
+
+    /**
+     * Checks if the sequence with the given name exists
+     * 
+     * @param sequenceName The name of the sequence to check
+     * @return true if the sequece exists
+     * @throws SQLException If An error occures during the operation
+     */
+    protected boolean checkSequenceName(String sequenceName) throws SQLException {
+        boolean exists = false;
+        try (PreparedStatement ps = con.prepareStatement(config.getSelectForSequenceCheck())) {
+            ps.setString(1, sequenceName);
+            try (ResultSet rs = ps.executeQuery();) {
+                if (rs.next()) {
+                    exists = rs.getInt(1) > 0;
+                }
+            }
+        }
+        return exists;
     }
     
     /**
@@ -172,8 +238,6 @@ public class ModelBuilder {
      * @throws SQLException
      */
     public List<Index> getIndexListForTable(Table table) throws SQLException {
-        System.out.println("getIndexListForTable: " + table.getDbName());
-
         List<Index> indexList = new ArrayList<>();
         try (PreparedStatement ps = con.prepareStatement(config.getSelectForIndexList())) {
             ps.setString(1, table.getDbName());
@@ -208,7 +272,9 @@ public class ModelBuilder {
         }
         String javaName = createJavaName(dbName, true, true, false);
         Index index = new Index(dbName, javaName, unique, fieldList);
-        System.out.printf("Index for table %s: %s\n", table.getDbName(), index.toString());
+        if (!engineConf.isSilent()) {
+            System.out.printf("Index for table %s: %s\n", table.getDbName(), index.toString());
+        }
         return index;
     }
     
@@ -244,7 +310,9 @@ public class ModelBuilder {
      */
     protected List<Field> getFieldList(Table table) throws SQLException {
         String tableName = table.getDbName();
-        System.out.println("\ngetFieldList of " + table.getJavaName());
+        if (!engineConf.isSilent()) {
+            System.out.println("\ngetFieldList of " + table.getJavaName());
+        }
         List<Field> fieldList = new ArrayList<>();
         Map<String, String> enumFieldMap = this.engineConf.getEnumFieldMap();
         try (PreparedStatement ps = con.prepareStatement(config.getSelectForFieldList())) {
@@ -263,7 +331,9 @@ public class ModelBuilder {
                     String javaName = ((ModelBuilderConfig) config).getReplacementName(engineConf.getReplacementFieldMap(), tableName + "." + fieldName);
                     if ("".equals(javaName)) {
                         // if replacement name is empty string, then field has been skipped from the model
-                        System.out.println("field name: " + tableName + "." + fieldName + " " + SKIPPED_FROM_MODEL);
+                        if (!engineConf.isSilent()) {
+                            System.out.println("field name: " + tableName + "." + fieldName + " " + SKIPPED_FROM_MODEL);
+                        }
                         continue;
                     }
                     if (javaName == null) {
@@ -284,8 +354,9 @@ public class ModelBuilder {
                     }
                     
                     Field field = new Field(primaryKey, nullable, array, enumerated, irregularEnum, fieldName, dbType, comment, javaName, javaType);
-
-                    System.out.println(field.toString());
+                    if (!engineConf.isSilent()) {
+                        System.out.println(field.toString());
+                    }
 
                     fieldList.add(field);
                 }

@@ -60,4 +60,10 @@ public interface IModelBuilderConfig {
      * @return SQL query, COLUMN_NAME
      */
     public String getSelectForPrimaryKeyFieldNameList();
+    
+    /**
+     * Sql query for checking if a sequence exists, result: the number of sequence found (practically 0 or 1)
+     * @return SQL query, SEQUENCE_NAME
+     */
+    public String getSelectForSequenceCheck();
 }

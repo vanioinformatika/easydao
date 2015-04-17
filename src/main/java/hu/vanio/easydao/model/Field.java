@@ -57,6 +57,7 @@ public class Field {
      * @param nullable Indicates whether the value of this field can be null
      * @param array Indicates whether this field is an array
      * @param enumerated Indicates whether the value of this field is enumerated
+     * @param irregularEnum Indicates whether the value of this field is enumerated and the Java enum that this field is mapped to is not a regular enum. @see hu.vanio.easydao.core.IrregularEnum 
      * @param dbName The name of this field in the database
      * @param dbType The type of this field in the database
      * @param comment The comment of this field in the database
@@ -189,6 +190,14 @@ public class Field {
     }
 
     /**
+     * Indicates whether the type of this field is an integer type (Integer or Long)
+     * @return true if the type of this field is Integer or Long
+     */
+    public boolean isInteger() {
+        return this.javaType.equals(java.lang.Integer.class.getName()) || this.javaType.equals(java.lang.Long.class.getName());
+    }
+    
+    /**
      * The name of this field in the database
      * @return the dbName
      */
@@ -275,7 +284,7 @@ public class Field {
     public boolean isReadAsString() {
         boolean retVal = false;
         
-        Class javaClass = null;
+        Class javaClass;
         try {
             javaClass = Class.forName(this.javaType);
         } catch (ClassNotFoundException e) {

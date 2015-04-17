@@ -76,6 +76,8 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
             "WHERE  idx.indrelid::regclass::text = ? " +
             "order by TABLE_NAME, idx.indkey";
     
+    final String selectForSequenceCheck = "SELECT COUNT(relname) FROM pg_class WHERE relkind = 'S' AND relname = ?";
+    
     /* Data type mapping: database -> java */
     public static final Map<String, String> JAVA_TYPE_MAP = new HashMap<>();
 
@@ -146,6 +148,11 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
         return this.selectForPrimaryKeyFieldNameList;
     }
 
+    @Override
+    public String getSelectForSequenceCheck() {
+        return this.selectForSequenceCheck;
+    }
+    
     @Override
     public String getJavaType(String dbType) throws IllegalArgumentException {
         return convertToJavaType(JAVA_TYPE_MAP, dbType);

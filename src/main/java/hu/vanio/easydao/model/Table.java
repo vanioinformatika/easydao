@@ -47,6 +47,11 @@ public class Table {
     /** Field map, key: dbName, value Field instance */
     private Map<String, Field> fieldMap;
     
+    /** Sequence name for the PK field */
+    protected String sequenceName;
+    /** Indicates that the sequence for the primary key of this table is missing */
+    protected boolean missingSequence;
+    
     /**
      * Constructs a new instance
      * 
@@ -261,6 +266,38 @@ public class Table {
      */
     public void setIndexList(List<Index> indexList) {
         this.indexList = indexList;
+    }
+
+    /**
+     * Sequence name for the PK field
+     * @return the sequenceName
+     */
+    public String getSequenceName() {
+        return sequenceName;
+    }
+
+    /**
+     * Sequence name for the PK field
+     * @param sequenceName the sequenceName to set
+     */
+    public void setSequenceName(String sequenceName) {
+        this.sequenceName = sequenceName;
+    }
+
+    /**
+     * Indicates that the sequence for the primary key of this table is missing
+     * @return the missingSequence
+     */
+    public boolean isMissingSequence() {
+        return missingSequence;
+    }
+
+    /**
+     * Indicates that the sequence for the primary key of this table is missing
+     * @param missingSequence the missingSequence to set
+     */
+    public void setMissingSequence(boolean missingSequence) {
+        this.missingSequence = missingSequence;
     }
     
     //</editor-fold>

@@ -73,6 +73,8 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
             "  and idx.dropped = 'NO' " +
             "order by idx.table_name";
     
+    final String selectForSequenceCheck = "SELECT COUNT(*) FROM user_sequences WHERE sequence_name = ?";
+    
     /* Data type mapping: database -> java */
     public static final Map<String, String> JAVA_TYPE_MAP = new HashMap<>();
 
@@ -133,6 +135,11 @@ public class Oracle11ModelBuilderConfig extends ModelBuilderConfig implements IM
     @Override
     public String getSelectForPrimaryKeyFieldNameList() {
         return this.selectForPrimaryKeyFieldNameList;
+    }
+    
+    @Override
+    public String getSelectForSequenceCheck() {
+        return this.selectForSequenceCheck;
     }
 
     @Override
