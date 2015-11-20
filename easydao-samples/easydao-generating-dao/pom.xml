@@ -1,0 +1,164 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>hu.vanio.easydao</groupId>
+    <artifactId>easydao-generating-dao</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>easydao-generating-dao</name>
+    <url>https://github.com/vanioinformatika/easydao</url>
+    <description>Generate java model and dao from database. EasyDao demo dependency.</description>
+    
+    <issueManagement>
+        <url>https://github.com/vanioinformatika/easydao/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Gyula Szalai</name>
+            <url>https://github.com/gyszalai</url>
+        </developer>
+
+        <developer>
+            <name>István Pató</name>
+            <url>https://github.com/patoi</url>
+        </developer>
+    </developers>
+    
+    <organization>
+        <name>Vanio Informatika Kft.</name>
+        <url>http://www.vanio.hu</url>
+    </organization>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring.version>3.2.8.RELEASE</spring.version>
+    </properties>
+
+    <dependencies>
+        
+        <!-- dependency of all projects that uses EasyDao generated classes -->
+        <dependency>
+            <groupId>hu.vanio.easydao</groupId>
+            <artifactId>easydao-core</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <!-- oracle -->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc5</artifactId>
+            <version>11.1.0.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>11.1.0.7.0</version>
+        </dependency>
+        
+        <!--postgresql -->
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901-1.jdbc4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>hu.vanio.maven.plugins</groupId>
+                <artifactId>easydao-maven-plugin</artifactId>
+                <version>2.0.0-SNAPSHOT</version>
+                <configuration>
+                    <dbName>callisto</dbName>
+                    <dbType>POSTGRESQL9</dbType>
+                    <dbUrl>jdbc:postgresql://localhost/callistof</dbUrl>
+                    <dbUsername>callisto</dbUsername>
+                    <dbPassword>callisto</dbPassword>
+                    <!-- optional -->
+                    <tablePrefix>true</tablePrefix>
+                    <tableSuffix>false</tableSuffix>
+                    <fieldPrefix>true</fieldPrefix>
+                    <fieldSuffix>false</fieldSuffix>
+                    <!-- optional, please do not use: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
+                    <packageOfJavaModel>hu.vanio.easydaodemo.model</packageOfJavaModel>
+                    <packageOfJavaDao>hu.vanio.easydaodemo.dao</packageOfJavaDao>
+                    <!-- optional, please use default: daoSuffix>Dao</daoSuffix -->
+                    <replacementTableFilename>replacement-table</replacementTableFilename>
+                    <replacementFieldFilename>replacement-field</replacementFieldFilename>
+                    <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- optional: creating source file as jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

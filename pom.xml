@@ -1,39 +1,21 @@
-<!--
-/*
-* The MIT License
-*
-* Copyright 2013 Vanio Informatika Kft.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*/
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>hu.vanio.easydao</groupId>
     <artifactId>easydao</artifactId>
-    <version>1.0.18-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <name>easydao</name>
     <url>https://github.com/vanioinformatika/easydao</url>
-    <description>EasyDao is a lightweight, fast and flexible model and Dao code generator.</description>
+    <description>EasyDao project. Aggregate EasyDao maven projects.</description>
+
+    <modules>
+        <module>easydao-maven-plugin</module>
+        <module>easydao-samples/easydao-generating-dao</module>
+        <module>easydao-samples/easydao-using-dao</module>
+    </modules>
     
     <issueManagement>
         <url>https://github.com/vanioinformatika/easydao/issues</url>
@@ -50,18 +32,9 @@
 
     <scm>
         <url>https://github.com/vanioinformatika/easydao</url>
-        <connection>scm:git:${basedir}</connection>
-        <developerConnection>scm:git:${basedir}</developerConnection>
-        <tag>HEAD</tag>
+        <connection>scm:git:git://github.com/vanioinformatika/easydao.git</connection>
+        <developerConnection>scm:git:git@github.com/vanioinformatika/easydao.git</developerConnection>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>bintray-vanioinformatika-releases</id>
-            <name>vanioinformatika-releases-easydao</name>
-            <url>https://api.bintray.com/maven/vanioinformatika/releases/easydao</url>
-        </repository>
-    </distributionManagement>
 
     <developers>
         <developer>
@@ -79,82 +52,9 @@
         <name>Vanio Informatika Kft.</name>
         <url>http://www.vanio.hu</url>
     </organization>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>2.3.20</version>
-        </dependency>
-
-        <!-- oracle -->
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc5</artifactId>
-            <version>11.1.0.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>orai18n</artifactId>
-            <version>11.1.0.7.0</version>
-        </dependency>
-        
-        <!--postgresql -->
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.1-901-1.jdbc4</version>
-        </dependency>
-    </dependencies>
-    
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <preparationGoals>clean install</preparationGoals>
-                    <pushChanges>false</pushChanges>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.9.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            
-        </plugins>
-        
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        
-    </build>
 </project>
