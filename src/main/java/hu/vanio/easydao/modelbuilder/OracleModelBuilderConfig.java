@@ -36,9 +36,9 @@ import java.util.Map;
 public abstract class OracleModelBuilderConfig extends ModelBuilderConfig implements IModelBuilderConfig {
     
     /* Sql query for table list, result: TABLE_NAME, COMMENTS fields */
-    final String selectForTableList = "select ut.table_name as TABLE_NAME, tc.comments as COMMENTS"
-            + " from user_tables ut, user_tab_comments tc"
-            + " where tc.table_name = ut.table_name and ut.table_name not like '%$%'";
+    final String selectForTableList = "select table_name as TABLE_NAME, comments as COMMENTS "
+             + " from user_tab_comments "
+             + " where table_name not like '%$%' and table_type = 'TABLE' ";
     /* Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENTS */
     final String selectForFieldList = "select utc.column_name as COLUMN_NAME,"
             + " decode(utc.char_used, 'C', utc.char_length, utc.data_length) as DATA_LENGTH,"
