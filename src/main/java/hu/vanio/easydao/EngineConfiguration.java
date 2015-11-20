@@ -54,7 +54,7 @@ public class EngineConfiguration {
      */
     public static enum DATABASE_TYPE {
 
-        POSTGRESQL9, ORACLE11;
+        POSTGRESQL9, ORACLE10, ORACLE11;
     }
 
     /**

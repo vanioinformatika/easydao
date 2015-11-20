@@ -7,6 +7,10 @@ This project is the engine of the source code generator.
 
 #Changelog:
 
+>*1.0.17:*
+
+* Oracle DB support improved: introduced separate ORACLE10 and ORACLE11 database type
+
 >*1.0.16:*
 
 * Introduced checking of the existence of sequences (used for auto-generating PK values): https://github.com/vanioinformatika/easydao/issues/4

@@ -24,26 +24,26 @@
 package hu.vanio.easydao.modelbuilder;
 
 /**
- * Oracle 11 configuration.
+ * Oracle 10 configuration.
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-public class Oracle11ModelBuilderConfig extends OracleModelBuilderConfig {
+public class Oracle10ModelBuilderConfig extends OracleModelBuilderConfig {
 
     final String selectForIndexList = 
-            "select decode(idx.uniqueness, 'UNIQUE', 't', 'NONUNIQUE', 'f') as UNIQUENESS, idx.index_name as INDEX_NAME, idx.table_name as TABLE_NAME,  \n" +
-             "            ( select listagg(col.column_name, ',') within group ( order by col.index_name) COLUMN_NAMES  \n" +
-             "              from user_ind_columns col   \n" +
-             "              where col.table_name = idx.table_name and col.index_name = idx.index_name  \n" +
-             "              group by col.index_name) as COLUMN_NAMES  \n" +
-             "from user_indexes idx  \n" +
-             "where idx.table_name = upper(?)  \n" +
-             "  and idx.index_type = 'NORMAL'  \n" +
-             "  and idx.dropped = 'NO'  \n" +
-             "order by idx.table_name";
-    
+            "select decode(idx.uniqueness, 'UNIQUE', 't', 'NONUNIQUE', 'f') as UNIQUENESS, idx.index_name as INDEX_NAME, idx.table_name as TABLE_NAME, " +
+            "            ( select wm_concat(col.column_name) COLUMN_NAMES " +
+            "              from user_ind_columns col  " +
+            "              where col.table_name = idx.table_name and col.index_name = idx.index_name " +
+            "              group by col.index_name) as COLUMN_NAMES " +
+            "from user_indexes idx " +
+            "where idx.table_name = upper(?) " +
+            "  and idx.index_type = 'NORMAL' " +
+            "  and idx.dropped = 'NO' " +
+            "order by idx.table_name";
+
     @Override
     public String getSelectForIndexList() {
         return this.selectForIndexList;
     }
-    
+
 }

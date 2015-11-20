@@ -47,6 +47,7 @@ import freemarker.template.Version;
 import hu.vanio.easydao.model.Table;
 import hu.vanio.easydao.modelbuilder.IModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.ModelBuilder;
+import hu.vanio.easydao.modelbuilder.Oracle10ModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.Oracle11ModelBuilderConfig;
 import hu.vanio.easydao.modelbuilder.PostgreSql9ModelBuilderConfig;
 
@@ -83,6 +84,10 @@ public class Engine {
             case POSTGRESQL9:
                 DriverManager.registerDriver(new org.postgresql.Driver());
                 modelBuilderConfig = new PostgreSql9ModelBuilderConfig();
+                break;
+            case ORACLE10:
+                DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+                modelBuilderConfig = new Oracle10ModelBuilderConfig();
                 break;
             case ORACLE11:
                 DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
