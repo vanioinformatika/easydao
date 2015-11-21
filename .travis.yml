@@ -13,6 +13,7 @@ before_script:
   - docker build -t easydao-sampledb .
   - docker run --name sampledb -e POSTGRES_PASSWORD=sample -d easydao-sampledb
   - cd ../..
+  - docker inspect sampledb | grep IPAddress
   - mvn install:install-file -Dfile=./ojdbc5-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.1.0.7.0 -Dpackaging=jar
   - mvn install:install-file -Dfile=./orai18n-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=orai18n -Dversion=11.1.0.7.0 -Dpackaging=jar
 
