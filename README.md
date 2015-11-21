@@ -117,38 +117,35 @@ Configuration example:
     <artifactId>easydao-maven-plugin</artifactId>
     <version>2.0.0-SNAPSHOT</version>
     <configuration>
+        
+        <!-- required -->
         <dbName>sampledb</dbName>
         <dbType>POSTGRESQL9</dbType>
         <!-- docker inspect sampledb | grep IPAddress -->
         <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
         <dbUsername>postgres</dbUsername>
         <dbPassword>sample</dbPassword>
-        <!-- optional -->
+        
+        <!-- optionals -->
         <tablePrefix>true</tablePrefix>
         <tableSuffix>false</tableSuffix>
         <fieldPrefix>true</fieldPrefix>
         <fieldSuffix>false</fieldSuffix>
-        <!-- optional, please do not use: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
+        <!-- please do not change: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
         <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
         <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
-        <!-- optional, please use default: daoSuffix>Dao</daoSuffix -->
+        <daoSuffix>Dao</daoSuffix>
         <replacementTableFilename>replacement-table</replacementTableFilename>
         <replacementFieldFilename>replacement-field</replacementFieldFilename>
         <enumFieldFilename>enum-field</enumFieldFilename>
         <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
-        <!-- optional -->
         <generateModelToString>false</generateModelToString>
-        <!-- optional -->
         <licenseFilename>${baesdir}/src/myLicense.txt</licenseFilename>
-        <!-- optional -->
         <language>hu</language>
-        <!-- optional -->
         <tableNameIncludes>
             <tableNameInclude>CAL_.+</tableNameInclude>
         </tableNameIncludes>
-        <!-- optional -->
         <encoding>utf-8</encoding>
-        <!-- optional -->
         <silent>true</silent>
     </configuration>
     <executions>
