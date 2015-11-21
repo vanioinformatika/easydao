@@ -64,10 +64,7 @@ After all run easydao-using-dao sample application (app.java), but before set IP
 
     docker inspect sampledb | grep IPAddress
     
-# Stop and remove container
+# Stop and remove container and images
 
-    docker stop sampledb && docker rm sampledb
-    
-# Remove image
+    docker stop sampledb && docker rm sampledb && docker rmi easydao-sampledb
 
-    docker rmi easydao-sampledb
