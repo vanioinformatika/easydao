@@ -11,7 +11,9 @@ Latest release of maven plugin: **1.0.19**
 
 > For generating dao and model you need the **easydao-maven-plugin**. You can see how to use it with demo applications: easydao-generating-dao and easydao-using-dao. More information on the GitHub.
 
-# What is EasyDao? 
+# What is EasyDao?
+
+[High level description](#easydao-logic)
 
 * no JPA
 * no Hibernate
@@ -45,8 +47,6 @@ easydao-maven-plugin is running on Java 8, but **generated source compatible wit
 # Using of EasyDao
 
 EasyDao is on Bintray, see the example application's pom.xml.
-
-High level description: https://github.com/vanioinformatika/easydao#easydao-logic
 
 ## Working with your own project
 1. Create a _projectname-db-model_ maven project. Follow _easydao-generating-dao_ example. Do not forget settings of _easydao-maven-plugin_ configuration. It will creating your database dao and model classes with **mvn clean install.** Please, use maven release plugin if you go in staging or production.
