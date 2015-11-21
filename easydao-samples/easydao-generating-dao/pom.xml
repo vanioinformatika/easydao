@@ -104,7 +104,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.3</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -115,19 +115,20 @@
                 <artifactId>easydao-maven-plugin</artifactId>
                 <version>2.0.0-SNAPSHOT</version>
                 <configuration>
-                    <dbName>callisto</dbName>
+                    <dbName>sampledb</dbName>
                     <dbType>POSTGRESQL9</dbType>
-                    <dbUrl>jdbc:postgresql://localhost/callistof</dbUrl>
-                    <dbUsername>callisto</dbUsername>
-                    <dbPassword>callisto</dbPassword>
+                    <!-- docker inspect sampledb | grep IPAddress -->
+                    <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
+                    <dbUsername>postgres</dbUsername>
+                    <dbPassword>sample</dbPassword>
                     <!-- optional -->
                     <tablePrefix>true</tablePrefix>
                     <tableSuffix>false</tableSuffix>
                     <fieldPrefix>true</fieldPrefix>
                     <fieldSuffix>false</fieldSuffix>
                     <!-- optional, please do not use: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
-                    <packageOfJavaModel>hu.vanio.easydaodemo.model</packageOfJavaModel>
-                    <packageOfJavaDao>hu.vanio.easydaodemo.dao</packageOfJavaDao>
+                    <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
+                    <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
                     <!-- optional, please use default: daoSuffix>Dao</daoSuffix -->
                     <replacementTableFilename>replacement-table</replacementTableFilename>
                     <replacementFieldFilename>replacement-field</replacementFieldFilename>
@@ -145,7 +146,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>2.4</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>

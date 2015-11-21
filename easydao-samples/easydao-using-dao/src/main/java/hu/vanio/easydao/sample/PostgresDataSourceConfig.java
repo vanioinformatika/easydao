@@ -21,30 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydaodemo;
+package hu.vanio.easydao.sample;
 
-import hu.vanio.easydaodemo.service.MyService;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
+import javax.sql.DataSource;
+import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Application and configuration.
- * Spring 3.2.x
+ * Postgres data source configuration.
+ * @author Istvan Pato <istvan.pato@vanio.hu>
  */
 @Configuration
-@ComponentScan(basePackages = {"hu.vanio.easydao.core", "hu.vanio.easydaodemo"})
-public class App {
+public class PostgresDataSourceConfig {
 
-    /**
-     * Just for demonstration.
-     * @param args 
-     */
-    public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(App.class);
-        // Always use daos (dao, daoext, daocomp) over services!
-        MyService myService = (MyService) context.getBean("ugyvedService");
-        System.out.println("\nUgyved email = " + myService.getEmail(1L) + "\n");
+    // docker inspect sampledb | grep IPAddress
+    String host = "172.17.0.2.";
+    String databaseName = "sampledb";
+    int portNumber = 0;
+    String user = "postgres";
+    String password = "sample";
+
+    @Bean(name = "sampledb")
+    public DataSource dataSource() {
+        PGSimpleDataSource d = new PGSimpleDataSource();
+        d.setServerName(host);
+        d.setDatabaseName(databaseName);
+        d.setPortNumber(portNumber);
+        d.setUser(user);
+        d.setPassword(password);
+        return d;
     }
+
 }

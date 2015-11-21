@@ -21,36 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydaodemo;
+package hu.vanio.easydao.sample.service;
 
-import java.sql.SQLException;
-import javax.sql.DataSource;
-import oracle.jdbc.pool.OracleDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import hu.vanio.easydao.sample.dao.sampledb.AddressDao;
+import hu.vanio.easydao.sample.model.sampledb.Address;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Oracle 11 data source configuration.
+ * An ordinary service example with spring annotation.
+ * Transactional annotation hasn't created on Dao classes,
+ * but on services!
  * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-@Configuration
-public class OracleDataSourceConfig {
+@Service
+@Transactional
+public class MyService implements hu.vanio.easydao.core.Service {
 
-    String host = "10.128.2.84";
-    String databaseName = "HOTDEV";
-    int portNumber = 1521;
-    String user = "idtvt1";
-    String password = "idtvt1";
+    @Autowired
+    private AddressDao addressDao;
 
-    @Bean(name = "oracleDataSource")
-    public DataSource dataSource() throws SQLException {
-        OracleDataSource d = new OracleDataSource();
-        d.setServerName(host);
-        d.setDatabaseName(databaseName);
-        d.setPortNumber(portNumber);
-        d.setUser(user);
-        d.setPassword(password);
-        return d;
+    public String getPostalCode(Long pk) {
+        Address address = addressDao.read(pk, false);
+        return address.getPostalCode();
     }
-
 }

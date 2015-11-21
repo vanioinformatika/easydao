@@ -21,35 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydaodemo;
+package hu.vanio.easydao.sample;
 
-import javax.sql.DataSource;
-import org.postgresql.ds.PGSimpleDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * Postgres data source configuration.
- * @author Istvan Pato <istvan.pato@vanio.hu>
+ * Unit test for simple App.
  */
-@Configuration
-public class PostgresDataSourceConfig {
+public class AppTest
+        extends TestCase {
 
-    String host = "localhost";
-    String databaseName = "callistof";
-    int portNumber = 0;
-    String user = "callisto";
-    String password = "callisto";
-
-    @Bean(name = "postgreSqlDataSource")
-    public DataSource dataSource() {
-        PGSimpleDataSource d = new PGSimpleDataSource();
-        d.setServerName(host);
-        d.setDatabaseName(databaseName);
-        d.setPortNumber(portNumber);
-        d.setUser(user);
-        d.setPassword(password);
-        return d;
+    /**
+     * Create the test case
+     *
+     * @param testName name of the test case
+     */
+    public AppTest(String testName) {
+        super(testName);
     }
 
+    /**
+     * @return the suite of tests being tested
+     */
+    public static Test suite() {
+        return new TestSuite(AppTest.class);
+    }
+
+    /**
+     * Rigourous Test :-)
+     */
+    public void testApp() {
+        assertTrue(true);
+    }
 }
