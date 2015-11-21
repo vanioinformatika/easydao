@@ -44,28 +44,23 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring.version>3.2.8.RELEASE</spring.version>
+        <spring.version>3.2.15.RELEASE</spring.version>
     </properties>
 
     <dependencies>
         
-        <!-- dependency of all projects that uses EasyDao generated classes -->
-        <dependency>
-            <groupId>hu.vanio.easydao</groupId>
-            <artifactId>easydao-core</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-
         <!-- oracle -->
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc5</artifactId>
             <version>11.1.0.7.0</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>orai18n</artifactId>
             <version>11.1.0.7.0</version>
+            <scope>runtime</scope>
         </dependency>
         
         <!--postgresql -->
@@ -73,6 +68,7 @@
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
+            <scope>runtime</scope>
         </dependency>
         
         <dependency>
