@@ -117,18 +117,13 @@
                     <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
                     <dbUsername>postgres</dbUsername>
                     <dbPassword>sample</dbPassword>
-                    <!-- optional -->
-                    <tablePrefix>true</tablePrefix>
-                    <tableSuffix>false</tableSuffix>
-                    <fieldPrefix>true</fieldPrefix>
-                    <fieldSuffix>false</fieldSuffix>
-                    <!-- optional, please do not use: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
+
                     <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
                     <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
-                    <!-- optional, please use default: daoSuffix>Dao</daoSuffix -->
-                    <replacementTableFilename>replacement-table</replacementTableFilename>
-                    <replacementFieldFilename>replacement-field</replacementFieldFilename>
-                    <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
+
+                    <tablePrefix>true</tablePrefix>
+                    <fieldPrefix>true</fieldPrefix>
+
                 </configuration>
                 <executions>
                     <execution>

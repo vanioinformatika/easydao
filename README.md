@@ -144,6 +144,8 @@ Configuration example:
         <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
         <dbUsername>postgres</dbUsername>
         <dbPassword>sample</dbPassword>
+        <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
+        <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
         
         <!-- optionals -->
         <tablePrefix>true</tablePrefix>
@@ -151,8 +153,6 @@ Configuration example:
         <fieldPrefix>true</fieldPrefix>
         <fieldSuffix>false</fieldSuffix>
         <!-- please do not change: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
-        <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
-        <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
         <daoSuffix>Dao</daoSuffix>
         <replacementTableFilename>replacement-table</replacementTableFilename>
         <replacementFieldFilename>replacement-field</replacementFieldFilename>
@@ -166,6 +166,7 @@ Configuration example:
         </tableNameIncludes>
         <encoding>utf-8</encoding>
         <silent>true</silent>
+        
     </configuration>
     <executions>
         <execution>
@@ -188,10 +189,16 @@ If you set to e.g: callisto, the package name of the generated model and dao cla
 The **callisto** will be set in the dao classes as data source name with a @Qualifier annotation.
 
 ## dbType*
-Database type, required. You must set to **ORACLE11** or **POSTGRESQL9**
+Database type, required. You must set to **ORACLE10**, **ORACLE11** or **POSTGRESQL9**
 
 ## dbUrl, dbusername, dbPassword*
 Database connection parameters, required.
+
+## packageOfJavaModel*
+Package name of the generated Java model classes, required. Java model codes will contain this package name, e.g: hu.vanio.easydao.sample.model.sampledb
+
+## packageOfJavaDao*
+Package name of the generated Java dao classes, required. Java dao codes will contain this package name, e.g: hu.vanio.easydao.sample.dao.sampledb
 
 ## tablePrefix
 Database table prefix: true or false, optional. Default is true.
@@ -211,11 +218,6 @@ If true, then the last part of the field names will be removed before generating
 ## generatedSourcePath
 Optional, changing its value is not recommended! Generate source codes to this directory. Default value is *target/generated-source/easydao-classes/*
 
-## packageOfJavaModel*
-Package name of the generated Java model classes, required. Java model codes will contain this package name.
-
-## packageOfJavaDao*
-Package name of the generated Java dao classes, required. Java dao codes will contain this package name.
 
 ## daoSuffix
 Generated Java dao class name suffix, optional. Default value is Dao.
@@ -223,31 +225,31 @@ Generated Java dao class name suffix, optional. Default value is Dao.
 ## generateModelToString
 If true, a toString method that outputs data in JSON format will be generated for all model classes.
 
-## replacementTableFilename*
-Replacement file name for tables, required. The name of the _properties_ file in src/main/resources *without* the properties extension, e.g: replacement-table
+## replacementTableFilename
+Replacement file name for tables, optional, default value is replacement-table. The name of the _properties_ file in src/main/resources *without* the properties extension, e.g: replacement-table
  
 If you want to ignore a table from the Java code generation, put it into the file, e.g:
 ```
-CUS_CUSTOMER_ORDER =
+CUS_CUSTOMER =
 ```
 
 If you want to generate Java code with a special name (e.g: Order.java), then:
 ```
-CUS_CUSTOMER_ORDER = Order
+CUS_CUSTOMER = User
 ```
 > You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
 
-## replacementFieldFilename*
-Replacement file name for fields, required. Resource bundle file in src/main/resources without file extension, e.g: replacement-field
+## replacementFieldFilename
+Replacement file name for fields, optional, default value is replacement-field. Resource bundle file in src/main/resources without file extension, e.g: replacement-field
  
 If you want to ignore a field from java code generation, then put it into the file as TABLENAME.FIELDNAME, e.g:
 ```
-CUS_CUSTOMER_ORDER.SECRET_CODE =
+CUS_CUSTOMER.SECRET_CODE =
 ```
 
 If you want to generate with a special name (e.g: orderType), then:
 ```
-CUS_CUSTOMER_ORDER.ORDER_MODE = orderType
+CUS_CUSTOMER.ORDER_MODE = orderType
 ```
 
 > You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
@@ -261,8 +263,8 @@ If you want to use Java enum for a database field, put it into the file as TABLE
 CUS_CUSTOMER_ORDER.ORDER_MODE = hu.vanio.myapp.model.OrderMode
 ```
 
-## sequenceNameConvention*
-Defines database sequence naming convention with **SEQ** string, required.
+## sequenceNameConvention
+Defines database sequence naming convention with **SEQ** string, optional, default value is PREFIXED_TABLE_NAME.
 
 * **recommended** Generate sequence names by table name's suffix with _SEQ (e.g.: MY_TABLE_NAME -> MY_TABLE_NAME_SEQ)
     SUFFIXED_TABLE_NAME
