@@ -183,7 +183,7 @@ public class Generator extends AbstractMojo {
      * <br><b>PREFIXED_TABLE_NAME_WITH_FIELD_NAME</b>: Generate sequence names by prefixing table names with SEQ_ and suffixing them with field name (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> SEQ_MY_TABLE_NAME_MY_FIELD_NAME)
      * <br><b>SUFFIXED_TABLE_NAME_WITH_FIELD_NAME</b>: Generate sequence names by suffixing table names with field name and _SEQ (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> MY_TABLE_NAME_MY_FIELD_NAME_SEQ)
      */
-    @Parameter(required = false, defaultValue = "SEQ_MY_TABLE_NAME")
+    @Parameter(required = false, defaultValue = "PREFIXED_TABLE_NAME")
     protected EngineConfiguration.SEQUENCE_NAME_CONVENTION sequenceNameConvention;
     /**
      * Replacement file name for tables.
