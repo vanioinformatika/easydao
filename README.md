@@ -1,5 +1,6 @@
-EasyDao
-=======
+# EasyDao
+
+[![Build Status](https://travis-ci.org/vanioinformatika/easydao.svg?branch=master)](https://travis-ci.org/vanioinformatika/easydao)
 
 EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects.
 
