@@ -44,8 +44,7 @@ easydao-maven-plugin is running on Java 8, but **generated source compatible wit
 
 # Using of EasyDao
 
-EasyDao is on Bintray, see more: https://github.com/vanioinformatika/easydao-maven-plugin
-See the example application's pom.xml.
+EasyDao is on Bintray, see the example application's pom.xml.
 
 ## Working with your own project
 1. Create a _projectname-db-model_ maven project. Follow _easydao-generating-dao_ example. Do not forget settings of _easydao-maven-plugin_ configuration. It will creating your database dao and model classes with **mvn clean install.** Please, use maven release plugin if you go in staging or production.
@@ -61,7 +60,7 @@ See the example application's pom.xml.
 
 > You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
 
-See the example application, that uses this maven plugin: https://github.com/vanioinformatika/easydao-using-dao
+See the example application, that uses this maven plugin.
 
 ## Setting Maven settings.xml
 
