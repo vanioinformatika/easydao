@@ -9,9 +9,9 @@ jdk:
   - docker
   
 before_install:
-- cd easydao-samples/creating-sampledb
-- ./build-image.sh
-- ./run-container.sh
+  - cd easydao-samples/creating-sampledb
+  - ./build-image.sh
+  - ./run-container.sh
 
 install: true
 
