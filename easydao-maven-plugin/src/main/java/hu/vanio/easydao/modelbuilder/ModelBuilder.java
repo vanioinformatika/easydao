@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import hu.vanio.easydao.EngineConfiguration;
-import hu.vanio.easydao.EngineConfiguration.SEQUENCE_NAME_CONVENTION;
 import hu.vanio.easydao.LocalisedMessages;
 import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Index;
