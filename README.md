@@ -53,12 +53,7 @@ EasyDao is on Bintray, see the example application's pom.xml.
 1. In the application project set pom.xml dependency to generated _projectname-db-model._
 1. Build your application project.
 
-# Open the source code
-
-1. **easydao:** https://github.com/vanioinformatika/easydao
-1. If you are using NetBeans, then **open easydao.**
-
-# Sample easydao-maven-plugin configuration
+## Sample easydao-maven-plugin configuration
 
 > You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
 
@@ -103,7 +98,31 @@ Add to settings.xml:
 </settings>
 ```
 
-# Configuration parameters
+## Set your dao generator parameters in pom.xml
+
+```xml
+<plugin>
+    <groupId>hu.vanio.maven.plugins</groupId>
+    <artifactId>easydao-maven-plugin</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <configuration>
+        <dbName>sampledb</dbName>
+        <dbType>POSTGRESQL9</dbType>
+        <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
+        <dbUsername>postgres</dbUsername>
+        <dbPassword>sample</dbPassword>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+# Configuration parameters in details
 
 Configuration parameters are required or optional. All optional parameters have default value, these **default values are recommended.**
 
@@ -157,6 +176,7 @@ Configuration example:
     </executions>
 </plugin>
 ```
+
 Required parameters has * sign.
 
 ## dbName*
