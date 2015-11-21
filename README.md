@@ -1,85 +1,283 @@
 EasyDao
 =======
 
-EasyDao is a lightweight, fast and flexible model and dao code generator.
+EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects.
 
-This project is the engine of the source code generator.
+Latest release of maven plugin: **1.0.19**
 
-#Changelog:
+**You can find it on Bintray.**
 
->*1.0.17:*
+**EasyDao has tested on Oracle 10, 11 and PostgreSQL 9. Maybe it works with other Oracle and PostgreSQL versions.**
 
-* Oracle DB support improved: introduced separate ORACLE10 and ORACLE11 database type
+> For generating dao and model you need the **easydao-maven-plugin**. You can see how to use it with demo applications: easydao-generating-dao and easydao-using-dao. More information on the GitHub.
 
->*1.0.16:*
+# What is EasyDao? 
 
-* Introduced checking of the existence of sequences (used for auto-generating PK values): https://github.com/vanioinformatika/easydao/issues/4
+* no JPA
+* no Hibernate
+* no heavyweight tools
+* no special knowledge
+* no cost
+* instant support Spring-based projects
+* generates Dao for Spring Framework JdbcTemplate
+* supports new and old projects from Java5
+* supports big and small projects
+* generates model as POJO
+* CRUD Dao methods
+* ultra lightweight dependency
+* you get meta information about database (metadata.txt)
+* based on maven
+* configuration is very simple
+* configuration in pom.xml
+* open source and free with MIT licence
+* ultra fast code generation
+* you can use it from Jenkins
+* handling composite primary keys
+* handling SQL arrays
+* handling primary key sequences
+* database design is convention over configuration
+* flexible: replace the table and field names without changing database
+* open source and free demo application
+* learning time is about 5 minutes
 
->*1.0.15:*
+easydao-maven-plugin is running on Java 8, but **generated source compatible with Java 5.**
 
-* Fixed source 'update(...)' generation issue when table has composite keys: https://github.com/vanioinformatika/easydao/issues/3
+# Using of EasyDao
 
->*1.0.14:*
+EasyDao is on Bintray, see more: https://github.com/vanioinformatika/easydao-maven-plugin
+See the example application's pom.xml.
 
-* Fixed fields' order issue: https://github.com/vanioinformatika/easydao/issues/2
+## Working with your own project
+1. Create a _projectname-db-model_ maven project. Follow _easydao-generating-dao_ example. Do not forget settings of _easydao-maven-plugin_ configuration. It will creating your database dao and model classes with **mvn clean install.** Please, use maven release plugin if you go in staging or production.
+1. In the application project set pom.xml dependency to generated _projectname-db-model._
+1. Build your application project.
 
->*1.0.13:*
+# Open the source code
 
-* Various fixes regarding using enum fields in composite primary keys
+1. **easydao:** https://github.com/vanioinformatika/easydao
+1. If you are using NetBeans, then **open easydao.**
 
->*1.0.12:*
+# Sample easydao-maven-plugin configuration
 
-* Enum fields can be used in composite primary keys and indexes
+> You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
 
->*1.0.11:*
+See the example application, that uses this maven plugin: https://github.com/vanioinformatika/easydao-using-dao
 
-* Fixed enum handling in Dao.mapRow method
+## Setting Maven settings.xml
 
->*1.0.10:*
+Add to settings.xml:
 
-* Introduced handling of fields with enumerated values that do not comform to Java naming conventions (e.g. numeric enum values)
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+<settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd' xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    <profiles>
+    ...
+    	 <profile>
+            <id>vanio-bintray-releases</id>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintraycentral</id>
+                    <name>bintray</name>
+                    <url>http://dl.bintray.com/vanioinformatika/releases/</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintraycentral</id>
+                    <name>bintray-plugins</name>
+                    <url>http://dl.bintray.com/vanioinformatika/releases/</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    <activeProfiles>
+    ...
+    	<activeProfile>vanio-bintray-releases</activeProfile>
+    </activeProfiles>
+</settings>
+```
 
->*1.0.9:*
+# Configuration parameters
 
-* Introduced handling of fields with enumerated values (these fields can be mapped to Java enums)
+Configuration parameters are required or optional. All optional parameters have default value, these **default values are recommended.**
 
->*1.0.8:*
+Required parameters are project dependent.
 
-* Introduced encoding parameter (encoding property in EngineConfiguration)
+Configuration example:
 
->*1.0.7:*
+```xml
+<plugin>
+    <groupId>hu.vanio.maven.plugins</groupId>
+    <artifactId>easydao-maven-plugin</artifactId>
+    <version>1.0.19</version>
+    <configuration>
+        <dbName>callisto</dbName>
+        <dbType>POSTGRESQL9</dbType>
+        <dbUrl>jdbc:postgresql://localhost/callistof</dbUrl>
+        <dbUsername>callisto</dbUsername>
+        <dbPassword>callisto</dbPassword>
+        <!-- optional -->
+        <tablePrefix>true</tablePrefix>
+        <tableSuffix>false</tableSuffix>
+        <fieldPrefix>true</fieldPrefix>
+        <fieldSuffix>false</fieldSuffix>
+        <!-- optional, please do not use: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
+        <packageOfJavaModel>hu.vanio.easydaodemo.model</packageOfJavaModel>
+        <packageOfJavaDao>hu.vanio.easydaodemo.dao</packageOfJavaDao>
+        <!-- optional, please use default: daoSuffix>Dao</daoSuffix -->
+        <replacementTableFilename>replacement-table</replacementTableFilename>
+        <replacementFieldFilename>replacement-field</replacementFieldFilename>
+        <enumFieldFilename>enum-field</enumFieldFilename>
+        <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
+        <!-- optional -->
+        <generateModelToString>false</generateModelToString>
+        <!-- optional -->
+        <licenseFilename>${baesdir}/src/myLicense.txt</licenseFilename>
+        <!-- optional -->
+        <language>hu</language>
+        <!-- optional -->
+        <tableNameIncludes>
+            <tableNameInclude>CAL_.+</tableNameInclude>
+        </tableNameIncludes>
+        <!-- optional -->
+        <encoding>utf-8</encoding>
+        <!-- optional -->
+        <silent>true</silent>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+Required parameters has * sign.
 
-* Introduced table name inclusion patterns (tableNameIncludes property in EngineConfiguration)
+## dbName*
+Database name, required. If you are using more than one database in your code, then you need namespaces. 
+The value of the dbName parameter will act as a namespace, it will be the last element of the package name of the generated classes.
+If you set to e.g: callisto, the package name of the generated model and dao classes will be: **&lt;packageOfJavaModel&gt;.callisto** and **&lt;packageOfJavaDao&gt;.callisto** respectively.
 
->*1.0.6:*
+> Generated dao classes are based on Spring Framework! If you are using more than one database, then the generated models will use different DataSources. 
+The **callisto** will be set in the dao classes as data source name with a @Qualifier annotation.
 
-* First Bintray release.
+## dbType*
+Database type, required. You must set to **ORACLE11** or **POSTGRESQL9**
 
->*1.0.5:*
+## dbUrl, dbusername, dbPassword*
+Database connection parameters, required.
 
-* Introduced localisation of the comments in the generated Java classes (so far only Hungarian and English is supported)
+## tablePrefix
+Database table prefix: true or false, optional. Default is true.
+If true, then the first part of the table names will be removed before generating Java names. Parts are separated by underscore characters. e.g: SHP_CUSTOMER_ORDER -> CustormerOrder.java and CustomerOrderDao.java
 
->*1.0.4:*
+## tableSuffix
+Database table suffix: true or false, optional. Default is false.
+If true, then the last part of the table names will be removed before generating Java names. Parts are separated by underscore characters. e.g: CUSTOMER_ORDER_SHP -> CustomerOrder.java and CustomerOrderDao.java
 
-* Introduced readIndexedXXX method generation for DAOs
+## fieldPrefix
+Database field prefix: true or false, optional. Default is true.
+If true, then the first part of the field names will be removed before generating Java names. Parts are separated by underscore characters. e.g: CUS_CUSTOMER table field is CUS_PK -> pk
 
->*1.0.3:*
+## fieldSuffix
+If true, then the last part of the field names will be removed before generating Java names. Parts are separated by underscore characters. e.g: CUSTOMER_CUS table field is PK_CUS -> pk
 
-* Small fix for DAO update method
+## generatedSourcePath
+Optional, changing its value is not recommended! Generate source codes to this directory. Default value is *target/generated-source/easydao-classes/*
 
->*1.0.2:* 
+## packageOfJavaModel*
+Package name of the generated Java model classes, required. Java model codes will contain this package name.
 
-* Introduced new parameter for the DAO update method: updateLobFields  
-* Introduced toString method generation for model classes  
-* DAO generation eliminated for PK-less tables
+## packageOfJavaDao*
+Package name of the generated Java dao classes, required. Java dao codes will contain this package name.
 
->*1.0.1:*
+## daoSuffix
+Generated Java dao class name suffix, optional. Default value is Dao.
 
-* Introduced insertion of License text into generated classes
+## generateModelToString
+If true, a toString method that outputs data in JSON format will be generated for all model classes.
 
->*1.0.0:*
+## replacementTableFilename*
+Replacement file name for tables, required. The name of the _properties_ file in src/main/resources *without* the properties extension, e.g: replacement-table
+ 
+If you want to ignore a table from the Java code generation, put it into the file, e.g:
+```
+CUS_CUSTOMER_ORDER =
+```
 
-* First release
+If you want to generate Java code with a special name (e.g: Order.java), then:
+```
+CUS_CUSTOMER_ORDER = Order
+```
+> You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
+
+## replacementFieldFilename*
+Replacement file name for fields, required. Resource bundle file in src/main/resources without file extension, e.g: replacement-field
+ 
+If you want to ignore a field from java code generation, then put it into the file as TABLENAME.FIELDNAME, e.g:
+```
+CUS_CUSTOMER_ORDER.SECRET_CODE =
+```
+
+If you want to generate with a special name (e.g: orderType), then:
+```
+CUS_CUSTOMER_ORDER.ORDER_MODE = orderType
+```
+
+> You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
+
+## enumFieldFilename
+Map file name for fields with enumerated values. Resource bundle file in src/main/resources without file extension, e.g: enum-field
+ 
+If you want to use Java enum for a database field, put it into the file as TABLENAME.FIELDNAME = <fully qualified classname of the enum>, e.g:
+
+```
+CUS_CUSTOMER_ORDER.ORDER_MODE = hu.vanio.myapp.model.OrderMode
+```
+
+## sequenceNameConvention*
+Defines database sequence naming convention with **SEQ** string, required.
+
+* **recommended** Generate sequence names by table name's suffix with _SEQ (e.g.: MY_TABLE_NAME -> MY_TABLE_NAME_SEQ)
+    SUFFIXED_TABLE_NAME
+    
+*  Generate sequence names by table name's prefix with SEQ_ (e.g.: MY_TABLE_NAME -> SEQ_MY_TABLE_NAME):
+    PREFIXED_TABLE_NAME
+    
+* Generate sequence names by field's prefix with SEQ_ (e.g.: MY_FIELD_NAME -> SEQ_MY_FIELD_NAME)
+    PREFIXED_FIELD_NAME
+    
+* Generate sequence names by field's names suffix with _SEQ (e.g.: MY_FIELD_NAME -> MY_FIELD_NAME_SEQ)
+    SUFFIXED_FIELD_NAME
+    
+* Generate sequence names by table name's prefix with SEQ_ and with field name (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> SEQ_MY_TABLE_NAME_MY_FIELD_NAME)
+    PREFIXED_TABLE_NAME_WITH_FIELD_NAME
+    
+* Generate sequence names by table name's suffix with field name and _SEQ (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> MY_TABLE_NAME_MY_FIELD_NAME_SEQ)
+    SUFFIXED_TABLE_NAME_WITH_FIELD_NAME;
+
+## licenseFilename
+Defines your license file, default: null -> no license. It will be inserted in your generated sources. Text must be in java comment format.
+
+## language
+Defines the language of the comments in the generated Java sources.
+Possible values: 'hu' or 'en' ('en' is the defult)
+
+## tableNameIncludes
+Defines a list of regex patterns to specify the table names to be included in Java code generation.
+
+## encoding
+Defines the encoding of the generated Java sources. Default: ${project.build.sourceEncoding}
+
+## silent
+Indicates whether normal output should be suppressed during code generation. If set, only warnings will be printed.). Default: true
 
 # Fields with enumerated vaules
 As of 1.0.9, you can use Java enums for fields with enumerated values. You have two choices: regular and irregular enumerations.
@@ -120,7 +318,7 @@ Java enum instances by calling the enum's getEnumInstance() method.
 ### Example
 Let's assume you have a field MY_TABLE.MY_FIELD that can only contain 'NORMAL', '2WAY' and '3WAY'
 2WAY and 3WAY ar not legal Java identifiers, so a regular Java enum cannot be used here.
-All values that cannot be used as a Java identifier, need to be changed, (e.g. 2WAY -> \_2WAY, 3.5 -> \_3_5) 
+All values that cannot be used as a Java identifier, need to be changed, (e.g. 2WAY -> \_2WAY, 3WAY -> \_3WAY) 
 Of course storing the original value is important as it needs to be used when writing the field to the database and reading it back.
 You can see an example implementation below.
 
@@ -166,3 +364,44 @@ public enum MyFieldIrregularEnum {
 ```
 
 > If you just want **to use** this easy model and dao generator, then use the maven plugin at https://github.com/vanioinformatika/easydao-maven-plugin and a small dependeny in your project: https://github.com/vanioinformatika/easydao-core
+
+
+# EasyDao logic
+
+> This section describes EasyDao logic. This means how to create your projects and database, and what conventions are.
+
+There are four logic layer:
+
+## Database
+
+This is your real database. It is important that table and field names are following naming conventions, e.g: if you prefixes tables (CUS_CUSTOMER), than all table must have prefix. EasyDao has a feature for replacing wrong table and/or field names. See: https://github.com/vanioinformatika/easydao-maven-plugin#replacementtablefilename
+
+Tables must have at least one primary key. **I advice that, do not use composite primary keys, but always use at least one primary key.** See: http://stackoverflow.com/questions/1383062/composite-primary-key
+
+## Dao and Model layer
+
+These classes generated from the database, and you never modify it manually. Dao classes directly reaches tables of database. The dao classes based on Spring Framework JdbcTemplate.
+
+## DaoExt and DaoComp layer
+
+They provides the necessary business logic on database. Not autogenerated classes. EasyDao gives interfaces for it.
+
+DaoExt classes extends Dao classes, and contains several unique methods **for exactly one table.** DaoComp classes not related to one table. They are **using several tables with one complex query.**
+
+DaoExt classes must implements hu.vanio.easydao.core.DaoExt interface. DaoComp classes must implements hu.vanio.easydao.core.DaoComp interface.
+
+## Service layer
+
+Service classes contains Spring @Transactional annotation, and they are using Dao, DaoExt and DaoComp classes. Services implements business logic, collaboration between database, queue, filesystem, algorithm, etc. Not autogenerated classes. **Service layer never contains SQL codes!** It is using Dao classes: Dao, DaoExt and DaoComp.
+
+**DaoExt, DaoComp and Service classes are depends on business logic and created by developers.** 
+
+You can see this one on the next image and PDF. 
+
+Download as PDF:
+[EasyDao logic](../master/easydao-logic.pdf)
+![easydao-logic](../master/easydao-logic.png "EasyDao Logic")
+
+Download as PDF:
+[EasyDao logic](../master/easydao-workflow.pdf)
+![easydao-workflow](../master/easydao-workflow.png "EasyDao Workflow")
