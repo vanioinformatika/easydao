@@ -398,9 +398,9 @@ Service classes contains Spring @Transactional annotation, and they are using Da
 You can see this one on the next image and PDF. 
 
 Download as PDF:
-[EasyDao logic](../master/easydao-logic.pdf)
-![easydao-logic](../master/easydao-logic.png "EasyDao Logic")
+[EasyDao logic](../master/easydao-docs/easydao-logic.pdf)
+![easydao-logic](../master/easydao-docs/easydao-logic.png "EasyDao Logic")
 
 Download as PDF:
-[EasyDao logic](../master/easydao-workflow.pdf)
-![easydao-workflow](../master/easydao-workflow.png "EasyDao Workflow")
+[EasyDao logic](../master/easydao-docs/easydao-workflow.pdf)
+![easydao-workflow](../master/easydao-docs/easydao-workflow.png "EasyDao Workflow")
