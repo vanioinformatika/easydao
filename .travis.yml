@@ -12,8 +12,12 @@ before_script:
   - cd easydao-samples/creating-sampledb
   - docker build -t easydao-sampledb .
   - docker run --name sampledb -e POSTGRES_PASSWORD=sample -d easydao-sampledb
-  - cd /
+  - cd ../..
 
 install: true
 
 script: mvn clean install 
+
+after_script:
+  - cd easydao-samples/creating-sampledb
+  - docker stop sampledb && docker rm sampledb && docker rmi easydao-sampledb
