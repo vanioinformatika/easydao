@@ -9,12 +9,15 @@ Run docker commands in creating-sampledb directory.
 # Start database and generating dao
     
     docker run --name sampledb -e POSTGRES_PASSWORD=sample -d easydao-sampledb
-    
-After running you can run easydao-generating-dao maven project. Before run it, please set IP address in the pom.xml:
+    ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sampledb) && export DB_IP_ADDRESS=$ip
 
-    docker inspect sampledb | grep IPAddress
-    
-After all run easydao-using-dao sample application (app.java), but before set IP address in PostgresDataSourceConfig (or OracleDataSourceConfig).
+Build easydao:
+
+    mvn clean install 
+
+Test easydao:
+
+    mvn clean verify
 
 # Connecting to db with psql
     

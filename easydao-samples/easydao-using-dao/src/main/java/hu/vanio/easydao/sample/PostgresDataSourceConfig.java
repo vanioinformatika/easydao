@@ -25,6 +25,7 @@ package hu.vanio.easydao.sample;
 
 import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,6 +37,7 @@ import org.springframework.context.annotation.Configuration;
 public class PostgresDataSourceConfig {
 
     // docker inspect sampledb | grep IPAddress
+    @Value("#{environment.DB_IP_ADDRESS}")
     String host = "172.17.0.2.";
     String databaseName = "sampledb";
     int portNumber = 0;

@@ -114,7 +114,7 @@
                     <dbName>sampledb</dbName>
                     <dbType>POSTGRESQL9</dbType>
                     <!-- docker inspect sampledb | grep IPAddress -->
-                    <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
+                    <dbUrl>jdbc:postgresql://${env.DB_IP_ADDRESS}/sampledb</dbUrl>
                     <dbUsername>postgres</dbUsername>
                     <dbPassword>sample</dbPassword>
 
