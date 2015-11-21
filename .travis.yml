@@ -1,11 +1,11 @@
-sudo: required
+sudo: false
 
 language: java
 
 jdk:
   - oraclejdk8
 
-  services:
+services:
   - docker
   
 before_install:
@@ -16,4 +16,3 @@ before_install:
 install: true
 
 script: mvn clean install 
-
