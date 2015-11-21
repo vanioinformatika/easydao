@@ -113,21 +113,22 @@ Configuration example:
 <plugin>
     <groupId>hu.vanio.maven.plugins</groupId>
     <artifactId>easydao-maven-plugin</artifactId>
-    <version>1.0.19</version>
+    <version>2.0.0-SNAPSHOT</version>
     <configuration>
-        <dbName>callisto</dbName>
+        <dbName>sampledb</dbName>
         <dbType>POSTGRESQL9</dbType>
-        <dbUrl>jdbc:postgresql://localhost/callistof</dbUrl>
-        <dbUsername>callisto</dbUsername>
-        <dbPassword>callisto</dbPassword>
+        <!-- docker inspect sampledb | grep IPAddress -->
+        <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
+        <dbUsername>postgres</dbUsername>
+        <dbPassword>sample</dbPassword>
         <!-- optional -->
         <tablePrefix>true</tablePrefix>
         <tableSuffix>false</tableSuffix>
         <fieldPrefix>true</fieldPrefix>
         <fieldSuffix>false</fieldSuffix>
         <!-- optional, please do not use: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
-        <packageOfJavaModel>hu.vanio.easydaodemo.model</packageOfJavaModel>
-        <packageOfJavaDao>hu.vanio.easydaodemo.dao</packageOfJavaDao>
+        <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
+        <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
         <!-- optional, please use default: daoSuffix>Dao</daoSuffix -->
         <replacementTableFilename>replacement-table</replacementTableFilename>
         <replacementFieldFilename>replacement-field</replacementFieldFilename>
