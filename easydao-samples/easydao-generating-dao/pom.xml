@@ -14,6 +14,15 @@
         <url>https://github.com/vanioinformatika/easydao/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
+    
+    <!-- we don't want to distribute -->
+    <distributionManagement>
+        <repository>
+            <id>fake</id>
+            <name>fake</name>
+            <url>file:///tmp</url>
+        </repository>
+    </distributionManagement>
 
     <licenses>
         <license>
