@@ -23,13 +23,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <url>https://github.com/vanioinformatika/easydao</url>
-        <connection>scm:git:${basedir}</connection>
-        <developerConnection>scm:git:${basedir}</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
     <distributionManagement>
         <repository>
             <id>bintray-vanioinformatika-releases</id>
@@ -168,24 +161,7 @@
             </plugins>
         </pluginManagement>
         
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <preparationGoals>clean install</preparationGoals>
-                    <pushChanges>false</pushChanges>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.9.4</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            
+        <plugins>            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
