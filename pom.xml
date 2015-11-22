@@ -3,7 +3,7 @@
 
     <groupId>hu.vanio.easydao</groupId>
     <artifactId>easydao</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>easydao</name>
@@ -33,7 +33,7 @@
         <url>https://github.com/vanioinformatika/easydao</url>
         <connection>scm:git:git://github.com/vanioinformatika/easydao.git</connection>
         <developerConnection>scm:git:git@github.com/vanioinformatika/easydao.git</developerConnection>
-      <tag>easydao-2.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <developers>
