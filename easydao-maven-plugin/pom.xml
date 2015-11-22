@@ -7,11 +7,11 @@
     <packaging>maven-plugin</packaging>
     
     <name>easydao-maven-plugin</name>
-    <url>https://github.com/vanioinformatika/easydao-maven-plugin</url>
+    <url>https://github.com/vanioinformatika/easydao</url>
     <description>EasyDao Maven Plugin. EasyDao is a lightweight, fast and flexible model and Dao code generator.</description>
 
     <issueManagement>
-        <url>https://github.com/vanioinformatika/easydao-maven-plugin/issues</url>
+        <url>https://github.com/vanioinformatika/easydao/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -24,7 +24,7 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/vanioinformatika/easydao-maven-plugin</url>
+        <url>https://github.com/vanioinformatika/easydao</url>
         <connection>scm:git:${basedir}</connection>
         <developerConnection>scm:git:${basedir}</developerConnection>
         <tag>HEAD</tag>
