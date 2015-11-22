@@ -24,3 +24,8 @@ script: mvn clean install
 after_script:
   - cd easydao-samples/creating-sampledb
   - docker stop sampledb && docker rm sampledb && docker rmi easydao-sampledb
+
+notifications:
+  email:
+    - istvan.pato@vanio.hu
+    - gyula.szalai@vanio.hu
