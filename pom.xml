@@ -67,7 +67,7 @@
                 <configuration>
                     <preparationGoals>clean install</preparationGoals>
                     <pushChanges>false</pushChanges>
-                    <autoversionsubmodules>true</autoversionsubmodules>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
                 <dependencies>
                     <dependency>
