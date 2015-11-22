@@ -20,6 +20,13 @@
         <url>https://github.com/vanioinformatika/easydao/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
+    
+    <scm>
+        <url>https://github.com/vanioinformatika/easydao</url>
+        <connection>scm:git:${basedir}</connection>
+        <developerConnection>scm:git:${basedir}</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <licenses>
         <license>
@@ -28,13 +35,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <scm>
-        <url>https://github.com/vanioinformatika/easydao</url>
-        <connection>scm:git:git://github.com/vanioinformatika/easydao.git</connection>
-        <developerConnection>scm:git:git@github.com/vanioinformatika/easydao.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
 
     <developers>
         <developer>
