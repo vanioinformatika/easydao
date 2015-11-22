@@ -112,6 +112,8 @@ Add to settings.xml:
         <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
         <dbUsername>postgres</dbUsername>
         <dbPassword>sample</dbPassword>
+        <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
+        <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
     </configuration>
     <executions>
         <execution>
@@ -163,7 +165,7 @@ Configuration example:
         <licenseFilename>${baesdir}/src/myLicense.txt</licenseFilename>
         <language>hu</language>
         <tableNameIncludes>
-            <tableNameInclude>CAL_.+</tableNameInclude>
+            <tableNameInclude></tableNameInclude>
         </tableNameIncludes>
         <encoding>utf-8</encoding>
         <silent>true</silent>
