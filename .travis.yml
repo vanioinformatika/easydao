@@ -8,6 +8,11 @@ language: java
 jdk:
   - oraclejdk8
   
+branches:
+  only:
+    - master
+    - stable
+  
 before_script:
   - cd easydao-samples/creating-sampledb
   - docker build -t easydao-sampledb .
