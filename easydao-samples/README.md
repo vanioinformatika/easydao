@@ -2,6 +2,11 @@ Sample database running in docker container.
 
 Run docker commands in creating-sampledb directory.
 
+You can manage docker image start and stop with maven:
+
+    mvn initialize -Pstart
+    mvn initialize -Pstop
+    
 # Build docker image
 
     docker build -t easydao-sampledb .
