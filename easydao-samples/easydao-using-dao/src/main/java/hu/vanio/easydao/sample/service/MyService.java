@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class MyService implements hu.vanio.easydao.core.Service {
+public class MyService {
 
     @Autowired
     private AddressDao addressDao;

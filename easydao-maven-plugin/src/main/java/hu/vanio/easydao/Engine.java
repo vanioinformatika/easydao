@@ -235,9 +235,7 @@ public class Engine {
         final List<String> staticFileList = Arrays.asList(
                 "Dao.java",
                 "DaoComp.java",
-                "DaoExt.java",
-                "Model.java",
-                "Service.java");
+                "Model.java");
         for (String file : staticFileList) {
             Template temp = javaCopyConfig.getTemplate(file);
             this.copy(dir, temp);
