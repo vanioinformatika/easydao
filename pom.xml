@@ -31,8 +31,8 @@
 
     <scm>
         <url>https://github.com/vanioinformatika/easydao</url>
-        <connection>scm:git:git://github.com/vanioinformatika/easydao.git</connection>
-        <developerConnection>scm:git:git@github.com/vanioinformatika/easydao.git</developerConnection>
+        <connection>scm:git:ssh://github.com/vanioinformatika/easydao.git</connection>
+        <developerConnection>scm:git:ssh:@github.com/vanioinformatika/easydao.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
 
