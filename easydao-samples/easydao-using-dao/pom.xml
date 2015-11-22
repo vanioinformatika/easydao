@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>easydao-using-dao</name>
-    <url>https://github.com/vanioinformatika/easyda</url>
+    <url>https://github.com/vanioinformatika/easydao</url>
     <description>Sample application for using EasyDao degenrated dao. EasyDao is a lightweight, fast and flexible model and Dao code generator.</description>
     
     <issueManagement>
