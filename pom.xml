@@ -4,7 +4,7 @@
 
     <groupId>hu.vanio.easydao</groupId>
     <artifactId>easydao</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>VERSION_NUMBER</version>
     <packaging>pom</packaging>
 
     <name>easydao</name>

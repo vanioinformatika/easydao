@@ -1,5 +1,5 @@
-easydao-demo-database-model
-===========================
+easydao-generating-dao
+======================
 
 Generate java model and dao from database. Dependency of the EasyDao demo project.
 
@@ -34,7 +34,7 @@ You must set easydao-maven-plugin (example data!) - change version number to the
 <plugin>
     <groupId>hu.vanio.maven.plugins</groupId>
     <artifactId>easydao-maven-plugin</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>VERSION_NUMBER</version>
     <configuration>
         <dbName>sampledb</dbName>
         <dbType>POSTGRESQL9</dbType>
@@ -42,18 +42,12 @@ You must set easydao-maven-plugin (example data!) - change version number to the
         <dbUrl>jdbc:postgresql://172.17.0.2/sampledb</dbUrl>
         <dbUsername>postgres</dbUsername>
         <dbPassword>sample</dbPassword>
-        <!-- optional -->
-        <tablePrefix>true</tablePrefix>
-        <tableSuffix>false</tableSuffix>
-        <fieldPrefix>true</fieldPrefix>
-        <fieldSuffix>false</fieldSuffix>
-        <!-- optional, please do not use: generatedSourcePath>/tmp/easydaodemo-database_model</generatedSourcePath-->
         <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
         <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
-        <!-- optional, please use default: daoSuffix>Dao</daoSuffix -->
-        <replacementTableFilename>replacement-table</replacementTableFilename>
-        <replacementFieldFilename>replacement-field</replacementFieldFilename>
-        <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
+        
+        <!-- optional -->
+        <tablePrefix>true</tablePrefix>
+        <fieldPrefix>true</fieldPrefix>
     </configuration>
     <executions>
         <execution>
