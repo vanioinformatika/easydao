@@ -14,6 +14,7 @@
         <module>easydao-maven-plugin</module>
         <module>easydao-samples/easydao-generating-dao</module>
         <module>easydao-samples/easydao-using-dao</module>
+        <module>easydao-samples/creating-sampledb</module>
     </modules>
     
     <issueManagement>
