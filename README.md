@@ -267,7 +267,7 @@ CUS_CUSTOMER_ORDER.ORDER_MODE = hu.vanio.myapp.model.OrderMode
 ```
 
 ## sequenceNameConvention
-Defines database sequence naming convention with **SEQ** string, optional, default value is PREFIXED_TABLE_NAME.
+Defines database sequence naming convention with **SEQ** string, optional, default value is SUFFIXED_TABLE_NAME.
 
 * **recommended** Generate sequence names by table name's suffix with _SEQ (e.g.: MY_TABLE_NAME -> MY_TABLE_NAME_SEQ)
     SUFFIXED_TABLE_NAME
