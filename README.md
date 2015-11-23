@@ -4,7 +4,7 @@
 
 EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects.
 
-Latest release of maven plugin: **2.0.1**
+The latest version is *2.0.1*
 
 **You can find it on Bintray.**
 
