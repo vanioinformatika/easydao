@@ -1,5 +1,9 @@
 # EasyDao Changelog:
 
+## 2.0.1
+
+* handling ORACLE10 value in sequence query generator (bug: variable query not found)
+
 ## 2.0.0
 
 * Oracle 12 support: set databaseType to ORACLE11
