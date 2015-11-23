@@ -197,7 +197,7 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
             throw new IllegalStateException("Primary key value cannot be auto-generated for tables with composite primary key");
         <#else>
             <#if (t.sequenceName)??>
-            <#if e.databaseType.name() == 'ORACLE11'>
+            <#if e.databaseType.name() == 'ORACLE10' || e.databaseType.name() == 'ORACLE11'>
             String query = "select ${t.sequenceName}.nextval PK from dual";
             </#if>
             <#if e.databaseType.name() == 'POSTGRESQL9'>
