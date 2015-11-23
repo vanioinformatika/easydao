@@ -4,11 +4,11 @@
 
 EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects.
 
-Latest release of maven plugin: **1.0.19**
+Latest release of maven plugin: **2.0.0**
 
 **You can find it on Bintray.**
 
-**EasyDao has tested on Oracle 10, 11 and PostgreSQL 9. Maybe it works with other Oracle and PostgreSQL versions.**
+**EasyDao has tested on Oracle 10, 11, 12 and PostgreSQL 9.** Maybe it works with other Oracle and PostgreSQL versions.
 
 > For generating dao and model you need the **easydao-maven-plugin**. You can see how to use it with demo applications: easydao-generating-dao and easydao-using-dao. More information on the GitHub.
 
