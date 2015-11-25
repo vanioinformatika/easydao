@@ -10,7 +10,7 @@ The latest version is *2.0.1*
 
 **EasyDao has tested on Oracle 10, 11, 12 and PostgreSQL 9.** Maybe it works with other Oracle and PostgreSQL versions.
 
-> For generating dao and model you need the **easydao-maven-plugin**. You can see how to use it with demo applications: easydao-generating-dao and easydao-using-dao. More information on the GitHub.
+For generating dao and model you need using the **easydao-maven-plugin**. You can see how to use it with [sample applications](./easydao-samples/): easydao-generating-dao and easydao-using-dao.
 
 # What is EasyDao?
 
@@ -47,14 +47,12 @@ easydao-maven-plugin is running on Java 8, but **generated source compatible wit
 
 # Using of EasyDao
 
-EasyDao is on Bintray, see the example application's pom.xml.
+EasyDao is on Bintray, see the pom.xml of the [sample applications](./easydao-samples/).
 
 ## Working with your own project
 1. Create a _projectname-db-model_ maven project. Follow _easydao-generating-dao_ example. Do not forget settings of _easydao-maven-plugin_ configuration. It will creating your database dao and model classes with **mvn clean install.** Please, use maven release plugin if you go in staging or production.
 1. In the application project set pom.xml dependency to generated _projectname-db-model._
 1. Build your application project.
-
-See the example application, that uses this maven plugin.
 
 ## Setting Maven settings.xml
 
