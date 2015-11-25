@@ -54,10 +54,6 @@ EasyDao is on Bintray, see the example application's pom.xml.
 1. In the application project set pom.xml dependency to generated _projectname-db-model._
 1. Build your application project.
 
-## Sample easydao-maven-plugin configuration
-
-> You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
-
 See the example application, that uses this maven plugin.
 
 ## Setting Maven settings.xml
@@ -149,6 +145,10 @@ It is not working with Java 7_60 or newer Java 7!
 [Meta data about the database](./easydao-samples/metadata.txt)
 
 [Using the java source (screenshots)](./easydao-samples/using-screenshots/)
+
+> You can find the results of the code generation in **&lt;generatedSourcePath&gt;/metadata.txt.** It contains several useful information about your database, **and you can easily define replacement files based on its content.**
+
+---
 
 # Configuration parameters in details
 
