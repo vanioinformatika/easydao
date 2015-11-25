@@ -125,6 +125,21 @@ Add to settings.xml:
 </plugin>
 ```
 
+If you are using Java 8, then set the javadoc plugin with **-Xdoclint:none**:
+
+```java
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.10.3</version>
+    <configuration>
+        <additionalparam>-Xdoclint:none</additionalparam>
+    </configuration>
+</plugin>
+```
+
+It is not working with Java 7_60 or newer Java 7!
+
 ## Results
 
 [Model source code](./easydao-samples/ResultModel.md)
