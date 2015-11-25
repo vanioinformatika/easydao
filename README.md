@@ -127,7 +127,7 @@ Add to settings.xml:
 
 If you are using Java 8, then set the javadoc plugin with **-Xdoclint:none**:
 
-```java
+```xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
