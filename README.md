@@ -128,8 +128,12 @@ Add to settings.xml:
 ## Results
 
 [Model source code](./easydao-samples/ResultModel.md)
+
 [Dao source code](./easydao-samples/ResultDao.md)
+
 [Meta data about the database](./easydao-samples/metadata.txt)
+
+[Using the java source (screenshots)](./easydao-samples/using-screenshots/)
 
 # Configuration parameters in details
 
