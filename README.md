@@ -125,6 +125,12 @@ Add to settings.xml:
 </plugin>
 ```
 
+## Results
+
+[Model source code](./easydao-samples/ResultModel.md)
+[Dao source code](./easydao-samples/ResultDao.md)
+[Meta data about the database](./easydao-samples/metadata.txt)
+
 # Configuration parameters in details
 
 Configuration parameters are required or optional. All optional parameters have default value, these **default values are recommended.**
