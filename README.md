@@ -2,9 +2,8 @@
 
 [![Build Status](https://travis-ci.org/vanioinformatika/easydao.svg?branch=master)](https://travis-ci.org/vanioinformatika/easydao)
 
-
-
-| ![EasyDao logo](https://raw.githubusercontent.com/vanioinformatika/easydao/master/easydao-docs/easydao-logo.png "EasyDao") |  EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects.
+<img align="right" src="https://raw.githubusercontent.com/vanioinformatika/easydao/master/easydao-docs/easydao-logo.png">
+EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects.
 
 The latest version is *2.0.1*
 
@@ -12,9 +11,7 @@ The latest version is *2.0.1*
 
 **EasyDao has tested on Oracle 10, 11, 12 and PostgreSQL 9.** Maybe it works with other Oracle and PostgreSQL versions.
 
-For generating dao and model you need using the **easydao-maven-plugin**. You can see how to use it with [sample applications](./easydao-samples/): easydao-generating-dao and easydao-using-dao. |
-
-
+For generating dao and model you need using the **easydao-maven-plugin**. You can see how to use it with [sample applications](./easydao-samples/): easydao-generating-dao and easydao-using-dao.
 
 # What is EasyDao?
 
