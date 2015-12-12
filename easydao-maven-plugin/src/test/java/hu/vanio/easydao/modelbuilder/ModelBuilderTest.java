@@ -136,15 +136,12 @@ public class ModelBuilderTest {
     /**
      * Test of createJavaName method with prefix and postfix, of class ModelBuilder.
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testCreateJavaName_StringWithPrefixAndPostfix_Bug() {
         System.out.println("testCreateJavaName_StringWithPrefixAndPostfix");
         String dbName = "CUS_CUSTOMER";
         ModelBuilder instance = new ModelBuilder(null, ENGINE_CONF, new PostgreSql9ModelBuilderConfig(), new LocalisedMessages("messages", null));
-        String expResult = "Customer";
-        String result = instance.createJavaName(dbName, true, true, true);
-        System.out.println("testCreateJavaName_StringWithPrefixAndPostfix = " + dbName + " -> " + result);
-        assertEquals(expResult, result);
+        instance.createJavaName(dbName, true, true, true);
     }
     
     /**
