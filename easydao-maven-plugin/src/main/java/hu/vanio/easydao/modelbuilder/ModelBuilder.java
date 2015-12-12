@@ -401,6 +401,10 @@ public class ModelBuilder {
             result = dbName.toLowerCase();
         }
         
+        if (result.length() < 1) {
+            throw new IllegalArgumentException(String.format("Object name \"%s\" does not comply with the specified configuration: hasPrefix=%s, hasPostFix=%s", dbName, hasPrefix, hasPostFix));
+        }
+        
         if (Character.isDigit(result.charAt(0))) {
             result = "X" + result;
         }
