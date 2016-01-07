@@ -27,7 +27,7 @@
         <repository>
             <id>bintray-vanioinformatika-releases</id>
             <name>vanioinformatika-releases-easydao-maven-plugin</name>
-            <url>https://api.bintray.com/maven/vanioinformatika/releases/easydao-maven-plugin</url>
+            <url>https://api.bintray.com/maven/vanioinformatika/releases/easydao-maven-plugin/;publish=1</url>
         </repository>
     </distributionManagement>
 
