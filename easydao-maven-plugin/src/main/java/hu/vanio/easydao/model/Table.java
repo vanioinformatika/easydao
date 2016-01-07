@@ -142,6 +142,14 @@ public class Table {
     }
     
     /** 
+     * Indicates whether this table has a primary key field
+     * @return True, if this table has a primary key field
+     */
+    public boolean isHasPkField() {
+        return this.getPkFields().size() > 0;
+    }
+    
+    /** 
      * Indicates whether this table has array fields
      * @return True, if this table has array fields
      */

@@ -1,5 +1,14 @@
 # EasyDao Changelog:
 
+## 3.0.0
+
+* Generic Dao<T, P> interface has been eliminated.
+* A separate interface is generated for each DAO classes.
+* DAO class names have changed from XXXDao to XXXDaoImpl. The XXXDao name is used for the DAO interface from now on.
+* Restricted DAOs can be generated for tables without primary key. In this case only readAll() and readIndexed_XXX() methods are generated.
+* Dao.readIndexed_XXX methods for unique indexes don't throw EmptyResultDataAccessException anymore.
+* readLobFields and updateLobFields method parameters are not generated for DAOs that don't handle LOB fields
+
 ## 2.0.1
 
 * handling ORACLE10 value in sequence query generator (bug: variable query not found)

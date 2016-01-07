@@ -123,6 +123,7 @@ public class Engine {
         generateMetadataFile();
         // create java source codes: model and dao
         generateModelClasses();
+        generateDaoInterfaces();
         generateDaoClasses();
         // copy static java classes
         copyInterfacesAndClasses();
@@ -177,6 +178,38 @@ public class Engine {
     }
 
     /**
+     * Generate Dao interfaces
+     * @throws IOException
+     * @throws TemplateException
+     */
+    private void generateDaoInterfaces() throws IOException, TemplateException {
+        List<Table> tableList = engineConfiguration.getDatabase().getTableList();
+        // create directory for java package
+        Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
+                + fileSeparator
+                + engineConfiguration.getPackageOfJavaDao().replace(".", fileSeparator)
+                + fileSeparator
+                + engineConfiguration.getDatabase().getName());
+        Files.createDirectories(dir);
+        if (!engineConfiguration.isSilent()) {
+            System.out.println("\nWrite dao interfaces into " + dir.toAbsolutePath());
+        }
+        for (Table table : tableList) {
+            if (!table.isHasPkField()) {
+                System.out.printf("*** WARNING: No primary key on table %s, generating restricted DAO\n", table.getDbName());
+            }
+            Template temp = freemarkerConfig.getTemplate("dao_interface.ftl");
+            Map<String, Object> m = new HashMap<>();
+            m.put("t", table);
+            m.put("e", engineConfiguration);
+            m.put("messages", messages);
+            try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConfiguration.getDaoSuffix() + ".java")), engineConfiguration.getEncoding())) {
+                temp.process(m, fileWriter);
+            }
+        }
+    }
+    
+    /**
      * Generate Dao classes.
      * @throws IOException
      * @throws TemplateException
@@ -194,19 +227,13 @@ public class Engine {
             System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());
         }
         for (Table table : tableList) {
-            if (table.getPkFields().size() > 0) {
-                Template temp = freemarkerConfig.getTemplate("dao.ftl");
-                Writer out = new OutputStreamWriter(System.out);
-                Map<String, Object> m = new HashMap<>();
-                m.put("t", table);
-                m.put("e", engineConfiguration);
-                m.put("messages", messages);
-                //temp.process(m, out);
-                try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConfiguration.getDaoSuffix() + ".java")), engineConfiguration.getEncoding())) {
-                    temp.process(m, fileWriter);
-                }
-            } else {
-                System.out.printf("*** WARNING: No primary key on table %s, DAO generation skipped\n", table.getDbName());
+            Template temp = freemarkerConfig.getTemplate("dao.ftl");
+            Map<String, Object> m = new HashMap<>();
+            m.put("t", table);
+            m.put("e", engineConfiguration);
+            m.put("messages", messages);
+            try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(new File(dir.toAbsolutePath().toString() + fileSeparator + table.getJavaName() + engineConfiguration.getDaoSuffix() + "Impl.java")), engineConfiguration.getEncoding())) {
+                temp.process(m, fileWriter);
             }
         }
     }
@@ -233,7 +260,6 @@ public class Engine {
         }
 
         final List<String> staticFileList = Arrays.asList(
-                "Dao.java",
                 "DaoComp.java",
                 "Model.java");
         for (String file : staticFileList) {

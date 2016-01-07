@@ -43,7 +43,7 @@ public class MyService {
     private AddressDao addressDao;
 
     public String getPostalCode(Long pk) {
-        Address address = addressDao.read(pk, false);
+        Address address = addressDao.read(pk);
         return address.getPostalCode();
     }
 }

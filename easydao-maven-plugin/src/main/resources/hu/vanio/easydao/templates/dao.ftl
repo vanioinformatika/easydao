@@ -31,11 +31,7 @@ import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
  * <br>${messages('generatedBy')} ${project.name} v${project.version}
  */
 @Repository
-<#if t.compositePk>
-public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.javaName}.Pk> {
-<#else>
-public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${t.javaName}, ${t.pkField.javaTypeAsString}> {
-</#if>
+public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuffix} {
 
     /** ${messages('selectedFields')} */
     static final public String SELECTED_FIELDS = "<#list t.fieldList as field>${field.dbName}<#if field_has_next>, </#if></#list>";
@@ -51,25 +47,17 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    /**
-     * ${messages('readMethodComment')}
-     <#if t.compositePk>
-     * @param pk ${messages('pkParamComment')}
-     <#else>
-     * @param ${t.pkField.javaName} ${t.pkField.comment}
-     </#if>
-     * @param readLobFields ${messages('readLobFieldsParamComment')}
-     * @return ${t.javaName} ${messages('instance')}
-     */
+    <#if t.hasPkField>
+
     @Override
     <#if t.compositePk>
-    public ${t.javaName} read(${t.javaName}.Pk pk, boolean readLobFields) {
+    public ${t.javaName} read(${t.javaName}.Pk pk<#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
     <#else>
-    public ${t.javaName} read(${t.pkField.javaTypeAsString} ${t.pkField.javaName}, boolean readLobFields) {
+    public ${t.javaName} read(${t.pkField.javaTypeAsString} ${t.pkField.javaName}<#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
     </#if>
         <#if t.compositePk>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), 
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(<#if t.hasBlobField || t.hasClobField>readLobFields</#if>), 
                 <#list t.pkFields as field> 
                 <#if field.enumerated>
                     <#if field.irregularEnum>
@@ -83,34 +71,26 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
                 </#list>);
         <#else>
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where ${t.pkField.dbName} = ?";
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), ${t.pkField.javaName});
+        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(<#if t.hasBlobField || t.hasClobField>readLobFields</#if>), ${t.pkField.javaName});
         </#if>
         return retVal;
     }
 
-    /**
-     * ${messages('readAllMethodComment')}
-     * @param readLobFields ${messages('readLobFieldsParamComment')}
-     * @return ${messages('readAllMethodReturnComment')}
-     */
+    </#if>
+
     @Override
-    public List<${t.javaName}> readAll(boolean readLobFields) {
+    public List<${t.javaName}> readAll(<#if t.hasBlobField || t.hasClobField>boolean readLobFields</#if>) {
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName}";
-        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(readLobFields));
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(<#if t.hasBlobField || t.hasClobField>readLobFields</#if>));
         return retVal;
     }
 
     <#list t.indexList as index>
     <#if index.unique>
-    /**
-     * ${messages('readIndexedUniqueMethodComment')}
-     <#list index.fields as field>
-     * @param ${field.javaName} ${field.comment}
-     </#list>
-     * @param readLobFields ${messages('readLobFieldsParamComment')}
-     * @return ${t.javaName} ${messages('instance')}
-     */
-    public ${t.javaName} readIndexed_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
+    @Override
+    public ${t.javaName} readIndexed_${index.javaName}(
+            <#list index.fields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list>
+            <#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where "<#list index.fields as field>
                 <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
 
@@ -139,19 +119,14 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         </#if>
         </#list>
 
-        ${t.javaName} retVal = this.jdbcTemplate.queryForObject(query, new ${t.javaName}RowMapper(readLobFields), params.toArray());
-        return retVal;
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(<#if t.hasBlobField || t.hasClobField>readLobFields</#if>), params.toArray());
+        return retVal!=null?retVal.get(0):null;
     }
     <#else>
-    /**
-     * ${messages('readIndexedNonUniqueMethodComment')}
-     <#list index.fields as field>
-     * @param ${field.javaName} ${field.comment}
-     </#list>
-     * @param readLobFields ${messages('readLobFieldsParamComment')}
-     * @return ${t.javaName} ${messages('instances')}
-     */
-    public List<${t.javaName}> readIndexed_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}, </#list>boolean readLobFields) {
+    @Override
+    public List<${t.javaName}> readIndexed_${index.javaName}(
+            <#list index.fields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list>
+            <#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where "<#list index.fields as field>
                 <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
         
@@ -180,16 +155,15 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         </#if>
         </#list>
 
-        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(readLobFields), params.toArray());
+        List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(<#if t.hasBlobField || t.hasClobField>readLobFields</#if>), params.toArray());
         return retVal;
     }
     </#if>
     </#list>
 
-    /**
-     * ${messages('createPkMethodComment')}
-     * @param instance ${messages('instanceParamComment')}
-     */
+
+    <#if t.hasPkField>
+
     @Override
     public void createPk(final ${t.javaName} instance) {
     <#if !t.missingSequence>
@@ -225,12 +199,10 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
     </#if>
     }
 
-    /**
-     * ${messages('createMethodComment')}
-     * @param instance ${messages('instanceParamComment')}
-     * @param createPk ${messages('createPkParamComment')}
-     * @return ${messages('createMethodReturnComment')}
-     */
+    </#if>
+
+    <#if t.hasPkField>
+
     @Override
     public ${t.javaName} create(${t.javaName} instance, boolean createPk) {
         String sql = "insert into ${t.dbName} (<#list t.fieldList as field>${field.dbName}<#if field_has_next>,</#if></#list>) values (<#list t.fieldList as field>?<#if field_has_next>,</#if></#list>)";
@@ -260,19 +232,17 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
 
         <#if t.compositePk>
             ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
-            return read(pk, false);
+            return read(pk<#if t.hasBlobField || t.hasClobField>, false</#if>);
         <#else>
-            return read(instance.get${t.pkField.javaName?cap_first}(), false);
+            return read(instance.get${t.pkField.javaName?cap_first}()<#if t.hasBlobField || t.hasClobField>, false</#if>);
         </#if>
     }
+    </#if>
 
-    /**
-     * ${messages('updateMethodComment')}
-     * @param instance ${messages('instanceParamComment')}
-     * @return ${messages('updateMethodReturnComment')}
-     */
+    <#if t.hasPkField>
+
     @Override
-    public ${t.javaName} update(${t.javaName} instance, boolean updateLobFields) {
+    public ${t.javaName} update(${t.javaName} instance<#if t.hasBlobField || t.hasClobField>, boolean updateLobFields</#if>) {
         String sql = "update ${t.dbName} " +
                      "set " +
                      <#list t.nonPkFields as field>
@@ -370,20 +340,12 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
 
         <#if t.compositePk>
             ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
-            return read(pk, false);
+            return read(pk<#if t.hasBlobField || t.hasClobField>, false</#if>);
         <#else>
-            return read(instance.get${t.pkField.javaName?cap_first}(), false);
+            return read(instance.get${t.pkField.javaName?cap_first}()<#if t.hasBlobField || t.hasClobField>, false</#if>);
         </#if>
     }
 
-    /**
-     * ${messages('deleteMethodComment')}
-     <#if t.compositePk>
-     * @param pk ${messages('pkParamComment')}
-     <#else>
-     * @param ${t.pkField.javaName} ${t.pkField.comment}
-     </#if>
-     */
     @Override
     <#if t.compositePk>
     public void delete(${t.javaName}.Pk pk) {
@@ -413,12 +375,15 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         }
     }
 
+    </#if>
+
     /** ${messages('rowMapperClassComment')} */
     protected class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
         
+        <#if t.hasBlobField || t.hasClobField>
         /** ${messages('readLobFieldsParamComment')} */
         private final boolean readLobFields;
-        
+
         /**
          * ${messages('rowMapperConstructorComment')}
          * @param readLobFields ${messages('readLobFieldsParamComment')}
@@ -426,6 +391,7 @@ public class ${t.javaName}${e.daoSuffix} implements hu.vanio.easydao.core.Dao<${
         public ${t.javaName}RowMapper(boolean readLobFields) {
             this.readLobFields = readLobFields;
         }
+        </#if>
 
         @Override
         public ${t.javaName} mapRow(ResultSet rs, int rowNum) throws SQLException {
