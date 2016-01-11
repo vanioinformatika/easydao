@@ -378,7 +378,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
     </#if>
 
     /** ${messages('rowMapperClassComment')} */
-    protected class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
+    public class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
         
         <#if t.hasBlobField || t.hasClobField>
         /** ${messages('readLobFieldsParamComment')} */
