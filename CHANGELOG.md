@@ -1,5 +1,9 @@
 # EasyDao Changelog:
 
+## 3.0.1
+
+* DaoImpl.RowMapper intter class visibility changed from protected to public. fixes #6
+
 ## 3.0.0
 
 * Generic Dao<T, P> interface has been eliminated.
