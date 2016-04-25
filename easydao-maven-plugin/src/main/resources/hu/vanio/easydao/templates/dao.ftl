@@ -120,7 +120,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
         </#list>
 
         List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(<#if t.hasBlobField || t.hasClobField>readLobFields</#if>), params.toArray());
-        return retVal!=null?retVal.get(0):null;
+        return retVal.isEmpty()?null:retVal.get(0);
     }
     <#else>
     @Override
@@ -378,7 +378,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
     </#if>
 
     /** ${messages('rowMapperClassComment')} */
-    protected class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
+    public class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
         
         <#if t.hasBlobField || t.hasClobField>
         /** ${messages('readLobFieldsParamComment')} */

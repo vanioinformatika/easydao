@@ -1,5 +1,13 @@
 # EasyDao Changelog:
 
+## 3.0.2
+
+* Fixes #7: Return statement of DaoImpl.readIndexed_XXX method generated for a unique index throws IndexOutOfBoundsException
+
+## 3.0.1
+
+* DaoImpl.RowMapper inner class visibility changed from protected to public. fixes #6
+
 ## 3.0.0
 
 * Generic Dao<T, P> interface has been eliminated.

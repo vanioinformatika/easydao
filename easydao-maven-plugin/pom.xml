@@ -3,7 +3,7 @@
 
     <groupId>hu.vanio.maven.plugins</groupId>
     <artifactId>easydao-maven-plugin</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.3-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     
     <name>easydao-maven-plugin</name>
@@ -27,7 +27,7 @@
         <repository>
             <id>bintray-vanioinformatika-releases</id>
             <name>vanioinformatika-releases-easydao-maven-plugin</name>
-            <url>https://api.bintray.com/maven/vanioinformatika/releases/easydao-maven-plugin</url>
+            <url>https://api.bintray.com/maven/vanioinformatika/releases/easydao-maven-plugin/;publish=1</url>
         </repository>
     </distributionManagement>
 
