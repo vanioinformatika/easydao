@@ -9,12 +9,12 @@
     <name>easydao-generating-dao</name>
     <url>https://github.com/vanioinformatika/easydao</url>
     <description>Generate java model and dao from database. EasyDao demo dependency.</description>
-    
+
     <issueManagement>
         <url>https://github.com/vanioinformatika/easydao/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
-    
+
     <!-- we don't want to distribute -->
     <distributionManagement>
         <repository>
@@ -43,12 +43,12 @@
             <url>https://github.com/patoi</url>
         </developer>
     </developers>
-    
+
     <organization>
         <name>Vanio Informatika Kft.</name>
         <url>http://www.vanio.hu</url>
     </organization>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -56,7 +56,7 @@
     </properties>
 
     <dependencies>
-        
+
         <!-- oracle -->
         <dependency>
             <groupId>com.oracle</groupId>
@@ -70,7 +70,7 @@
             <version>11.1.0.7.0</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <!--postgresql -->
         <dependency>
             <groupId>postgresql</groupId>
@@ -78,7 +78,7 @@
             <version>9.1-901-1.jdbc4</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
@@ -94,7 +94,7 @@
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -102,7 +102,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -114,7 +114,7 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -122,8 +122,8 @@
                 <configuration>
                     <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
-            </plugin> 
-            
+            </plugin>
+
             <plugin>
                 <groupId>hu.vanio.maven.plugins</groupId>
                 <artifactId>easydao-maven-plugin</artifactId>
@@ -132,7 +132,7 @@
                     <dbName>sampledb</dbName>
                     <dbType>POSTGRESQL9</dbType>
                     <!-- docker inspect sampledb | grep IPAddress -->
-                    <dbUrl>jdbc:postgresql://${env.DB_IP_ADDRESS}/sampledb</dbUrl>
+                    <dbUrl>jdbc:postgresql://127.0.0.1/sampledb</dbUrl>
                     <dbUsername>postgres</dbUsername>
                     <dbPassword>sample</dbPassword>
 
