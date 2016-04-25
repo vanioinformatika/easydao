@@ -2,17 +2,17 @@ sudo: required
 
 services:
   - docker
-  
+
 language: java
 
 jdk:
   - oraclejdk8
-  
+
 branches:
   only:
     - master
     - stable
-  
+
 before_script:
   - cd easydao-samples/creating-sampledb
   - docker build -t easydao-sampledb .
@@ -24,8 +24,11 @@ before_script:
 
 install: true
 
-script: mvn clean install 
+script: mvn clean install
 
 after_script:
   - cd easydao-samples/creating-sampledb
   - docker stop sampledb && docker rm sampledb && docker rmi easydao-sampledb
+
+notifications:
+  slack: vanio-team:FY9RdQbjUkSOemSV8u1Atv6d
