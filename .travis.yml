@@ -13,7 +13,7 @@ branches:
     - master
     - stable
 
-before_install:
+install:
   - cd easydao-samples/creating-sampledb
   - docker build -t easydao-sampledb .
   - docker run --privileged -d -p 15432:5432 --name sampledb -e POSTGRES_PASSWORD=sample easydao-sampledb
@@ -23,8 +23,6 @@ before_install:
   - export DB_IP_ADDRESS=0.0.0.0:15432 # $ip
   - mvn install:install-file -Dfile=./ojdbc5-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.1.0.7.0 -Dpackaging=jar
   - mvn install:install-file -Dfile=./orai18n-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=orai18n -Dversion=11.1.0.7.0 -Dpackaging=jar
-
-install: true
 
 script: mvn clean install
 
