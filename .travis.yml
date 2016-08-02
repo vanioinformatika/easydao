@@ -13,7 +13,7 @@ branches:
     - master
     - stable
 
-before_script:
+before_install:
   - cd easydao-samples/creating-sampledb
   - docker build -t easydao-sampledb .
   - docker run --privileged -d -p 15432:5432 --name sampledb -e POSTGRES_PASSWORD=sample easydao-sampledb
