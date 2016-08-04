@@ -1,6 +1,8 @@
 # EasyDao
 
-[![Build Status](https://travis-ci.org/vanioinformatika/easydao.svg?branch=master)](https://travis-ci.org/vanioinformatika/easydao)
+[![TravisCI Build Status](https://travis-ci.org/vanioinformatika/easydao.svg?branch=master)](https://travis-ci.org/vanioinformatika/easydao)
+
+[![Codeship Build Status](https://codeship.com/projects/ae621960-3c67-0134-3f3c-56d3c23905f3/status?branch=master)
 
 <img align="left" src="https://raw.githubusercontent.com/vanioinformatika/easydao/master/easydao-docs/easydao-logo.png" border="1">
 EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects. The latest version is **3.0.2**. You can find it on Bintray.
