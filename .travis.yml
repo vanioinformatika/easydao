@@ -1,7 +1,7 @@
 sudo: required
 
 services:
-  - postgres
+  - postgresql
 
 language: java
 
@@ -15,7 +15,7 @@ branches:
 
 before_script:
   - psql -U postgres -a -f ./easydao-samples/creating-sampledb/initdb.sql
-  - export PGPASSWORD="replace_me"
+  - export PGPASSWORD="sample"
 
 install:
   - mvn install:install-file -Dfile=./ojdbc5-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.1.0.7.0 -Dpackaging=jar
