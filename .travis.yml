@@ -1,7 +1,7 @@
 sudo: required
 
 services:
-  - docker
+  - postgres
 
 language: java
 
@@ -13,22 +13,15 @@ branches:
     - master
     - stable
 
+before_script:
+  - psql -U postgres -a -f ./easydao-samples/creating-sampledb/initdb.sql
+  - export PGPASSWORD="replace_me"
+
 install:
-  - cd easydao-samples/creating-sampledb
-  - docker build -t easydao-sampledb .
-  - docker run -d -p 15432:5432 --name sampledb -e POSTGRES_PASSWORD=sample easydao-sampledb
-  - cd ../..
-  - docker ps -a
-  - # ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sampledb)
-  - export DB_IP_ADDRESS=0.0.0.0:15432 # $ip
   - mvn install:install-file -Dfile=./ojdbc5-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.1.0.7.0 -Dpackaging=jar
   - mvn install:install-file -Dfile=./orai18n-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=orai18n -Dversion=11.1.0.7.0 -Dpackaging=jar
 
 script: mvn clean install
-
-after_script:
-  - cd easydao-samples/creating-sampledb
-  - docker stop sampledb && docker rm sampledb && docker rmi easydao-sampledb
 
 notifications:
   slack: vanio-team:FY9RdQbjUkSOemSV8u1Atv6d
