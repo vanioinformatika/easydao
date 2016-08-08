@@ -26,7 +26,6 @@ package hu.vanio.easydao.sample;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import oracle.jdbc.pool.OracleDataSource;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -37,8 +36,7 @@ import org.springframework.context.annotation.Bean;
 public class OracleDataSourceConfig {
 
     // docker inspect sampledb | grep IPAddress
-    @Value("#{environment.DB_IP_ADDRESS}")
-    String host = "172.17.0.2.";
+    String host = "127.0.0.1";
     String databaseName = "sampledb";
     int portNumber = 0;
     String user = "postgres";

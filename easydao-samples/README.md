@@ -1,39 +1,33 @@
-Sample database running in docker container.
+Sample database an tests are running in docker container.
 
-Run docker commands in creating-sampledb directory.
+Install Oracle JDBC driver before start testing or building:
 
-You can manage docker image start and stop with maven:
+    mvn install:install-file -Dfile=./ojdbc5-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.1.0.7.0 -Dpackaging=jar
 
-    mvn initialize -Pstart
-    mvn initialize -Pstop
-    
-# Build docker image
+    mvn install:install-file -Dfile=./orai18n-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=orai18n -Dversion=11.1.0.7.0 -Dpackaging=jar
 
-    docker build -t easydao-sampledb .
+Starting and initializing sample database:
 
-# Start database and generating dao
-    
-    docker run --name sampledb -e POSTGRES_PASSWORD=sample -d easydao-sampledb
-    ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sampledb) && export DB_IP_ADDRESS=$ip
+    docker-compose up -d --build
 
-Build easydao:
-
-    mvn clean install 
-
-Test easydao:
+Test easydao (docker postgres image):
 
     mvn clean verify
 
+Build easydao:
+
+    mvn clean install
+
 # Connecting to db with psql
-    
-    docker run -it --link sampledb:postgres --rm postgres sh -c 'exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres'
+
+    psql -U postgres -h 127.0.0.1 -p 5432
     Password: sample
 
 # Check database
 
     postgres=# \c sampledb
     You are now connected to database "sampledb" as user "postgres".
-    
+
     sampledb=# \d
                     List of relations
     Schema |          Name           |   Type   |  Owner   
@@ -59,7 +53,7 @@ Test easydao:
         2 | 600 Maryland Ave SW | WASHINGTON DC | 20002                | USA                                      | f          | 2015-11-21 12:26:53.628808
         3 | 736 Sicard St SE    | WASHINGTON DC | 20374                | USA                                      | f          | 2015-11-21 12:26:53.630444
     (3 rows)
-    
+
     sampledb=# select cus_name, adr_street from cus_customer, adr_address where cus_adr_pk = adr_pk;
       cus_name   |     adr_street      
     --------------+---------------------
@@ -67,12 +61,7 @@ Test easydao:
     John Python  | 600 Maryland Ave SW
     Jessie Java  | 736 Sicard St SE
     (3 rows)
-    
-# Docker postgres IP address
 
-    docker inspect sampledb | grep IPAddress
-    
 # Stop and remove container and images
 
-    docker stop sampledb && docker rm sampledb && docker rmi easydao-sampledb
-
+    docker-compose down

@@ -2,7 +2,7 @@
 
 [![TravisCI Build Status](https://travis-ci.org/vanioinformatika/easydao.svg?branch=master)](https://travis-ci.org/vanioinformatika/easydao)
 
-[![Codeship Build Status](https://codeship.com/projects/ae621960-3c67-0134-3f3c-56d3c23905f3/status?branch=master)
+[Running test and build](easydao-samples/README.md)
 
 <img align="left" src="https://raw.githubusercontent.com/vanioinformatika/easydao/master/easydao-docs/easydao-logo.png" border="1">
 EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects. The latest version is **3.0.2**. You can find it on Bintray.
@@ -131,7 +131,7 @@ If you are using Java 8, then set the javadoc plugin with **-Xdoclint:none**:
 </plugin>
 ```
 
-It is not working with Java 7_60 or newer Java 7!
+'-Xdoclint:none' is not working with Java 7_60 or newer Java 7!
 
 ## Results
 
@@ -161,7 +161,7 @@ Configuration example:
     <artifactId>easydao-maven-plugin</artifactId>
     <version>VERSION_NUMBER</version>
     <configuration>
-        
+
         <!-- required -->
         <dbName>sampledb</dbName>
         <dbType>POSTGRESQL9</dbType>
@@ -171,7 +171,7 @@ Configuration example:
         <dbPassword>sample</dbPassword>
         <packageOfJavaModel>hu.vanio.easydao.sample.model</packageOfJavaModel>
         <packageOfJavaDao>hu.vanio.easydao.sample.dao</packageOfJavaDao>
-        
+
         <!-- optionals -->
         <tablePrefix>true</tablePrefix>
         <tableSuffix>false</tableSuffix>
@@ -191,7 +191,7 @@ Configuration example:
         </tableNameIncludes>
         <encoding>utf-8</encoding>
         <silent>true</silent>
-        
+
     </configuration>
     <executions>
         <execution>
@@ -206,11 +206,11 @@ Configuration example:
 Required parameters has * sign.
 
 ## dbName*
-Database name, required. If you are using more than one database in your code, then you need namespaces. 
+Database name, required. If you are using more than one database in your code, then you need namespaces.
 The value of the dbName parameter will act as a namespace, it will be the last element of the package name of the generated classes.
 If you set to e.g: callisto, the package name of the generated model and dao classes will be: **&lt;packageOfJavaModel&gt;.callisto** and **&lt;packageOfJavaDao&gt;.callisto** respectively.
 
-> Generated dao classes are based on Spring Framework! If you are using more than one database, then the generated models will use different DataSources. 
+> Generated dao classes are based on Spring Framework! If you are using more than one database, then the generated models will use different DataSources.
 The **callisto** will be set in the dao classes as data source name with a @Qualifier annotation.
 
 ## dbType*
@@ -252,7 +252,7 @@ If true, a toString method that outputs data in JSON format will be generated fo
 
 ## replacementTableFilename
 Replacement file name for tables, optional, default value is replacement-table. The name of the _properties_ file in src/main/resources *without* the properties extension, e.g: replacement-table
- 
+
 If you want to ignore a table from the Java code generation, put it into the file, e.g:
 ```
 CUS_CUSTOMER =
@@ -266,7 +266,7 @@ CUS_CUSTOMER = User
 
 ## replacementFieldFilename
 Replacement file name for fields, optional, default value is replacement-field. Resource bundle file in src/main/resources without file extension, e.g: replacement-field
- 
+
 If you want to ignore a field from java code generation, then put it into the file as TABLENAME.FIELDNAME, e.g:
 ```
 CUS_CUSTOMER.SECRET_CODE =
@@ -281,7 +281,7 @@ CUS_CUSTOMER.ORDER_MODE = orderType
 
 ## enumFieldFilename
 Map file name for fields with enumerated values. Resource bundle file in src/main/resources without file extension, e.g: enum-field
- 
+
 If you want to use Java enum for a database field, put it into the file as TABLENAME.FIELDNAME = <fully qualified classname of the enum>, e.g:
 
 ```
@@ -293,19 +293,19 @@ Defines database sequence naming convention with **SEQ** string, optional, defau
 
 * **recommended** Generate sequence names by table name's suffix with _SEQ (e.g.: MY_TABLE_NAME -> MY_TABLE_NAME_SEQ)
     SUFFIXED_TABLE_NAME
-    
+
 *  Generate sequence names by table name's prefix with SEQ_ (e.g.: MY_TABLE_NAME -> SEQ_MY_TABLE_NAME):
     PREFIXED_TABLE_NAME
-    
+
 * Generate sequence names by field's prefix with SEQ_ (e.g.: MY_FIELD_NAME -> SEQ_MY_FIELD_NAME)
     PREFIXED_FIELD_NAME
-    
+
 * Generate sequence names by field's names suffix with _SEQ (e.g.: MY_FIELD_NAME -> MY_FIELD_NAME_SEQ)
     SUFFIXED_FIELD_NAME
-    
+
 * Generate sequence names by table name's prefix with SEQ_ and with field name (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> SEQ_MY_TABLE_NAME_MY_FIELD_NAME)
     PREFIXED_TABLE_NAME_WITH_FIELD_NAME
-    
+
 * Generate sequence names by table name's suffix with field name and _SEQ (e.g.: MY_TABLE_NAME.MY_FIELD_NAME -> MY_TABLE_NAME_MY_FIELD_NAME_SEQ)
     SUFFIXED_TABLE_NAME_WITH_FIELD_NAME;
 
@@ -328,12 +328,12 @@ Indicates whether normal output should be suppressed during code generation. If 
 # Fields with enumerated vaules
 As of 1.0.9, you can use Java enums for fields with enumerated values. You have two choices: regular and irregular enumerations.
 If you use fields with enumerated values, values stored in the database need to be mapped to the corresponding enum value and vica versa.
-EasyDao generates the necessary code for you, however if you use irregular enums you have to comply with a few rules. For the details, see 
+EasyDao generates the necessary code for you, however if you use irregular enums you have to comply with a few rules. For the details, see
 the Irregular enumerations section.
 
-## Regular enumerations 
+## Regular enumerations
 An enumeration is regular if all values can be used as a Java identifier (i.e. it starts with a letter, doesn't contain dots and dashes...)
-Regular enumerations will be converted to String via the Java enum's name() method. Strings will be converted to Java enum instances by 
+Regular enumerations will be converted to String via the Java enum's name() method. Strings will be converted to Java enum instances by
 calling the enum's valueOf() method.
 
 ### Example
@@ -347,7 +347,7 @@ Let's assume you have a field MY_TABLE.MY_FIELD that can only contain 'A', 'B' a
    * Specify the location of the enum-field.properties file in the EngineConfiguration (enumFieldFileName property)
    * Start generation
 
-### Example regular enum implementation 
+### Example regular enum implementation
 
 ```java
     public enum MyFieldEnum {
@@ -356,15 +356,15 @@ Let's assume you have a field MY_TABLE.MY_FIELD that can only contain 'A', 'B' a
 ```
 
 ## Iregular enumerations
-An enumeration is irregular if at least one of the values cannot be used as a Java identifier. 
+An enumeration is irregular if at least one of the values cannot be used as a Java identifier.
 Irregular enumerations have to comply with two rules. They have to implement getEnumName() and static getEnumInstance() methods.
-Irregular enumerations will be converted to String via the Java enum's getEnumName() method. Strings will be converted to 
+Irregular enumerations will be converted to String via the Java enum's getEnumName() method. Strings will be converted to
 Java enum instances by calling the enum's getEnumInstance() method.
 
 ### Example
 Let's assume you have a field MY_TABLE.MY_FIELD that can only contain 'NORMAL', '2WAY' and '3WAY'
 2WAY and 3WAY ar not legal Java identifiers, so a regular Java enum cannot be used here.
-All values that cannot be used as a Java identifier, need to be changed, (e.g. 2WAY -> \_2WAY, 3WAY -> \_3WAY) 
+All values that cannot be used as a Java identifier, need to be changed, (e.g. 2WAY -> \_2WAY, 3WAY -> \_3WAY)
 Of course storing the original value is important as it needs to be used when writing the field to the database and reading it back.
 You can see an example implementation below.
 
@@ -440,9 +440,9 @@ DaoExt classes must implements hu.vanio.easydao.core.DaoExt interface. DaoComp c
 
 Service classes contains Spring @Transactional annotation, and they are using Dao, DaoExt and DaoComp classes. Services implements business logic, collaboration between database, queue, filesystem, algorithm, etc. Not autogenerated classes. **Service layer never contains SQL codes!** It is using Dao classes: Dao, DaoExt and DaoComp.
 
-**DaoExt, DaoComp and Service classes are depends on business logic and created by developers.** 
+**DaoExt, DaoComp and Service classes are depends on business logic and created by developers.**
 
-You can see this one on the next image and PDF. 
+You can see this one on the next image and PDF.
 
 Download as PDF:
 [EasyDao logic](../master/easydao-docs/easydao-logic.pdf)
