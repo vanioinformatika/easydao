@@ -11,10 +11,9 @@ EasyDao is a Maven plugin for generating lightweight, fast and flexible model an
 
 For generating dao and model you need using the **easydao-maven-plugin**. You can see how to use it: [sample applications](./easydao-samples/)
 
+[High level description](#easydao-logic)
 
 # What is EasyDao?
-
-[High level description](#easydao-logic)
 
 * no JPA
 * no Hibernate
