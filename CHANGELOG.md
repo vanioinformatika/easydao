@@ -1,5 +1,10 @@
 # EasyDao Changelog:
 
+## 3.0.3
+
+* Fixes #9: fixing "There is no Java type definiton for timestamp(6) with time zone database type" error (ORACLE11).
+* Spring upgrade to 3.2.17 from 3.2.15 in demo (easydao-generating-dao, easydao-using-dao)
+
 ## 3.0.2
 
 * Fixes #7: Return statement of DaoImpl.readIndexed_XXX method generated for a unique index throws IndexOutOfBoundsException
