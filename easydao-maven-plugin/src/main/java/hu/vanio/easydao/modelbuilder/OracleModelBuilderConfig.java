@@ -96,10 +96,7 @@ public abstract class OracleModelBuilderConfig extends ModelBuilderConfig implem
         JAVA_TYPE_MAP.put("(number|numeric)\\([\\d]+,[1-9]+\\)", Double.class.getName());
 
         JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class.getName());
-        JAVA_TYPE_MAP.put("timestamp with tz", java.sql.Timestamp.class.getName());
-        JAVA_TYPE_MAP.put("timestamp with local tz", java.sql.Timestamp.class.getName());
-        JAVA_TYPE_MAP.put("timestamp", java.sql.Timestamp.class.getName());
-        JAVA_TYPE_MAP.put("timestamp\\([0-9]\\)", java.sql.Timestamp.class.getName());
+        JAVA_TYPE_MAP.put("(timestamp)(.)*", java.sql.Timestamp.class.getName());
         JAVA_TYPE_MAP.put("varchar2\\([\\d]*\\)", String.class.getName());
         JAVA_TYPE_MAP.put("varray", java.sql.Array.class.getName());
     }
