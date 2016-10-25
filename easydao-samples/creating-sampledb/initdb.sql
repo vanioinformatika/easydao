@@ -27,7 +27,7 @@ WITH (
 ALTER TABLE CUS_CUSTOMER OWNER TO postgres;
 COMMENT ON TABLE CUS_CUSTOMER IS 'Customer table';
 COMMENT ON COLUMN CUS_CUSTOMER.CUS_PK IS 'Customer unique ID';
-COMMENT ON COLUMN CUS_CUSTOMER.CUS_ADDRESS_PK IS 'Customer address ID'; -- example of the wrong commenting (mistyped field name): see metadata.txt 'FIXME: Warning: There is no comment in database!'
+COMMENT ON COLUMN CUS_CUSTOMER.CUS_ADR_PK IS ''; -- example of the wrong commenting (mistyped field name): see metadata.txt 'FIXME: Warning: There is no comment in database!'
 COMMENT ON COLUMN CUS_CUSTOMER.CUS_NAME IS 'Customer name';
 COMMENT ON COLUMN CUS_CUSTOMER.CUS_EMAIL IS ''; -- missing table comment
 COMMENT ON COLUMN CUS_CUSTOMER.CUS_TYPE IS 'Customer type: RETAIL, WHOLESALE, GOVERNMENT';
