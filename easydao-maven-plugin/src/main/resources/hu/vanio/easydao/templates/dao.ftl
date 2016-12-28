@@ -377,6 +377,11 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
 
     </#if>
 
+    /** ${messages('createInstanceMethodComment')} */
+    protected ${t.javaName} createInstance(<#list t.fieldList as field><#if field.clob>String<#elseif field.blob>byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}<#if field_has_next>, </#if></#list>) {
+        return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>); 
+    }
+
     /** ${messages('rowMapperClassComment')} */
     public class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
         
@@ -429,7 +434,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
                     ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
                 </#if>
             </#list>
-            return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
+            return ${t.javaName}DaoImpl.this.createInstance(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
         }
     }
 
