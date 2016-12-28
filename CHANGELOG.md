@@ -1,5 +1,9 @@
 # EasyDao Changelog:
 
+## 3.0.4
+
+* Model class instantiation can be overridable in classes that extend DaoImpl classes, just override the `createInstance` method
+
 ## 3.0.3
 
 * Fixes #9: fixing "There is no Java type definiton for timestamp(6) with time zone database type" error (ORACLE11).
