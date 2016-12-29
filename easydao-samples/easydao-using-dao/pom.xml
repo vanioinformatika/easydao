@@ -3,7 +3,7 @@
 
     <groupId>hu.vanio.easydao</groupId>
     <artifactId>easydao-using-dao</artifactId>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.0.5</version>
     <packaging>jar</packaging>
 
     <name>easydao-using-dao</name>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>hu.vanio.easydao</groupId>
             <artifactId>easydao-generating-dao</artifactId>
-            <version>3.0.5-SNAPSHOT</version>
+            <version>3.0.5</version>
         </dependency>
         
         <dependency>
