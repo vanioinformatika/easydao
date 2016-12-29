@@ -1,8 +1,12 @@
 # EasyDao Changelog:
 
+## 3.0.5
+
+* Fixes #12 Enum field reference error (importing enum field classes in model classes)
+
 ## 3.0.4
 
-* Model class instantiation can be overridable in classes that extend DaoImpl classes, just override the `createInstance` method
+* Model class instantiation can be overridden in classes that extend DaoImpl classes, just override the `createInstance` method
 
 ## 3.0.3
 
