@@ -127,7 +127,7 @@
             <plugin>
                 <groupId>hu.vanio.maven.plugins</groupId>
                 <artifactId>easydao-maven-plugin</artifactId>
-                <version>3.1.0-SNAPSHOT</version>
+                <version>3.1.0</version>
                 <configuration>
                     <dbName>sampledb</dbName>
                     <dbType>POSTGRESQL9</dbType>
