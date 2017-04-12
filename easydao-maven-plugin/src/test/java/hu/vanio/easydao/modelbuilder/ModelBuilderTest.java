@@ -29,10 +29,8 @@ import hu.vanio.easydao.model.Field;
 import hu.vanio.easydao.model.Table;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -235,7 +233,6 @@ public class ModelBuilderTest {
      */
     public void testGetFieldList() throws Exception {
         System.out.println("getFieldList");
-        String tableName = "";
         ModelBuilder instance = null;
         List<Field> expResult = null;
         Table table = new Table("TE_TEST", "Test table data.", "Test", null);
