@@ -2,7 +2,7 @@
 
 ## 3.1.0
 
-* Handling Oracle virtual (read-only) fields #12
+* Handling Oracle virtual (read-only) fields #13
 * Handling Oracle _interval_ type as Java Integer
 
 ## 3.0.5
