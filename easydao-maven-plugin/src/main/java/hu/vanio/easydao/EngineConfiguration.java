@@ -152,7 +152,7 @@ public class EngineConfiguration {
     /**
      * Engine configuration init.
      * @param databaseName database name: generated Dao DataSource name in @Qualifier annotation
-     * @param databaseType database type: ORACLE11, POSTGRESQL9
+     * @param databaseType database type: ORACLE10, ORACLE11, POSTGRESQL9
      * @param url Database connection URL
      * @param username Database connection user name
      * @param password Database connection password

@@ -325,12 +325,12 @@ public class Generator extends AbstractMojo {
     protected void validateDbType() throws MojoExecutionException {
         // dbType
         if (dbType == null || dbType.trim().length() == 0) {
-            throw new MojoExecutionException("EasyDao engine configuration exception: wrong dbType. Valid values are: ORACLE11, POSTGRESQL9");
+            throw new MojoExecutionException("EasyDao engine configuration exception: wrong dbType. Valid values are: ORACLE10, ORACLE11, POSTGRESQL9");
         } else {
             try {
                 EngineConfiguration.DATABASE_TYPE.valueOf(dbType);
             } catch (IllegalArgumentException ex) {
-                throw new MojoExecutionException("EasyDao engine configuration exception: wrong dbType. Valid values are: ORACLE11, POSTGRESQL9");
+                throw new MojoExecutionException("EasyDao engine configuration exception: wrong dbType. Valid values are: ORACLE10, ORACLE11, POSTGRESQL9");
             }
         }
     }
