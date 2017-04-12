@@ -127,12 +127,10 @@
             <plugin>
                 <groupId>hu.vanio.maven.plugins</groupId>
                 <artifactId>easydao-maven-plugin</artifactId>
-                <version>3.0.6-SNAPSHOT</version>
+                <version>3.1.0-SNAPSHOT</version>
                 <configuration>
                     <dbName>sampledb</dbName>
                     <dbType>POSTGRESQL9</dbType>
-                    <!-- docker inspect sampledb | grep IPAddress -->
-                    <!--dbUrl>jdbc:postgresql://${env.DB_IP_ADDRESS}/sampledb</dbUrl-->
                     <dbUrl>jdbc:postgresql://127.0.0.1:5432/sampledb</dbUrl>
                     <dbUsername>postgres</dbUsername>
                     <dbPassword>sample</dbPassword>

@@ -31,6 +31,8 @@ public class Field {
 
     /** Indicates whether this field is a (or part of a) primary key */
     private boolean primaryKey;
+    /** Indicates whether the value of this field is virtual (Oracle virtual field) */
+    protected boolean virtual;
     /** Indicates whether the value of this field can be null */
     private boolean nullable;
     /** Indicates whether this field is an array */
@@ -54,6 +56,7 @@ public class Field {
      * Constructor
      * 
      * @param primaryKey Indicates whether this field is a (or part of a) primary key
+     * @param virtual Indicates whether the value of this field is virtual
      * @param nullable Indicates whether the value of this field can be null
      * @param array Indicates whether this field is an array
      * @param enumerated Indicates whether the value of this field is enumerated
@@ -64,8 +67,19 @@ public class Field {
      * @param javaName The name of this field in Java code
      * @param javaType The type of this field in Java code
      */
-    public Field(boolean primaryKey, boolean nullable, boolean array, boolean enumerated, boolean irregularEnum, String dbName, String dbType, String comment, String javaName, String javaType) {
+    public Field(boolean primaryKey,
+            boolean virtual,
+            boolean nullable,
+            boolean array,
+            boolean enumerated,
+            boolean irregularEnum,
+            String dbName,
+            String dbType,
+            String comment,
+            String javaName,
+            String javaType) {
         this.primaryKey = primaryKey;
+        this.virtual = virtual;
         this.nullable = nullable;
         this.array = array;
         this.enumerated = enumerated;
@@ -301,6 +315,14 @@ public class Field {
             retVal = true;
         }
         return retVal;
+    }
+
+    public boolean isVirtual() {
+        return virtual;
+    }
+
+    public void setVirtual(boolean virtual) {
+        this.virtual = virtual;
     }
 
 }

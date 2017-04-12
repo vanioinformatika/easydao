@@ -318,6 +318,7 @@ public class ModelBuilder {
             ps.setString(1, tableName);
             try (ResultSet rs = ps.executeQuery();) {
                 while (rs.next()) {
+                    boolean virtual = rs.getBoolean("VIRTUAL");
                     boolean nullable = !rs.getBoolean("NOT_NULL");
                     boolean array = rs.getInt("ARRAY_DIM_SIZE") > 0;
                     String fieldName = rs.getString("COLUMN_NAME");
@@ -352,7 +353,7 @@ public class ModelBuilder {
                         enumerated = true;
                     }
                     
-                    Field field = new Field(primaryKey, nullable, array, enumerated, irregularEnum, fieldName, dbType, comment, javaName, javaType);
+                    Field field = new Field(primaryKey, virtual, nullable, array, enumerated, irregularEnum, fieldName, dbType, comment, javaName, javaType);
                     if (!engineConf.isSilent()) {
                         System.out.println(field.toString());
                     }

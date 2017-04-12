@@ -24,11 +24,11 @@ import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
 <#list t.fieldList as field><#if field.enumerated>import ${field.javaType};${'\n'}</#if></#list>
 /**
  * ${t.javaName}${e.daoSuffix}.
- * <br>${t.comment}
- * <br>${messages('generatedFrom', t.dbName)}
- * <br>${messages('createdOn', e.database.modelCreationDate)}
- * <br>${messages('databaseName', e.database.name)}
- * <br>${messages('generatedBy')} ${project.name} v${project.version}
+ * ${t.comment}
+ * ${messages('generatedFrom', t.dbName)}
+ * ${messages('createdOn', e.database.modelCreationDate)}
+ * ${messages('databaseName', e.database.name)}
+ * ${messages('generatedBy')} ${project.name} v${project.version}
  */
 @Repository
 public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuffix} {
@@ -88,9 +88,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
     <#list t.indexList as index>
     <#if index.unique>
     @Override
-    public ${t.javaName} readIndexed_${index.javaName}(
-            <#list index.fields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list>
-            <#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
+    public ${t.javaName} readIndexed_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list><#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where "<#list index.fields as field>
                 <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
 
@@ -124,9 +122,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
     }
     <#else>
     @Override
-    public List<${t.javaName}> readIndexed_${index.javaName}(
-            <#list index.fields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list>
-            <#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
+    public List<${t.javaName}> readIndexed_${index.javaName}(<#list index.fields as field>${field.javaTypeAsString} ${field.javaName}<#if field_has_next>, </#if></#list><#if t.hasBlobField || t.hasClobField>, boolean readLobFields</#if>) {
         String query = "select " + SELECTED_FIELDS + " from ${t.dbName} where "<#list index.fields as field>
                 <#if field_index == 0>+ "${field.dbName} = ? "<#else>+ (${field.javaName}!=null?"and ${field.dbName} = ? ":"")</#if></#list>;
         
@@ -197,18 +193,20 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
     <#else>
         throw new IllegalStateException("Missing sequence: ${t.sequenceName}");
     </#if>
-    }
-
-    </#if>
-
+    }</#if>
+    
     <#if t.hasPkField>
-
     @Override
     public ${t.javaName} create(${t.javaName} instance, boolean createPk) {
-        String sql = "insert into ${t.dbName} (<#list t.fieldList as field>${field.dbName}<#if field_has_next>,</#if></#list>) values (<#list t.fieldList as field>?<#if field_has_next>,</#if></#list>)";
+<#assign insertFieldNameList><#list t.fieldList as field><#if !field.virtual>${field.dbName},</#if></#list></#assign>
+<#assign insertFieldValueList><#list t.fieldList as field><#if !field.virtual>?,</#if></#list></#assign>
+
+        String sql = "insert into ${t.dbName} (${insertFieldNameList?remove_ending(",")}) values (${insertFieldValueList?remove_ending(",")})";
         if (createPk) createPk(instance);
         Object[] params = new Object[] {
+<#assign instanceGetList>
             <#list t.fieldList as field>
+                <#if !field.virtual>
                 <#if field.array>
                     <#if e.databaseType.name() == 'POSTGRESQL9'>
                         hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}())<#if field_has_next>,</#if>
@@ -226,15 +224,17 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
                         instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
                     </#if>
                 </#if>
+                </#if>
             </#list>
+</#assign>${instanceGetList?remove_ending(",")}
         };
         this.jdbcTemplate.update(sql, params);
 
         <#if t.compositePk>
-            ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
-            return read(pk<#if t.hasBlobField || t.hasClobField>, false</#if>);
+        ${t.javaName}.Pk pk = new ${t.javaName}.Pk(<#list t.pkFields as field>instance.get${field.javaName?cap_first}()<#if field_has_next>, </#if></#list>);
+        return read(pk<#if t.hasBlobField || t.hasClobField>, false</#if>);
         <#else>
-            return read(instance.get${t.pkField.javaName?cap_first}()<#if t.hasBlobField || t.hasClobField>, false</#if>);
+        return read(instance.get${t.pkField.javaName?cap_first}()<#if t.hasBlobField || t.hasClobField>, false</#if>);
         </#if>
     }
     </#if>
@@ -245,12 +245,15 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
     public ${t.javaName} update(${t.javaName} instance<#if t.hasBlobField || t.hasClobField>, boolean updateLobFields</#if>) {
         String sql = "update ${t.dbName} " +
                      "set " +
-                     <#list t.nonPkFields as field>
-                     <#if field.blob||field.clob>(updateLobFields?"${field.dbName} = ? <#if field_has_next>, </#if>":"") +<#else>"    ${field.dbName} = ? <#if field_has_next>, </#if>" +</#if>
-                     </#list>
-                     <#if t.compositePk>"where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";
-                     <#else>"where ${t.pkField.dbName} = ?";
-                     </#if>
+<#assign fieldList>
+<#list t.nonPkFields as field>
+<#if !field.virtual>
+<#if field.blob||field.clob>(updateLobFields?"${field.dbName} = ? <#if field_has_next>, </#if>":"") +<#else>                     "${field.dbName} = ? <#if field_has_next>, </#if>" +</#if>
+</#if>
+</#list>
+</#assign>
+${fieldList?remove_ending(", ")}
+                     <#if t.compositePk>"where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";<#else>"where ${t.pkField.dbName} = ?";</#if>
 
         <#if t.hasClobField||t.hasBlobField>
             List paramsList = new java.util.ArrayList();
@@ -297,6 +300,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
         <#else>
             Object[] params = new Object[] {
             <#list t.nonPkFields as field>
+                <#if !field.virtual>
                 <#if field.array>
                     <#if e.databaseType.name() == 'POSTGRESQL9'>
                         hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()),
@@ -313,6 +317,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
                     <#else>
                         instance.get${field.javaName?cap_first}(),
                     </#if>
+                </#if>
                 </#if>
             </#list>
             <#if t.compositePk>
@@ -374,17 +379,23 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
             throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(sql, 1, updRows);
         }
     }
-
     </#if>
-
-    /** ${messages('createInstanceMethodComment')} */
-    protected ${t.javaName} createInstance(<#list t.fieldList as field><#if field.clob>String<#elseif field.blob>byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}<#if field_has_next>, </#if></#list>) {
-        return new ${t.javaName}(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>); 
+    /** 
+     * ${messages('createInstanceMethodComment')}
+<#list t.fieldList as field><#if field.virtual>     * Virtual (read-only): ${field.javaName}, <@compress single_line=true>${field.comment}</@compress>
+</#if></#list>
+<#list t.fieldList as field><#if !field.virtual>     * @param ${field.javaName} <@compress single_line=true>${field.comment}</@compress>
+</#if></#list>
+     * @return ${t.javaName}
+     */
+<#assign constructorString><#list t.fieldList as field><#if field.clob>String<#elseif field.blob>byte[]<#else>${field.javaTypeAsString}</#if> ${field.javaName}, </#list></#assign>
+<#assign returnString><#list t.fieldList as field>${field.javaName}, </#list></#assign>
+    protected ${t.javaName} createInstance(${constructorString?remove_ending(", ")}) {
+        return new ${t.javaName}(${returnString?remove_ending(", ")}); 
     }
 
     /** ${messages('rowMapperClassComment')} */
     public class ${t.javaName}RowMapper implements RowMapper<${t.javaName}> {
-        
         <#if t.hasBlobField || t.hasClobField>
         /** ${messages('readLobFieldsParamComment')} */
         private final boolean readLobFields;
@@ -401,40 +412,32 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
         @Override
         public ${t.javaName} mapRow(ResultSet rs, int rowNum) throws SQLException {
             String tmp;
-            <#if t.hasBlobField>Blob tmpBlob;${'\n'}</#if><#if t.hasClobField>Clob tmpClob;${'\n'}</#if><#if t.hasArrayField>Array tmpArray;${'\n'}</#if>
-            <#list t.fieldList as field>
-                <#if field.readAsString>
-                    ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
-                <#else>
-                    <#if !field.blob && !field.clob && !field.array && !field.enumerated>
-                        ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
-                    </#if>
-                    <#if field.enumerated>
-                        <#if field.irregularEnum>
-                            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.getEnumInstance(tmp) : null;
-                        <#else>
-                            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.valueOf(tmp) : null;
-                        </#if>
-                    </#if>
-                </#if>
-
-                <#if field.blob>
-                    byte[] ${field.javaName} = null;
-                    if (readLobFields) {
-                        ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
-                    }
-                </#if>
-                <#if field.clob>
-                    String ${field.javaName} = null;
-                    if (readLobFields) {
-                        ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
-                    }
-                </#if>
-                <#if field.array>
-                    ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
-                </#if>
-            </#list>
-            return ${t.javaName}DaoImpl.this.createInstance(<#list t.fieldList as field>${field.javaName}<#if field_has_next>, </#if></#list>);
+        <#if t.hasBlobField>    Blob tmpBlob;${'\n'}</#if><#if t.hasClobField>Clob tmpClob;${'\n'}</#if><#if t.hasArrayField>Array tmpArray;${'\n'}</#if>
+        <#list t.fieldList as field>
+        <#if field.readAsString><#if field.javaTypeAsString == "Boolean">
+            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? Boolean.valueOf(tmp) : null;
+        <#else>
+            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
+        </#if><#else><#if !field.blob && !field.clob && !field.array && !field.enumerated>
+            ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
+        </#if><#if field.enumerated><#if field.irregularEnum>
+            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.getEnumInstance(tmp) : null;
+        <#else>
+            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.valueOf(tmp) : null;
+        </#if></#if></#if><#if field.blob>
+            byte[] ${field.javaName} = null;
+            if (readLobFields) {
+                ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
+            }
+        </#if><#if field.clob>
+            String ${field.javaName} = null;
+            if (readLobFields) {
+                ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
+            }
+        </#if><#if field.array>
+            ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
+        </#if></#list>
+            return ${t.javaName}DaoImpl.this.createInstance(${returnString?remove_ending(", ")});
         }
     }
 

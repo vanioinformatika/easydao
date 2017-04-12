@@ -37,6 +37,7 @@ public class PostgreSql9ModelBuilderConfig extends ModelBuilderConfig implements
             + " where c.relname like '%' and c.relname not like 'sql_%' and c.relname not like 'pg_%' and c.relkind = 'r' order by TABLE_NAME;";
     /* Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENTS */
     final String selectForFieldList = "select a.attname as COLUMN_NAME,"
+            + " 0 as VIRTUAL,"
             + " pg_catalog.format_type(a.atttypid, a.atttypmod) as DATA_TYPE,"
             + " a.attnotnull as NOT_NULL,"
             + " a.attndims as ARRAY_DIM_SIZE,"

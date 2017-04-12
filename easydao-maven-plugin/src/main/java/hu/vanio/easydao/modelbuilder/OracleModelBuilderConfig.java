@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Oracle DB table model builder configuration.
  * @author Szalai Gyula <gyula.szala@vanio.hu>
  */
 
@@ -41,6 +41,7 @@ public abstract class OracleModelBuilderConfig extends ModelBuilderConfig implem
              + " where table_name not like '%$%' and table_type = 'TABLE' ";
     /* Sql query for field list by table name, result: COLUMN_NAME, DATA_TYPE, NOT_NULL, ARRAY_DIM_SIZE, HAS_DEFAULT_VALUE, COMMENTS */
     final String selectForFieldList = "select utc.column_name as COLUMN_NAME,"
+            + " decode(utc.virtual_column, 'YES', 1, 'NO', 0) as VIRTUAL,"
             + " decode(utc.char_used, 'C', utc.char_length, utc.data_length) as DATA_LENGTH,"
             + " case when utc.data_type = 'NUMBER' then lower(concat(concat(concat(concat(concat(utc.data_type, '('), utc.data_precision), ','), utc.data_scale), ')'))"
             + "      when utc.data_type = 'VARCHAR2' then lower(concat(concat(concat(utc.data_type, '('), data_length), ')'))"
@@ -95,6 +96,7 @@ public abstract class OracleModelBuilderConfig extends ModelBuilderConfig implem
         JAVA_TYPE_MAP.put("(number|numeric)\\((19|[2-9]\\d|\\d{3,}),[0]\\)", String.class.getName());
         JAVA_TYPE_MAP.put("(number|numeric)\\([\\d]+,[1-9]+\\)", Double.class.getName());
 
+        JAVA_TYPE_MAP.put("(interval)(.)*", Integer.class.getName());
         JAVA_TYPE_MAP.put("date", java.sql.Timestamp.class.getName());
         JAVA_TYPE_MAP.put("(timestamp)(.)*", java.sql.Timestamp.class.getName());
         JAVA_TYPE_MAP.put("varchar2\\([\\d]*\\)", String.class.getName());
