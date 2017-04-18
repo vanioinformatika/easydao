@@ -9,9 +9,9 @@ EasyDao is a Maven plugin for generating lightweight, fast and flexible model an
 
 **EasyDao has tested on Oracle 10, 11, 12 and PostgreSQL 9.** Maybe it works with other Oracle and PostgreSQL versions.
 
-**For Oracle 12c users:** use Java 8 and ojdbc8 in your pom.xml, otherwise you get an error: *ORA-28040: No matching authentication protocol*, please check Oracle documentation:
+**For Oracle 12c users:** use Java 8 and ojdbc8 in your pom.xml, otherwise you get an error: *ORA-28040: No matching authentication protocol*
 
-*9.2 Support for Login Authentication* http://docs.oracle.com/database/122/JJDBC/JJDBC.pdf
+Please check the Oracle documentation: *9.2 Support for Login Authentication* http://docs.oracle.com/database/122/JJDBC/JJDBC.pdf
 
 For generating dao and model you need using the **easydao-maven-plugin**. You can see how to use it: [sample applications](./easydao-samples/)
 
