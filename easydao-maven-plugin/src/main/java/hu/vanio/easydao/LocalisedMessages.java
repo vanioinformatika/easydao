@@ -52,7 +52,7 @@ public class LocalisedMessages implements TemplateMethodModelEx {
         if (locale != null) {
             this.messages = ResourceBundle.getBundle(bundleResourceName, locale);
         } else {
-            this.messages = ResourceBundle.getBundle(bundleResourceName);
+            this.messages = ResourceBundle.getBundle(bundleResourceName, Locale.ENGLISH);
         }
     }
     
