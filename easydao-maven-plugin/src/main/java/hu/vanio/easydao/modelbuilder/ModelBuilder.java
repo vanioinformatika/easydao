@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import hu.vanio.easydao.EngineConfiguration;
@@ -65,7 +66,27 @@ public class ModelBuilder {
     private final Map<String, List<String>> pkFieldsOfTabels = new HashMap<>();
     
     private List<Pattern> tableNameIncludesPatternList;
+    
+    private Map<String, CustomType> customTypeMap;
 
+    static private class CustomType {
+        private final String javaType;
+        private final String typeConverterClass;
+        public CustomType(String javaType, String typeConverterClass) {
+            this.javaType = javaType;
+            this.typeConverterClass = typeConverterClass;
+        }
+
+        public String getJavaType() {
+            return javaType;
+        }
+        
+        public String getTypeConverterClass() {
+            return typeConverterClass;
+        }
+        
+    }
+    
     /**
      * Model builder constructor.
      * @param con database connection
@@ -89,6 +110,26 @@ public class ModelBuilder {
             for (String patternStr  : engineConf.getTableNameIncludes()) {
                 Pattern pattern = Pattern.compile(patternStr);
                 tableNameIncludesPatternList.add(pattern);
+            }
+        }
+        
+        Map<String, String> replacementTypeMap = engineConf.getReplacementTypeMap();
+        if (replacementTypeMap != null && !replacementTypeMap.isEmpty()) {
+            this.customTypeMap = new HashMap<>();
+            for (Map.Entry<String, String> entry  : engineConf.getReplacementTypeMap().entrySet()) {
+                String key = entry.getKey();
+                String valueStr = entry.getValue();
+                int commaIdx = valueStr.indexOf(',');
+                if (commaIdx != -1) {
+                    String javaType = valueStr.substring(0, commaIdx).trim();
+                    String typeConverterClass = valueStr.substring(commaIdx + 1).trim();
+                    this.customTypeMap.put(key, new CustomType(javaType, typeConverterClass));
+                    if (!engineConf.isSilent()) {
+                        System.out.println("custom type '" + key + "': " + valueStr);
+                    }
+                } else {
+                    throw new IllegalArgumentException("Java type and type converter class name must be specified for type: " + key);
+                }
             }
         }
     }
@@ -339,7 +380,19 @@ public class ModelBuilder {
                     if (javaName == null) {
                         javaName = createJavaName(fieldName, false, engineConf.isFieldPrefix(), engineConf.isFieldSuffix());
                     }
-                    String javaType = config.getJavaType(dbType);
+                    
+                    boolean isCustomType = false;
+                    String javaType;
+                    String typeConverterClass = null;
+                    CustomType customType = getCustomType(dbType);
+                    if (customType != null) {
+                        javaType = customType.getJavaType();
+                        typeConverterClass = customType.getTypeConverterClass();
+                        isCustomType = true;
+                    } else {
+                        javaType = config.getJavaType(dbType);
+                    }
+                    
                     String tableAndFieldName = tableName + "." + fieldName;
                     boolean enumerated = false;
                     boolean irregularEnum = false;
@@ -352,8 +405,10 @@ public class ModelBuilder {
                         }
                         enumerated = true;
                     }
-                    
-                    Field field = new Field(primaryKey, virtual, nullable, array, enumerated, irregularEnum, fieldName, dbType, comment, javaName, javaType);
+                    Field field = new Field(
+                            primaryKey, virtual, nullable, array, enumerated, irregularEnum, isCustomType, typeConverterClass,
+                            fieldName, dbType, comment, javaName, javaType
+                    );
                     if (!engineConf.isSilent()) {
                         System.out.println(field.toString());
                     }
@@ -365,6 +420,23 @@ public class ModelBuilder {
         return fieldList;
     }
 
+    private CustomType getCustomType(String dbType) {
+        CustomType customType = null;
+        for (Map.Entry<String, CustomType> e : customTypeMap.entrySet()) {
+            if (dbType.matches(e.getKey())) {
+                // found type
+                customType = e.getValue();
+                break;
+            }
+        }
+//        return customTypeMap.entrySet().stream()
+//                .filter(e -> dbType.matches(e.getKey()))
+//                .map(Map.Entry::getValue)
+//                .findFirst()
+//                .orElse(null);
+        return customType;
+    }
+    
     /**
      * Create Java name from database's name
      * @param dbName database's name

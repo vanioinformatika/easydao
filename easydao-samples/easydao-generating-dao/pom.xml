@@ -131,7 +131,7 @@
                 <configuration>
                     <dbName>sampledb</dbName>
                     <dbType>POSTGRESQL9</dbType>
-                    <dbUrl>jdbc:postgresql://127.0.0.1:5432/sampledb</dbUrl>
+                    <dbUrl>jdbc:postgresql://127.0.0.1:15432/sampledb</dbUrl>
                     <dbUsername>postgres</dbUsername>
                     <dbPassword>sample</dbPassword>
 
@@ -140,7 +140,8 @@
 
                     <tablePrefix>true</tablePrefix>
                     <fieldPrefix>true</fieldPrefix>
-
+                    <replacementTypeMapFilename>replacement-type</replacementTypeMapFilename>
+                    <silent>false</silent>
                 </configuration>
                 <executions>
                     <execution>

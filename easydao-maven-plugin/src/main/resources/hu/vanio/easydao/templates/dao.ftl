@@ -21,7 +21,8 @@ import org.springframework.stereotype.Repository;
 
 import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
 
-<#list t.fieldList as field><#if field.enumerated>import ${field.javaType};${'\n'}</#if></#list>
+<#list t.fieldList as field><#if field.enumerated || field.customType>import ${field.javaType};${'\n'}</#if></#list>
+
 /**
  * ${t.javaName}${e.daoSuffix}.
  * ${t.comment}
@@ -221,7 +222,11 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
                             instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null<#if field_has_next>,</#if>
                         </#if>
                     <#else>
-                        instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                        <#if field.customType>
+                            ${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}())<#if field_has_next>,</#if>
+                        <#else>
+                            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                        </#if>
                     </#if>
                 </#if>
                 </#if>
@@ -276,7 +281,11 @@ ${fieldList?remove_ending(", ")}
                                 paramsList.add(instance.get${field.javaName?cap_first}().name());
                             </#if>
                         <#else>
-                            paramsList.add(instance.get${field.javaName?cap_first}());
+                            <#if field.customType>
+                                paramsList.add(${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}()));
+                            <#else>
+                                paramsList.add(instance.get${field.javaName?cap_first}());
+                            </#if>
                         </#if>
                     </#if>
                 </#if>
@@ -314,8 +323,12 @@ ${fieldList?remove_ending(", ")}
                         <#else>
                             instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null,
                         </#if>
-                    <#else>
-                        instance.get${field.javaName?cap_first}(),
+                    <#else>    
+                        <#if field.customType>
+                            ${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}()),
+                        <#else>
+                            instance.get${field.javaName?cap_first}(),
+                        </#if>
                     </#if>
                 </#if>
                 </#if>
@@ -329,7 +342,12 @@ ${fieldList?remove_ending(", ")}
                             instance.get${field.javaName?cap_first}().name()<#if field_has_next>,</#if>
                         </#if>
                     <#else>
-                        instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                        <#if field.customType>
+                            ${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}())<#if field_has_next>,</#if>
+                        <#else>
+                            instance.get${field.javaName?cap_first}()<#if field_has_next>,</#if>
+                        </#if>
+                        
                     </#if>
                 </#list>
             <#else>
@@ -414,29 +432,43 @@ ${fieldList?remove_ending(", ")}
             String tmp;
         <#if t.hasBlobField>    Blob tmpBlob;${'\n'}</#if><#if t.hasClobField>Clob tmpClob;${'\n'}</#if><#if t.hasArrayField>Array tmpArray;${'\n'}</#if>
         <#list t.fieldList as field>
-        <#if field.readAsString><#if field.javaTypeAsString == "Boolean">
-            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? Boolean.valueOf(tmp) : null;
-        <#else>
-            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
-        </#if><#else><#if !field.blob && !field.clob && !field.array && !field.enumerated>
-            ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
-        </#if><#if field.enumerated><#if field.irregularEnum>
-            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.getEnumInstance(tmp) : null;
-        <#else>
-            ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.valueOf(tmp) : null;
-        </#if></#if></#if><#if field.blob>
-            byte[] ${field.javaName} = null;
-            if (readLobFields) {
-                ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
-            }
-        </#if><#if field.clob>
-            String ${field.javaName} = null;
-            if (readLobFields) {
-                ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
-            }
-        </#if><#if field.array>
-            ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
-        </#if></#list>
+            <#if field.readAsString>
+                <#if field.javaTypeAsString == "Boolean">
+                    ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? Boolean.valueOf(tmp) : null;
+                <#else>
+                    ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
+                </#if>
+            <#else>
+                <#if !field.blob && !field.clob && !field.array && !field.enumerated && !field.customType>
+                    ${field.javaTypeAsString} ${field.javaName} = rs.get${field.javaTypeAsString}("${field.dbName}");
+                </#if>
+                <#if field.enumerated>
+                    <#if field.irregularEnum>
+                        ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.getEnumInstance(tmp) : null;
+                    <#else>
+                        ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.valueOf(tmp) : null;
+                    </#if>
+                </#if>
+                <#if field.customType>
+                    ${field.javaTypeAsString} ${field.javaName} = ${field.typeConverterClass}.extractValue(rs, "${field.dbName}");
+                </#if>
+            </#if>
+            <#if field.blob>
+                byte[] ${field.javaName} = null;
+                if (readLobFields) {
+                    ${field.javaName} = (tmpBlob = rs.getBlob("${field.dbName}")) != null ? tmpBlob.getBytes(1, (int)tmpBlob.length()) : null;
+                }
+            </#if>
+            <#if field.clob>
+                String ${field.javaName} = null;
+                if (readLobFields) {
+                    ${field.javaName} = (tmpClob = rs.getClob("${field.dbName}")) != null ? tmpClob.getSubString(1, (int)tmpClob.length()) : null;
+                }
+            </#if>
+            <#if field.array>
+                ${field.javaTypeAsString} ${field.javaName} = (tmpArray = rs.getArray("${field.dbName}")) != null ? (${field.javaTypeAsString})tmpArray.getArray() : null;
+            </#if>
+        </#list>
             return ${t.javaName}DaoImpl.this.createInstance(${returnString?remove_ending(", ")});
         }
     }

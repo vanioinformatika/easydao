@@ -216,6 +216,15 @@ public class Generator extends AbstractMojo {
     protected String enumFieldFilename;
     
     /**
+     * Filename for replacement type map.
+     * Resource bundle file in src/main/resources without file extension, e.g: replacement-type
+     * <br>If you want to use a specific Java type and type converter for a certain database field type, use the following:
+     * <br>date.* = com.mycompany.myapp.MyType, com.mycompany.myapp.easydao.MyTypeConverter
+     */
+    @Parameter(required = false)
+    protected String replacementTypeMapFilename;
+    
+    /**
      * License file name. It will be inserted to source.
      * @throws MojoExecutionException
      */
@@ -265,6 +274,10 @@ public class Generator extends AbstractMojo {
             enumFieldFilename = project.getBasedir().toString() + "/src/main/resources/" + enumFieldFilename + ".properties";
             getLog().debug("Resource file for enum fields = " + enumFieldFilename);
         }
+        if (this.replacementTypeMapFilename != null) {
+            replacementTypeMapFilename = project.getBasedir().toString() + "/src/main/resources/" + replacementTypeMapFilename + ".properties";
+            getLog().debug("Resource file for replacement types = " + replacementTypeMapFilename);
+        }
 
         // setting configuration
         try {
@@ -285,6 +298,7 @@ public class Generator extends AbstractMojo {
                     replacementTableFilename,
                     replacementFieldFilename,
                     enumFieldFilename,
+                    replacementTypeMapFilename,
                     licenseFilename,
                     tableNameIncludes,
                     encoding,

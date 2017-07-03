@@ -82,6 +82,7 @@ public class EngineConfigurationTest {
         assertEquals("replacement-table", conf.getReplacementTableFilename());
         assertEquals("replacement-field", conf.getReplacementFieldFilename());
         assertEquals("enum-field", conf.getEnumFieldFilename());
+        assertEquals("replacement-type", conf.getReplacementTypeMapFilename());
         assertEquals(EngineConfiguration.SEQUENCE_NAME_CONVENTION.SUFFIXED_TABLE_NAME, conf.getSequenceNameConvention());
         assertEquals(Locale.getDefault(), conf.getLocale());
         assertEquals(Arrays.asList("IR_.+", "KR_.+"), conf.getTableNameIncludes());

@@ -51,6 +51,11 @@ public class Field {
     private String javaName;
     /** The type of this field in Java code */
     private String javaType;
+    
+    /** Indicates whether this field has a custom type */
+    private boolean customType;
+    /** The type converter for this field (optional) */
+    private String typeConverterClass;
 
     /**
      * Constructor
@@ -73,6 +78,8 @@ public class Field {
             boolean array,
             boolean enumerated,
             boolean irregularEnum,
+            boolean customType,
+            String typeConverterClass,
             String dbName,
             String dbType,
             String comment,
@@ -84,6 +91,8 @@ public class Field {
         this.array = array;
         this.enumerated = enumerated;
         this.irregularEnum = irregularEnum;
+        this.customType = customType;
+        this.typeConverterClass = typeConverterClass;
         this.dbName = dbName;
         this.dbType = dbType;
         this.comment = comment;
@@ -93,9 +102,21 @@ public class Field {
 
     @Override
     public String toString() {
-        return "Field{" + "dbName: \"" + dbName + "\", javaName: \"" + javaName + "\", dbType: \"" + dbType + "\", javaType: \"" + getJavaType()
-                + "\", primaryKey: " + primaryKey + ", nullable: " + nullable + ", array: " + array + ", enumerated: " + enumerated
-                + ", comment: \"" + comment + "\"}";
+        return "Field{" + 
+                "dbName: " + dbName + 
+                ", javaName: " + javaName + 
+                ", dbType: " + dbType + 
+                ", javaType: " + getJavaType() +
+                ", primaryKey: " + primaryKey + 
+                ", nullable: " + nullable + 
+                ", array: " + array + 
+                ", enumerated: " + enumerated +
+                ", irregularEnum: " + irregularEnum +
+                ", virtual: " + virtual +
+                ", customType: " + customType +
+                ", typeConverterClass: " + typeConverterClass +
+                ", comment: " + comment +
+                "\"}";
     }
     
     /**
@@ -292,6 +313,38 @@ public class Field {
     }
 
     /**
+     * Indicates whether this field has a custom type
+     * @return the customType
+     */
+    public boolean isCustomType() {
+        return customType;
+    }
+
+    /**
+     * Indicates whether this field has a custom type
+     * @param customType the customType to set
+     */
+    public void setCustomType(boolean customType) {
+        this.customType = customType;
+    }
+
+    /**
+     * The type converter for this field (optional)
+     * @return the typeConverterClass
+     */
+    public String getTypeConverterClass() {
+        return typeConverterClass;
+    }
+
+    /**
+     * The type converter for this field (optional)
+     * @param typeConverterClass the typeConverterClass to set
+     */
+    public void setTypeConverterClass(String typeConverterClass) {
+        this.typeConverterClass = typeConverterClass;
+    }
+
+    /**
      * indicates whether the value of this field sould be read from the resultset as a String
      * @return true if this field should be read from the resultset as a String
      */
@@ -311,7 +364,8 @@ public class Field {
                 && javaClass != java.sql.Clob.class
                 && javaClass != java.sql.Blob.class
                 && !javaClass.isArray()
-                && !this.enumerated) {
+                && !this.enumerated
+                && !this.customType) {
             retVal = true;
         }
         return retVal;

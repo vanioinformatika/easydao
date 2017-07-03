@@ -1,5 +1,10 @@
 # EasyDao Changelog:
 
+## 3.2.0
+
+* Overriding of the default type map is now possible through a replacement-type.properties #16
+* Small localization fixes
+
 ## 3.1.0
 
 * Handling Oracle virtual (read-only) fields #13

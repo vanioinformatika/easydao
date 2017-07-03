@@ -128,11 +128,17 @@ public class EngineConfiguration {
      *  You can disable Java source generation for a certain field by putting the field name in the list with no Java field name.
      *  e.g.: USER.FNAME = */
     private final String replacementFieldFilename;
-    
+        
     /** Map of Java enum names and database field names. Names included in this list will be generated with the specified enum type.
      * The key is the table name and field name, the value is the fully qualified name of the enum.
      *  e.g.: USER.STATE = hu.vanio.myapp.model.UserState */
     private final String enumFieldFilename;
+    
+    /** Filename for the replacement map of database types and Java types. Types not included in this map will be generated 
+     * according to the default type map.
+     * e.g.: date = java.util.Date -> java.util.Date instead of java.sql.Timestamp
+     */
+    private final String replacementTypeMapFilename;
     
     /** License file name (its content will be inserted into all generated Java source files) */
     private final String licenseFilename;
@@ -148,6 +154,12 @@ public class EngineConfiguration {
     /** Type map for enum fields. The key is the table name and field name, the value is the fully qualified name of the enum.
      *  e.g.: USER.STATE = hu.vanio.myapp.model.UserState */
     private Map<String, String> enumFieldMap = new HashMap<>();
+    
+    /** Replacement map of database types and Java types. Types not included in this map will be generated according 
+     * to the default type map.
+     * e.g.: date = java.util.Date -> java.util.Date instead of java.sql.Timestamp
+     */
+    private Map<String, String> replacementTypeMap = new HashMap<>();
     
     /**
      * Engine configuration init.
@@ -177,6 +189,9 @@ public class EngineConfiguration {
      * @param enumFieldFilename Map of Java enum names and database field names. Names included in this list will be generated with the specified enum type.
      *                          The key is the table name and field name, the value is the fully qualified name of the enum.
      *                          e.g.: USER.STATE = hu.vanio.myapp.model.UserState
+     * @param replacementTypeMapFilename Filename for the replacement map of database types and Java types. Types not included in 
+     *                                    this list will be generated according to the default type map.
+     *                                    e.g.: date = java.util.Date -> java.util.Date instead of java.sql.Timestamp
      * @param licenseFilename License file name (its content will be inserted into all generated Java source files)
      * @param tableNameIncludes
      * @param encoding Encoding of the generated source files
@@ -190,7 +205,7 @@ public class EngineConfiguration {
             String packageOfJavaDao, String daoSuffix,
             boolean generateModelToString,
             SEQUENCE_NAME_CONVENTION sequenceNameConvention,
-            String replacementTableFilename, String replacementFieldFilename, String enumFieldFilename,
+            String replacementTableFilename, String replacementFieldFilename, String enumFieldFilename, String replacementTypeMapFilename,
             String licenseFilename,
             List<String> tableNameIncludes,
             String encoding,
@@ -214,6 +229,7 @@ public class EngineConfiguration {
         this.replacementTableFilename = replacementTableFilename;
         this.replacementFieldFilename = replacementFieldFilename;
         this.enumFieldFilename = enumFieldFilename;
+        this.replacementTypeMapFilename = replacementTypeMapFilename;
         this.licenseFilename = licenseFilename;
         this.tableNameIncludes = tableNameIncludes;
         this.encoding = encoding;
@@ -230,6 +246,9 @@ public class EngineConfiguration {
         this.replacementFieldMap.put("", "ERROR_EMPTY_FIELD_NAME"); // error name in model if empty field name
         if (this.enumFieldFilename != null) {
             loadResourceBundleToMap(this.enumFieldFilename, this.enumFieldMap);
+        }
+        if (this.replacementTypeMapFilename != null) {
+            loadResourceBundleToMap(this.replacementTypeMapFilename, this.replacementTypeMap);
         }
         
         if (this.licenseFilename != null) {
@@ -278,6 +297,7 @@ public class EngineConfiguration {
                 props.getProperty("replacementTableFilename"),
                 props.getProperty("replacementFieldFilename"),
                 props.getProperty("enumFieldFilename"),
+                props.getProperty("replacementTypeMapFilename"),
                 props.getProperty("licenseFilename"),
                 getPropertyAsList(props, "tableNameIncludes"),
                 props.getProperty("encoding"),
@@ -535,6 +555,16 @@ public class EngineConfiguration {
     }
 
     /**
+     * Filename for the replacement map of database types and Java types. Types not included in this map will be generated
+     * according to the default type map.
+     * e.g.: date = java.util.Date -> java.util.Date instead of java.sql.Timestamp
+     * @return the replacementTypeMapFilename
+     */
+    public String getReplacementTypeMapFilename() {
+        return replacementTypeMapFilename;
+    }
+
+    /**
      * License file name (its content will be inserted into all generated Java source files)
      * @return the licenseFilename
      */
@@ -601,6 +631,26 @@ public class EngineConfiguration {
     }
 
     /**
+     * Replacement map of database types and Java types. Types not included in this map will be generated according
+     * to the default type map.
+     * e.g.: date = java.util.Date -> java.util.Date instead of java.sql.Timestamp
+     * @return the typeMap
+     */
+    public Map<String, String> getReplacementTypeMap() {
+        return replacementTypeMap;
+    }
+
+    /**
+     * Replacement map of database types and Java types. Types not included in this map will be generated according
+     * to the default type map.
+     * e.g.: date = java.util.Date -> java.util.Date instead of java.sql.Timestamp
+     * @param typeMap the typeMap to set
+     */
+    public void setTypeMap(Map<String, String> replacementTypeMap) {
+        this.replacementTypeMap = replacementTypeMap;
+    }
+
+    /**
      * The locale for generating comments
      * @return the locale
      */
@@ -644,10 +694,14 @@ public class EngineConfiguration {
                 + ", generateModelToString=" + generateModelToString 
                 + ", replacementTableFilename=" + replacementTableFilename 
                 + ", replacementFieldFilename=" + replacementFieldFilename 
+                + ", enumFieldFilename=" + enumFieldFilename 
+                + ", replacementTypeMapFilename=" + replacementTypeMapFilename 
                 + ", licenseFilename=" + licenseFilename 
                 + ", licenseText=" + licenseText 
                 + ", replacementTableMap=" + replacementTableMap 
                 + ", replacementFieldMap=" + replacementFieldMap 
+                + ", enumFieldMap=" + enumFieldMap 
+                + ", replacementTypeMap=" + replacementTypeMap 
                 + ", locale=" + locale 
                 + ", tableNameIncludes=" + tableNameIncludes
                 + ", encoding=" + encoding

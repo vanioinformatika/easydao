@@ -190,6 +190,7 @@ Configuration example:
         <replacementTableFilename>replacement-table</replacementTableFilename>
         <replacementFieldFilename>replacement-field</replacementFieldFilename>
         <enumFieldFilename>enum-field</enumFieldFilename>
+        <replacementTypeFilename>replacement-type</replacementTypeFilename>
         <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
         <generateModelToString>false</generateModelToString>
         <licenseFilename>${baesdir}/src/myLicense.txt</licenseFilename>
@@ -294,6 +295,16 @@ If you want to use Java enum for a database field, put it into the file as TABLE
 
 ```
 CUS_CUSTOMER_ORDER.ORDER_MODE = hu.vanio.myapp.model.OrderMode
+```
+
+## replacementTypeFilename
+
+Map file name for databse types that should not be mapped by the default type map. Resource bundle file in src/main/resources without file extension, e.g: replacement-type
+
+If you want to use a custom type instead of the built in one for one or a set of database types, put it into the file as <type name regex pattern> = <fully qualified classname of the type>, <fully qualified classname of the type converter>, e.g:
+
+```
+date.* = hu.vanio.myapp.model.MyCustomDateType, hu.vanio.myapp.converter.MyCustomDateTypeConverter
 ```
 
 ## sequenceNameConvention
@@ -412,6 +423,85 @@ public enum MyFieldIrregularEnum {
             }
         }
         throw new IllegalArgumentException("No enum constant " + MyFieldIrregularEnum.class.getName() + "." + value);
+    }
+
+}
+```
+
+# Using custom types
+
+EasyDAO maps database types to the most sensible Java types, but sometimes it's not appropriate. In these cases you can
+override the default type mapping via a properties file. Overriding it consists of the following:
+
+  * implementation of the custom type class, see the example below.
+  * implementation of a type converter class that converts the custom type to a type that is recognized by the database driver and/or spring JDBC, see the example below
+  * registering the custom type in the replacement-type.properties and specifying the file name in the maven plugin configuration
+
+
+Let's assume we have an Oracle database and the default DATE -> java.sql.Timestamp mapping is not appropriate for some reason.
+In this case we need to implement the MyCustomDateType class and the corresponding MyCustomDateTypeConverter as seen below.
+In addition you have to register the new custom type in the replacement type map file (replacement-type.properties):
+```
+date.* = hu.vanio.myapp.model.MyCustomDateType, hu.vanio.myapp.converter.MyCustomDateTypeConverter
+```
+> Note the `date.*` expression on the left hand side. It means that *any* field with a type that starts with the string `date` will be mapped to the given custom type.
+
+### Example custom type class
+
+
+```java
+package hu.vanio.myapp.model;
+
+public class MyCustomDateType {
+
+    // properties...
+
+    // methods...
+
+    /** Constructor */
+    public MyCustomDateType(String) {
+        // ...
+    }
+
+    public java.sql.Date toSqlDate() {
+        java.sql.Date dateValue = ....
+        return dateValue;
+    }
+
+}
+```
+
+### Example type converter implementation
+
+Type converters are convention based so it's not necessary to extend any base class or implement any interface.
+The only requirement is to implement two public static methods: extractValue and convertValue.
+
+> WARNING: This class must be thread safe, so don't use any instance fields!
+
+```java
+package hu.vanio.myapp.converter;
+
+import hu.vanio.myapp.model.MyCustomDateType;
+
+/** Converter class. */
+public class MyCustomDateTypeConverter {
+
+    /**
+     * Extracts the value of the field with the specified name as a custom type from the specified resultset.
+     * is of type DATE you have to return either java.util.Date, java.sql.Date or java.sql.Timestamp.
+     */
+    static public MyCustomDateType extractValue(ResultSet rs, String fieldName) throws SQLException {
+        String strValue = rs.getString(fieldName);
+        return new MyCustomDateType(strValue);
+    }
+
+    /**
+     * Maps the custom Java type to a Java type that can be written to the database field. i.e. if the database field
+     * is of type DATE you have to return either java.util.Date, java.sql.Date or java.sql.Timestamp.
+     */
+    static public Date convertValue(MyCustomDateType value) {
+        // Additional processing may come here
+        return value.toSqlDate();
     }
 
 }

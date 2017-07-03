@@ -279,8 +279,8 @@ public class ModelBuilderTest {
         EngineConfiguration engineConf = EngineConfiguration.createFromProperties("test-config-oracle11.properties");
         ModelBuilder instance = new ModelBuilder(null, engineConf, new Oracle11ModelBuilderConfig(), new LocalisedMessages("messages", null));
         
-        Field pkField = new Field(true, false, false, false, false, false, "CUS_ID", "NUMBER(10)", "ID field", "id", "java.lang.Long");
-        Field nameField = new Field(false, false, false, false, false, false, "CUS_NAME", "VARCHAR2", "Name field", "name", "java.lang.String");
+        Field pkField = new Field(true, false, false, false, false, false, false, null, "CUS_ID", "NUMBER(10)", "ID field", "id", "java.lang.Long");
+        Field nameField = new Field(false, false, false, false, false, false, false, null, "CUS_NAME", "VARCHAR2", "Name field", "name", "java.lang.String");
         Table table = new Table("TST_CUSTOMER", "Test comment", "Customer", Arrays.asList(pkField, nameField));
 
         engineConf.setSequenceNameConvention(EngineConfiguration.SEQUENCE_NAME_CONVENTION.PREFIXED_TABLE_NAME);

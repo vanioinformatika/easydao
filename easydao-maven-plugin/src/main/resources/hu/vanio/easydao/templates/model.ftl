@@ -4,7 +4,7 @@ package ${e.packageOfJavaModel}.${e.database.name};
 
 import java.sql.Timestamp;
 import java.math.BigDecimal;
-<#list t.fieldList as field><#if field.enumerated>import ${field.javaType};${'\n'}</#if></#list>
+<#list t.fieldList as field><#if field.enumerated || field.customType>import ${field.javaType};${'\n'}</#if></#list>
 /**
  * ${t.javaName}.
  * ${t.comment}
