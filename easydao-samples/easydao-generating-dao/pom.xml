@@ -3,7 +3,7 @@
 
     <groupId>hu.vanio.easydao</groupId>
     <artifactId>easydao-generating-dao</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>easydao-generating-dao</name>
@@ -127,7 +127,7 @@
             <plugin>
                 <groupId>hu.vanio.maven.plugins</groupId>
                 <artifactId>easydao-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.1-SNAPSHOT</version>
                 <configuration>
                     <dbName>sampledb</dbName>
                     <dbType>POSTGRESQL9</dbType>
