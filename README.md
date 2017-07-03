@@ -488,7 +488,6 @@ public class MyCustomDateTypeConverter {
 
     /**
      * Extracts the value of the field with the specified name as a custom type from the specified resultset.
-     * is of type DATE you have to return either java.util.Date, java.sql.Date or java.sql.Timestamp.
      */
     static public MyCustomDateType extractValue(ResultSet rs, String fieldName) throws SQLException {
         String strValue = rs.getString(fieldName);
