@@ -23,6 +23,8 @@
  */
 package hu.vanio.easydao;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.junit.After;
@@ -94,8 +96,8 @@ public class EngineTest {
         assertEquals(EngineConfiguration.MISSING_LICENSE_TEXT, instance.getEngineConfiguration().getLicenseText());
 
         java.net.URL url = Thread.currentThread().getContextClassLoader().getResource("license.txt");
-        
-        props.put("licenseFilename", url.getFile());
+        Path path = Paths.get(url.toURI());
+        props.put("licenseFilename", path.toString());
         engineConf = EngineConfiguration.createFromProperties(props);
         instance = new Engine(engineConf);
         
