@@ -202,7 +202,7 @@ Configuration example:
         <replacementTypeFilename>replacement-type</replacementTypeFilename>
         <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
         <generateModelToString>false</generateModelToString>
-        <licenseFilename>${baesdir}/src/myLicense.txt</licenseFilename>
+        <licenseFilename>${basedir}/src/myLicense.txt</licenseFilename>
         <language>hu</language>
         <tableNameIncludes>
             <tableNameInclude></tableNameInclude>
@@ -308,7 +308,7 @@ CUS_CUSTOMER_ORDER.ORDER_MODE = hu.vanio.myapp.model.OrderMode
 
 ## replacementTypeFilename
 
-Map file name for databse types that should not be mapped by the default type map. Resource bundle file in src/main/resources without file extension, e.g: replacement-type
+Map file name for database types that should not be mapped by the default type map. Resource bundle file in src/main/resources without file extension, e.g: replacement-type
 
 If you want to use a custom type instead of the built in one for one or a set of database types, put it into the file as <type name regex pattern> = <fully qualified classname of the type>, <fully qualified classname of the type converter>, e.g:
 
