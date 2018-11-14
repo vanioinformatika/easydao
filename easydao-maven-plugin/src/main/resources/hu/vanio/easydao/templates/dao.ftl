@@ -264,27 +264,29 @@ ${fieldList?remove_ending(", ")}
             List paramsList = new java.util.ArrayList();
 
             <#list t.nonPkFields as field>
-                <#if field.array>
-                    <#if e.databaseType.name() == 'POSTGRESQL9'>
-                        paramsList.add(hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()));
-                    <#else>
-                        FIXME: array handling is not yet implemented for Oracle
-                    </#if>
-                <#else>
-                    <#if field.blob||field.clob>
-                        if (updateLobFields) { paramsList.add(instance.get${field.javaName?cap_first}()); }
-                    <#else>
-                        <#if field.enumerated>
-                            <#if field.irregularEnum>
-                                paramsList.add(instance.get${field.javaName?cap_first}().getEnumName());
-                            <#else>
-                                paramsList.add(instance.get${field.javaName?cap_first}().name());
-                            </#if>
+                <#if !field.virtual>
+                    <#if field.array>
+                        <#if e.databaseType.name() == 'POSTGRESQL9'>
+                            paramsList.add(hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()));
                         <#else>
-                            <#if field.customType>
-                                paramsList.add(${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}()));
+                            FIXME: array handling is not yet implemented for Oracle
+                        </#if>
+                    <#else>
+                        <#if field.blob||field.clob>
+                            if (updateLobFields) { paramsList.add(instance.get${field.javaName?cap_first}()); }
+                        <#else>
+                            <#if field.enumerated>
+                                <#if field.irregularEnum>
+                                    paramsList.add(instance.get${field.javaName?cap_first}().getEnumName());
+                                <#else>
+                                    paramsList.add(instance.get${field.javaName?cap_first}().name());
+                                </#if>
                             <#else>
-                                paramsList.add(instance.get${field.javaName?cap_first}());
+                                <#if field.customType>
+                                    paramsList.add(${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}()));
+                                <#else>
+                                    paramsList.add(instance.get${field.javaName?cap_first}());
+                                </#if>
                             </#if>
                         </#if>
                     </#if>
@@ -310,27 +312,27 @@ ${fieldList?remove_ending(", ")}
             Object[] params = new Object[] {
             <#list t.nonPkFields as field>
                 <#if !field.virtual>
-                <#if field.array>
-                    <#if e.databaseType.name() == 'POSTGRESQL9'>
-                        hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()),
+                    <#if field.array>
+                        <#if e.databaseType.name() == 'POSTGRESQL9'>
+                            hu.vanio.easydao.core.postgresql.PostgreSqlArrayFactory.getForType(instance.get${field.javaName?cap_first}()),
+                        <#else>
+                            FIXME: array handling is not yet implemented for Oracle
+                        </#if>
                     <#else>
-                        FIXME: array handling is not yet implemented for Oracle
-                    </#if>
-                <#else>
-                    <#if field.enumerated>
-                        <#if field.irregularEnum>
-                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().getEnumName() : null,
+                        <#if field.enumerated>
+                            <#if field.irregularEnum>
+                                instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().getEnumName() : null,
+                            <#else>
+                                instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null,
+                            </#if>
                         <#else>
-                            instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null,
-                        </#if>
-                    <#else>    
-                        <#if field.customType>
-                            ${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}()),
-                        <#else>
-                            instance.get${field.javaName?cap_first}(),
+                            <#if field.customType>
+                                ${field.typeConverterClass}.convertValue(instance.get${field.javaName?cap_first}()),
+                            <#else>
+                                instance.get${field.javaName?cap_first}(),
+                            </#if>
                         </#if>
                     </#if>
-                </#if>
                 </#if>
             </#list>
             <#if t.compositePk>

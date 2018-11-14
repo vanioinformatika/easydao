@@ -1,5 +1,9 @@
 # EasyDao Changelog:
 
+## 3.2.1
+
+* Fixes Dao.update method generation with Oracle virtual columns
+
 ## 3.2.0
 
 * Overriding of the default type map is now possible through a replacement-type.properties #16
