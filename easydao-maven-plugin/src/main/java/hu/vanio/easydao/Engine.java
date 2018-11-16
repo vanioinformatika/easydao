@@ -154,11 +154,11 @@ public class Engine {
     private void generateModelClasses() throws IOException, TemplateException {
         List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
+        String dirPath = engineConfiguration.getGeneratedSourcePath()
                 + fileSeparator
                 + engineConfiguration.getPackageOfJavaModel().replace(".", fileSeparator)
-                + fileSeparator
-                + engineConfiguration.getDatabase().getName());
+                + ( engineConfiguration.isAddDbNameToPackageNames() ? fileSeparator + engineConfiguration.getDatabase().getName() : "" );
+        Path dir = Paths.get(dirPath);
         Files.createDirectories(dir);
         if (!engineConfiguration.isSilent()) {
             System.out.println("\nWrite model classes into " + dir.toAbsolutePath());
@@ -185,11 +185,11 @@ public class Engine {
     private void generateDaoInterfaces() throws IOException, TemplateException {
         List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
+        String dirPath = engineConfiguration.getGeneratedSourcePath()
                 + fileSeparator
                 + engineConfiguration.getPackageOfJavaDao().replace(".", fileSeparator)
-                + fileSeparator
-                + engineConfiguration.getDatabase().getName());
+                + ( engineConfiguration.isAddDbNameToPackageNames() ? fileSeparator + engineConfiguration.getDatabase().getName() : "" );
+        Path dir = Paths.get(dirPath);
         Files.createDirectories(dir);
         if (!engineConfiguration.isSilent()) {
             System.out.println("\nWrite dao interfaces into " + dir.toAbsolutePath());
@@ -217,11 +217,11 @@ public class Engine {
     private void generateDaoClasses() throws IOException, TemplateException {
         List<Table> tableList = engineConfiguration.getDatabase().getTableList();
         // create directory for java package
-        Path dir = Paths.get(engineConfiguration.getGeneratedSourcePath()
+        String dirPath = engineConfiguration.getGeneratedSourcePath()
                 + fileSeparator
                 + engineConfiguration.getPackageOfJavaDao().replace(".", fileSeparator)
-                + fileSeparator
-                + engineConfiguration.getDatabase().getName());
+                + ( engineConfiguration.isAddDbNameToPackageNames() ? fileSeparator + engineConfiguration.getDatabase().getName() : "" );
+        Path dir = Paths.get(dirPath);
         Files.createDirectories(dir);
         if (!engineConfiguration.isSilent()) {
             System.out.println("\nWrite dao classes into " + dir.toAbsolutePath());

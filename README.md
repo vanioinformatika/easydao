@@ -209,7 +209,7 @@ Configuration example:
         </tableNameIncludes>
         <encoding>utf-8</encoding>
         <silent>true</silent>
-
+        <addDbNameToPackageNames>true</addDbNameToPackageNames>
     </configuration>
     <executions>
         <execution>
@@ -352,6 +352,17 @@ Defines the encoding of the generated Java sources. Default: ${project.build.sou
 
 ## silent
 Indicates whether normal output should be suppressed during code generation. If set, only warnings will be printed.). Default: true
+
+## addDbNameToPackageNames
+If true, database name will be added at the end of the java package names. If you have only one database schema, set it to false.
+Example:
+Let's assume you have a base package of `hu.vanio.easydao.sample` and your database name is `sampledb`
+
+* If you set addDbNameToPackageNames to false, your model and dao packages will be `hu.vanio.easydao.sample.model` and `hu.vanio.easydao.sample.dao`
+
+* If you set addDbNameToPackageNames to true (the default), your model and dao packages will be `hu.vanio.easydao.sample.model.sampledb` and `hu.vanio.easydao.sample.dao.sampledb`
+
+The latter is useful when you have more than one databases, so your model and dao class names won't clash.
 
 # Fields with enumerated vaules
 As of 1.0.9, you can use Java enums for fields with enumerated values. You have two choices: regular and irregular enumerations.

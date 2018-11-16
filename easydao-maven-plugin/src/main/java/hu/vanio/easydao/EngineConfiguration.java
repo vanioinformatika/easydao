@@ -116,6 +116,8 @@ public class EngineConfiguration {
     protected String encoding;
     /** Indicates whether normal output should be suppressed during code generation. If set, only warnings will be printed. */
     protected boolean silent;
+    /** If true, database name will be added at the end of the java package names */
+    private final boolean addDbNameToPackageNames;
     
     /** Map of Java class names and database table names. Names not included in this list will be auto-generated.
      *  e.g.: APPUSERS = User -> (User and UserDao) instead of (Appusers and AppusersDao)
@@ -196,6 +198,7 @@ public class EngineConfiguration {
      * @param tableNameIncludes
      * @param encoding Encoding of the generated source files
      * @param silent Indicates whether normal output should be suppressed during code generation. If set, only warnings will be printed.
+     * @param addDbNameToPackageNames If true, database name will be added at the end of the java package names
      * @throws java.io.IOException
      */
     public EngineConfiguration(
@@ -209,7 +212,8 @@ public class EngineConfiguration {
             String licenseFilename,
             List<String> tableNameIncludes,
             String encoding,
-            boolean silent) throws IOException {
+            boolean silent,
+            boolean addDbNameToPackageNames) throws IOException {
         
         this.database = new Database(databaseName);
         this.databaseType = databaseType;
@@ -234,6 +238,7 @@ public class EngineConfiguration {
         this.tableNameIncludes = tableNameIncludes;
         this.encoding = encoding;
         this.silent = silent;
+        this.addDbNameToPackageNames = addDbNameToPackageNames;
         
         if (encoding == null) {
             throw new IllegalArgumentException("Encoding cannot be null");
@@ -301,7 +306,8 @@ public class EngineConfiguration {
                 props.getProperty("licenseFilename"),
                 getPropertyAsList(props, "tableNameIncludes"),
                 props.getProperty("encoding"),
-                Boolean.valueOf(props.getProperty("silent", "true"))
+                Boolean.valueOf(props.getProperty("silent", "true")),
+                Boolean.valueOf(props.getProperty("addDbNameToPackageNames", "true"))
         );
         
         String languageCode = props.getProperty("language");
@@ -457,7 +463,15 @@ public class EngineConfiguration {
     public boolean isSilent() {
         return silent;
     }
-    
+
+    /**
+     * If true, database name will be added at the end of the java package names
+     * @return the addDbNameToPackageNames
+     */
+    public boolean isAddDbNameToPackageNames() {
+        return addDbNameToPackageNames;
+    }
+
     /**
      * File system directory for generated source files
      * @return the generatedSourcePath

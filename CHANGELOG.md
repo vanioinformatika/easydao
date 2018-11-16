@@ -1,5 +1,9 @@
 # EasyDao Changelog:
 
+## 3.3.0
+
+Adds new maven plugin configuration property `addDbNameToPackageNames`
+
 ## 3.2.1
 
 * Fixes Dao.update method generation with Oracle virtual columns

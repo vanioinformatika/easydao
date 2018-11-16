@@ -1,6 +1,6 @@
 // GENERATED FILE, DO NOT MODIFY! YOUR MODIFICATION WILL BE LOST!
 ${e.licenseText}
-package ${e.packageOfJavaDao}.${e.database.name};
+package ${e.packageOfJavaDao}<#if e.addDbNameToPackageNames>.${e.database.name}</#if>;
 
 import java.math.BigDecimal;
 <#if t.hasBlobField>import java.sql.Blob;${'\n'}</#if><#if t.hasClobField>import java.sql.Clob;${'\n'}</#if><#if t.hasArrayField>import java.sql.Array;${'\n'}</#if>
@@ -19,7 +19,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
+import ${e.packageOfJavaModel}<#if e.addDbNameToPackageNames>.${e.database.name}</#if>.${t.javaName};
 
 <#list t.fieldList as field><#if field.enumerated || field.customType>import ${field.javaType};${'\n'}</#if></#list>
 

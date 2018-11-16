@@ -244,6 +244,13 @@ public class Generator extends AbstractMojo {
     @Parameter(required = false, defaultValue = "true")
     protected String silent;
 
+    /**
+     * Optional, default: true. If true, database name will be added at the end of the java package names
+     */
+    @Parameter(required = false, defaultValue = "true")
+    protected String addDbNameToPackageNames;
+
+
     public void execute() throws MojoExecutionException {
         getLog().info("easydao-maven-plugin has started. Generating classes from database.");
 
@@ -302,7 +309,8 @@ public class Generator extends AbstractMojo {
                     licenseFilename,
                     tableNameIncludes,
                     encoding,
-                    Boolean.parseBoolean(silent)
+                    Boolean.parseBoolean(silent),
+                    Boolean.parseBoolean(addDbNameToPackageNames)
             );
             if (language != null) {
                 ec.setLocale(new Locale(language));

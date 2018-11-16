@@ -1,6 +1,6 @@
 // GENERATED FILE, DO NOT MODIFY! YOUR MODIFICATION WILL BE LOST!
 ${e.licenseText}
-package ${e.packageOfJavaModel}.${e.database.name};
+package ${e.packageOfJavaModel}<#if e.addDbNameToPackageNames>.${e.database.name}</#if>;
 
 import java.sql.Timestamp;
 import java.math.BigDecimal;

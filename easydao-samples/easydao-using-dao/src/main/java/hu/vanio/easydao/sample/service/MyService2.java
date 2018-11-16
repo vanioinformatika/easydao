@@ -21,31 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hu.vanio.easydao.sample;
+package hu.vanio.easydao.sample.service;
 
-import hu.vanio.easydao.sample.service.MyService;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import hu.vanio.easydao.sample.dao.AddressDao;
+import hu.vanio.easydao.sample.model.Address;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Application and configuration.
- * Spring 3.2.x
+ * An ordinary service example with spring annotation.
+ * Transactional annotation hasn't created on Dao classes,
+ * but on services!
+ * @author Istvan Pato <istvan.pato@vanio.hu>
  */
-@Configuration
-@ComponentScan(basePackages = {"hu.vanio.easydao.core", "hu.vanio.easydao.sample"})
-public class App {
+@Service
+@Transactional
+public class MyService2 {
 
-    /**
-     * Just for demonstration.
-     * @param args 
-     */
-    public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(App.class);
-        MyService myService = (MyService) context.getBean("myService");
-        System.out.println("\nPostal code with MyService: " + myService.getPostalCode(1L) + "\n");
-        MyService myService2 = (MyService) context.getBean("myService2");
-        System.out.println("\nPostal code with MyService2: " + myService2.getPostalCode(1L) + "\n");
+    @Autowired
+    private AddressDao addressDao;
+
+    public String getPostalCode(Long pk) {
+        Address address = addressDao.read(pk);
+        return address.getPostalCode();
     }
 }

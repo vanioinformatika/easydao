@@ -1,11 +1,11 @@
 // GENERATED FILE, DO NOT MODIFY! YOUR MODIFICATION WILL BE LOST!
 ${e.licenseText}
-package ${e.packageOfJavaDao}.${e.database.name};
+package ${e.packageOfJavaDao}<#if e.addDbNameToPackageNames>.${e.database.name}</#if>;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-import ${e.packageOfJavaModel}.${e.database.name}.${t.javaName};
+import ${e.packageOfJavaModel}<#if e.addDbNameToPackageNames>.${e.database.name}</#if>.${t.javaName};
 
 <#list t.fieldList as field><#if field.enumerated>import ${field.javaType};${'\n'}</#if></#list>
 /**

@@ -87,6 +87,7 @@ public class EngineConfigurationTest {
         assertEquals(Locale.getDefault(), conf.getLocale());
         assertEquals(Arrays.asList("IR_.+", "KR_.+"), conf.getTableNameIncludes());
         assertEquals("utf-8", conf.getEncoding());
+        assertEquals(true, conf.isAddDbNameToPackageNames());
     }
 
     /**

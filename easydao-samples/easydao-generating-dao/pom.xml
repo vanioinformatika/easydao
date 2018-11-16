@@ -145,6 +145,19 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>with_addDbNameToPackageNames_true</id>
+                        <configuration>
+                            <addDbNameToPackageNames>true</addDbNameToPackageNames>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>with_addDbNameToPackageNames_false</id>
+                        <configuration>
+                            <addDbNameToPackageNames>false</addDbNameToPackageNames>
+                        </configuration>
                         <goals>
                             <goal>generate</goal>
                         </goals>
