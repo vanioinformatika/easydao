@@ -1,5 +1,9 @@
 # EasyDao Changelog:
 
+## 3.3.2
+
+Fixes #21: Don't generate deprecated constructors to the DAO sources 
+
 ## 3.3.1
 
 Fixes #18: NPE when no `replacementTypeMapFilename` is specified in the maven plugin configuration 

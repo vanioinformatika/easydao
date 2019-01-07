@@ -180,7 +180,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
                 public void processRow(ResultSet rs) throws SQLException {
                     <#if pkField.readAsString>
                     String tmp;
-                    ${pkField.javaTypeAsString} ${pkField.javaName} = (tmp = rs.getString("PK")) != null ? new ${pkField.javaTypeAsString}(tmp) : null;
+                    ${pkField.javaTypeAsString} ${pkField.javaName} = (tmp = rs.getString("PK")) != null ? ${pkField.javaTypeAsString}.valueOf(tmp) : null;
                     <#else>
                     ${pkField.javaTypeAsString} ${pkField.javaName} = rs.get${pkField.javaTypeAsString}("PK");
                     </#if>
@@ -438,7 +438,7 @@ ${fieldList?remove_ending(", ")}
                 <#if field.javaTypeAsString == "Boolean">
                     ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? Boolean.valueOf(tmp) : null;
                 <#else>
-                    ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? new ${field.javaTypeAsString}(tmp) : null;
+                    ${field.javaTypeAsString} ${field.javaName} = (tmp = rs.getString("${field.dbName}")) != null ? ${field.javaTypeAsString}.valueOf(tmp) : null;
                 </#if>
             <#else>
                 <#if !field.blob && !field.clob && !field.array && !field.enumerated && !field.customType>
