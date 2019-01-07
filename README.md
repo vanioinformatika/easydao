@@ -199,7 +199,7 @@ Configuration example:
         <replacementTableFilename>replacement-table</replacementTableFilename>
         <replacementFieldFilename>replacement-field</replacementFieldFilename>
         <enumFieldFilename>enum-field</enumFieldFilename>
-        <replacementTypeFilename>replacement-type</replacementTypeFilename>
+        <replacementTypeMapFilename>replacement-type</replacementTypeMapFilename>
         <sequenceNameConvention>PREFIXED_TABLE_NAME</sequenceNameConvention>
         <generateModelToString>false</generateModelToString>
         <licenseFilename>${basedir}/src/myLicense.txt</licenseFilename>
@@ -306,7 +306,7 @@ If you want to use Java enum for a database field, put it into the file as TABLE
 CUS_CUSTOMER_ORDER.ORDER_MODE = hu.vanio.myapp.model.OrderMode
 ```
 
-## replacementTypeFilename
+## replacementTypeMapFilename
 
 Map file name for database types that should not be mapped by the default type map. Resource bundle file in src/main/resources without file extension, e.g: replacement-type
 
