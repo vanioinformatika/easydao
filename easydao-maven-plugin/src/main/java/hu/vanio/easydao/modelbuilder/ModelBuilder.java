@@ -112,10 +112,10 @@ public class ModelBuilder {
                 tableNameIncludesPatternList.add(pattern);
             }
         }
-        
+
+        this.customTypeMap = new HashMap<>();
         Map<String, String> replacementTypeMap = engineConf.getReplacementTypeMap();
         if (replacementTypeMap != null && !replacementTypeMap.isEmpty()) {
-            this.customTypeMap = new HashMap<>();
             for (Map.Entry<String, String> entry  : engineConf.getReplacementTypeMap().entrySet()) {
                 String key = entry.getKey();
                 String valueStr = entry.getValue();

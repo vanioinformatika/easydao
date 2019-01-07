@@ -1,5 +1,9 @@
 # EasyDao Changelog:
 
+## 3.3.1
+
+Fixes #18: NPE when no `replacementTypeMapFilename` is specified in the maven plugin configuration 
+
 ## 3.3.0
 
 Adds new maven plugin configuration property `addDbNameToPackageNames`
