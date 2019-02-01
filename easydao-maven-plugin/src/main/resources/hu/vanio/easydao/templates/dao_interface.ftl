@@ -7,7 +7,8 @@ import java.util.List;
 
 import ${e.packageOfJavaModel}<#if e.addDbNameToPackageNames>.${e.database.name}</#if>.${t.javaName};
 
-<#list t.fieldList as field><#if field.enumerated>import ${field.javaType};${'\n'}</#if></#list>
+<#list t.customFieldTypes as fieldType>import ${fieldType};${'\n'}</#list>
+
 /**
  * ${t.javaName}${e.daoSuffix}.
  * <br>${t.comment}

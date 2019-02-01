@@ -23,10 +23,7 @@
  */
 package hu.vanio.easydao.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Database's table meta data
@@ -189,6 +186,20 @@ public class Table {
             if (field.getJavaType().equals(java.sql.Clob.class.getName())) {
                 retVal = true;
                 break;
+            }
+        }
+        return retVal;
+    }
+
+    /**
+     * Returns all custom types and enumerated types in a Set
+     * @return all custom types and enumerated types in a Set
+     */
+    public Set<String> getCustomFieldTypes() {
+        Set<String> retVal = new HashSet<>();
+        for (Field fd : this.fieldList) {
+            if (fd.isCustomType() || fd.isEnumerated()) {
+                retVal.add(fd.getJavaType());
             }
         }
         return retVal;

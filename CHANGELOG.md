@@ -1,5 +1,11 @@
 # EasyDao Changelog:
 
+
+## 3.3.3
+
+* Fixes #22: Custom field types are not imported in the generated DAO interfaces 
+* Fixes #14: Same enum for different columns on same table results multiple import for the enum in the model.
+
 ## 3.3.2
 
 Fixes #21: Don't generate deprecated constructors to the DAO sources 
