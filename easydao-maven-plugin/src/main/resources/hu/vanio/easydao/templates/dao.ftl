@@ -251,10 +251,8 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
         String sql = "update ${t.dbName} " +
                      "set " +
 <#assign fieldList>
-<#list t.nonPkFields as field>
-<#if !field.virtual>
+<#list t.nonPkAndNotVirtualFields as field>
 <#if field.blob||field.clob>(updateLobFields?"${field.dbName} = ? <#if field_has_next>, </#if>":"") +<#else>                     "${field.dbName} = ? <#if field_has_next>, </#if>" +</#if>
-</#if>
 </#list>
 </#assign>
 ${fieldList?remove_ending(", ")}

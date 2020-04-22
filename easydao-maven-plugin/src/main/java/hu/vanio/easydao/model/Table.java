@@ -113,7 +113,21 @@ public class Table {
         }
         return retVal;
     }
-    
+
+    /**
+     * Returns non-primary and not virtual key fields
+     * @return The list of non-primary key and not virtual key fields
+     */
+    public List<Field> getNonPkAndNotVirtualFields() {
+        List<Field> retVal = new ArrayList<>();
+        for (Field fd : this.fieldList) {
+            if (!fd.isPrimaryKey() && !fd.isVirtual()) {
+                retVal.add(fd);
+            }
+        }
+        return retVal;
+    }
+
     /**
      * Returns the standalone primary key field of this table. If there is no primary key field in this table, it returns null. 
      * @return The standalone primary key field of this table or null if there is no primary key field in this table.
