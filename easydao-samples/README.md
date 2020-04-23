@@ -1,4 +1,4 @@
-Sample database an tests are running in docker container.
+Sample database and tests are running in docker container.
 
 Install Oracle JDBC driver before start testing or building:
 
