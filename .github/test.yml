@@ -1,0 +1,53 @@
+name: Test
+on:
+  push:
+    branches: [master]
+
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Performs a clean installation of all dependencies in the `package.json` file
+      # For more information, see https://docs.npmjs.com/cli/ci.html
+      - name: Init Database
+        run: psql -U postgres -a -f ./easydao-samples/creating-sampledb/initdb.sql
+
+      - name: Export test user password
+        run: export PGPASSWORD="sample"
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Test maven
+        run: mvn -v
+
+      - name: Install JDBC ojdbc5
+        run: mvn install:install-file -Dfile=./ojdbc5-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.1.0.7.0 -Dpackaging=jar
+
+      - name: Install JDBC ora18n
+        run: mvn install:install-file -Dfile=./orai18n-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=orai18n -Dversion=11.1.0.7.0 -Dpackaging=jar
+
+      - name: Running test
+        run: mvn clean install
