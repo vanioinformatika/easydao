@@ -64,20 +64,15 @@ jobs:
        
       - name: Notify slack success
         if: success()
+        uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: ${{ secrets.SLACK_CHANNEL_ID }}
-          status: SUCCESS
-          color: good
+          SLACK_TITLE: Success
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Notify slack fail
         if: failure()
+        uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@v1
-        with:
-          channel: ${{ secrets.SLACK_CHANNEL_ID }}
-          status: FAILED
-          color: danger
+          SLACK_TITLE: Error
+          SLACK_COLOR: '#3278BD'
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
