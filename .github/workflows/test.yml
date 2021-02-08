@@ -9,7 +9,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:latest
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
