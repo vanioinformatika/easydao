@@ -1,6 +1,6 @@
 # EasyDao
 
-[![TravisCI Build Status](https://travis-ci.org/vanioinformatika/easydao.svg?branch=master)](https://travis-ci.org/vanioinformatika/easydao)
+[![Test](https://github.com/vanioinformatika/easydao/workflows/Test/badge.svg)
 
 [For easydao developers: Running test and build](easydao-samples/README.md)
 
