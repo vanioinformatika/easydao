@@ -1,6 +1,6 @@
 # EasyDao
 
-[![Test](https://github.com/vanioinformatika/easydao/workflows/Test/badge.svg)
+![Test](https://github.com/vanioinformatika/easydao/workflows/Test/badge.svg)
 
 [For easydao developers: Running test and build](easydao-samples/README.md)
 
