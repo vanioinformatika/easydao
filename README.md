@@ -2,7 +2,7 @@
 
 [![TravisCI Build Status](https://travis-ci.org/vanioinformatika/easydao.svg?branch=master)](https://travis-ci.org/vanioinformatika/easydao)
 
-[Running test and build](easydao-samples/README.md)
+[For easydao developers: Running test and build](easydao-samples/README.md)
 
 **EasyDao is a Maven plugin for generating lightweight, fast and flexible model and dao for Spring-based projects**
 
