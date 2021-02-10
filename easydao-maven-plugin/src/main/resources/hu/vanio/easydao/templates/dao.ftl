@@ -81,7 +81,7 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
 
     @Override
     public List<${t.javaName}> readAll(<#if t.hasBlobField || t.hasClobField>boolean readLobFields</#if>) {
-        String query = "select " + SELECTED_FIELDS + " from ${t.dbName} <#if t.hasPkField && !t.compositePk>order by ${t.pkField.dbName}</#if>";
+        String query = "select " + SELECTED_FIELDS + " from ${t.dbName}<#if t.hasPkField && !t.compositePk> order by ${t.pkField.dbName}</#if>";
         List<${t.javaName}> retVal = this.jdbcTemplate.query(query, new ${t.javaName}RowMapper(<#if t.hasBlobField || t.hasClobField>readLobFields</#if>));
         return retVal;
     }
