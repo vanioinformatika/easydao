@@ -23,18 +23,9 @@
         </license>
     </licenses>
 
-    <!-- Bintray and JCenter has been closed -->
-    <!--distributionManagement>
-        <repository>
-            <id>bintray-vanioinformatika-releases</id>
-            <name>vanioinformatika-releases-easydao-maven-plugin</name>
-            <url>https://api.bintray.com/maven/vanioinformatika/releases/easydao-maven-plugin/;publish=1</url>
-        </repository>
-    </distributionManagement-->
-
     <distributionManagement>
         <repository>
-            <id>vanioinformatika-releases</id>
+            <id>github</id>
             <name>GitHub Vanio Informatika Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/vanioinformatika/maven-releases</url>
         </repository>
