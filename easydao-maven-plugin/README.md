@@ -1,5 +1,7 @@
 # Test and release
 
+NOTE: For supporting Java 5, you need to use Java 8.
+
 Install Oracle JDBC driver before start testing or building:
 
     mvn install:install-file -Dfile=./ojdbc5-11.1.0.7.0.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.1.0.7.0 -Dpackaging=jar
