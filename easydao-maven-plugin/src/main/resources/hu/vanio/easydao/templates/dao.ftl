@@ -275,9 +275,9 @@ ${fieldList?remove_ending(", ")}
                         <#else>
                             <#if field.enumerated>
                                 <#if field.irregularEnum>
-                                    paramsList.add(instance.get${field.javaName?cap_first}().getEnumName());
+                                    paramsList.add(instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().getEnumName() : null);
                                 <#else>
-                                    paramsList.add(instance.get${field.javaName?cap_first}().name());
+                                    paramsList.add(instance.get${field.javaName?cap_first}() != null ? instance.get${field.javaName?cap_first}().name() : null);
                                 </#if>
                             <#else>
                                 <#if field.customType>
