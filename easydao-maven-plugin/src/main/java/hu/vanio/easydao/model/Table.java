@@ -123,7 +123,7 @@ public class Table {
         List<Field> retVal = new ArrayList<>();
         for (Field fd : this.fieldList) {
             if (!fd.isPrimaryKey() && !fd.isVirtual()) {
-                if ((lobs && fd.isLob()) || (!lobs && !fd.isLob()) ) {
+                if (lobs == fd.isLob()) {
                     retVal.add(fd);
                 }
             }
