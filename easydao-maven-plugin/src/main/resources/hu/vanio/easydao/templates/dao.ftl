@@ -245,23 +245,23 @@ public class ${t.javaName}${e.daoSuffix}Impl implements ${t.javaName}${e.daoSuff
     </#if>
 
     <#if t.hasPkField>
-
     @Override
     public ${t.javaName} update(${t.javaName} instance<#if t.hasBlobField || t.hasClobField>, boolean updateLobFields</#if>) {
         String sql = "update ${t.dbName} " +
                      "set " +
-<#assign fieldList>
-<#list t.nonPkAndNotVirtualFields as field>
-<#if field.blob||field.clob>(updateLobFields?"${field.dbName} = ? <#if field_has_next>, </#if>":"") +<#else>                     "${field.dbName} = ? <#if field_has_next>, </#if>" +</#if>
-</#list>
-</#assign>
-${fieldList?remove_ending(", ")}
-                     <#if t.compositePk>"where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";<#else>"where ${t.pkField.dbName} = ?";</#if>
-
+    <#assign fieldList>
+        <#list t.getUpdatableFields(false) as field>
+            "<#if !field?is_first> , </#if>${field.dbName} = ? " +
+        </#list>
+        <#list t.getUpdatableFields(true) as field>
+            (updateLobFields?" , ${field.dbName} = ? ":" ") +
+        </#list>
+    </#assign>
+            ${fieldList?trim}
+    <#if t.compositePk>        "where <#list t.pkFields as field>${field.dbName} = ?<#if field_has_next> and </#if></#list>";<#else>       "where ${t.pkField.dbName} = ?";</#if>
         <#if t.hasClobField||t.hasBlobField>
             List paramsList = new java.util.ArrayList();
-
-            <#list t.nonPkFields as field>
+            <#list t.getAllUpdatableFields() as field>
                 <#if !field.virtual>
                     <#if field.array>
                         <#if e.databaseType.name() == 'POSTGRESQL9'>

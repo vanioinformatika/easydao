@@ -217,6 +217,14 @@ public class Field {
     }
 
     /**
+     * Indicates whether this field is a BLOB or a CLOB
+     * @return true is this field is a BLOB or CLOB
+     */
+    public boolean isLob() {
+        return this.isBlob() || this.isClob();
+    }
+
+    /**
      * Indicates whether this field is a BLOB
      * @return the blob
      */

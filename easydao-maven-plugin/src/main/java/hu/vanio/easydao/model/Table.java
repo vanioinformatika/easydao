@@ -115,16 +115,30 @@ public class Table {
     }
 
     /**
-     * Returns non-primary and not virtual key fields
-     * @return The list of non-primary key and not virtual key fields
+     * Returns updatable fields i.e. that are not PK and not virtual
+     * @param lobs Indicates whether only LOB fields should be returned or only non-LOB fields
+     * @return The list of non-primary key and not virtual fields
      */
-    public List<Field> getNonPkAndNotVirtualFields() {
+    public List<Field> getUpdatableFields(boolean lobs) {
         List<Field> retVal = new ArrayList<>();
         for (Field fd : this.fieldList) {
             if (!fd.isPrimaryKey() && !fd.isVirtual()) {
-                retVal.add(fd);
+                if ((lobs && fd.isLob()) || (!lobs && !fd.isLob()) ) {
+                    retVal.add(fd);
+                }
             }
         }
+        return retVal;
+    }
+
+    /**
+     * Returns all updatable fields i.e. that are not PK and not virtual
+     * @return The list of all non-primary key and not virtual fields
+     */
+    public List<Field> getAllUpdatableFields() {
+        List<Field> retVal = new ArrayList<>();
+        retVal.addAll(this.getUpdatableFields(false));
+        retVal.addAll(this.getUpdatableFields(true));
         return retVal;
     }
 
