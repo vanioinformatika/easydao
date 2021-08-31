@@ -3,7 +3,7 @@
 
     <groupId>hu.vanio.easydao</groupId>
     <artifactId>creating-sampledb</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.4.2</version>
     <packaging>pom</packaging>
 
     <name>creating-sampledb</name>

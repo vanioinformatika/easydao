@@ -3,7 +3,7 @@
 
     <groupId>hu.vanio.maven.plugins</groupId>
     <artifactId>easydao-maven-plugin</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.4.2</version>
     <packaging>maven-plugin</packaging>
     
     <name>easydao-maven-plugin</name>
