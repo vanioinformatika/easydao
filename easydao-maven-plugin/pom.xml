@@ -52,7 +52,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mavenVersion>3.3.3</mavenVersion>
-        <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
+        <mavenPluginPluginVersion>3.10.2</mavenPluginPluginVersion>
         <oracle.version>11.1.0.7.0</oracle.version>
         <postgresql.version>42.7.1</postgresql.version>
     </properties>
