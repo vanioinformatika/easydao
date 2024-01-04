@@ -54,7 +54,7 @@
         <mavenVersion>3.3.3</mavenVersion>
         <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
         <oracle.version>11.1.0.7.0</oracle.version>
-        <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
+        <postgresql.version>42.7.1</postgresql.version>
     </properties>
 
     <dependencies>       
@@ -127,7 +127,7 @@
         </dependency>
         <!-- postgresql -->
         <dependency>
-            <groupId>postgresql</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
